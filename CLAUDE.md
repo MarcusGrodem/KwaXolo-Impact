@@ -4,11 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Context
 
-KwaXolo Impact Challenge — a collaboration between Microsoft for Startups, INCVABATE, and KwaXolo (April 2026). Project briefings and case study materials are in the root as PDFs:
+KwaXolo Impact Challenge — a collaboration between Microsoft for Startups, INCVABATE, and KwaXolo (April 2026). Project briefings and case study materials are in `docs/briefings/`:
 
-- `KwaXolo_Project_Briefing.pdf` — project scope and requirements
-- `KwaXolo Impact Challenge :: Case.pdf` — case study
-- `Microsoft for Startup x INCVABATE x KwaXolo_April2026.pdf` — partnership context
+- `docs/briefings/KwaXolo_Project_Briefing.pdf` — project scope and requirements
+- `docs/briefings/KwaXolo Impact Challenge :: Case.pdf` — case study
+- `docs/briefings/Microsoft for Startup x INCVABATE x KwaXolo_April2026.pdf` — partnership context
+
+Research reports (PDFs + MDs) are in `docs/research/`. Design artifacts and sparring docs are in `design/`. Project context summaries are in `context/`.
 
 ## Focus Area
 
