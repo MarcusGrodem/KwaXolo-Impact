@@ -4,6 +4,30 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 
 ---
 
+## Core Design Constraints
+
+> Non-negotiables. Every solution must work within these.
+
+- 65 students per PC — individual seat time ~1–2h/week maximum
+- No stable internet (7/9 schools)
+- Load shedding up to 6h/day
+- Hardware 8–12 years old
+- No IT support on-site
+- No licensed software
+- isiZulu is the primary language — English literacy cannot be assumed
+- 86% learning poverty rate in sub-Saharan Africa — many students cannot read simple text
+- Budget: DKK 2M total (covers strategy + MVP + rollout)
+
+---
+
+## Strategic Insight
+
+> The sharpest observation from research so far.
+
+**KwaXolo's solution needs to operate below the current market floor.** Every major African EdTech platform (Eneza, uLesson, most e-learning tools) assumes English literacy and some baseline digital familiarity. KwaXolo's Phase 1 students have neither. This is not just a constraint — it is genuine whitespace. The hardest-to-reach learners are the most underserved by existing solutions.
+
+---
+
 ## Agreements & Conclusions
 
 > Settled positions — things we've stress-tested and landed on.
@@ -26,6 +50,9 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 - Where on the isiZulu↔English friction spectrum should the interface sit? Pure labels vs. forced English input vs. something in between?
 - Can mobile play a meaningful role given 24% current smartphone penetration — and how does that change as penetration hits ~87% by 2030?
 - Is mobile better suited for the teacher layer than the student layer right now?
+- 86% learning poverty means many students can't read simple text — how much of the solution needs to be icon/audio/visual-first rather than text-first?
+- How do you sustain the teacher layer long-term — what's the incentive for teachers to keep using and updating the system?
+- What happens to a student's progress when they switch schools or the PC breaks — is there any continuity mechanism?
 
 ---
 
@@ -35,6 +62,7 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 
 - **Local LLM** — a small language model running entirely on-device, no internet required. Could power adaptive tutoring, isiZulu/English interaction, or Q&A without cloud dependency.
 - **Simple offline learning portal** — a lightweight web app or local application running on existing school PCs. Low-tech, high-reach, works within hardware and connectivity constraints.
+- **Hybrid PC + SMS model** — PC is the learning environment at school; SMS delivers accountability and reinforcement outside school. Students do sessions on PC, receive SMS summaries or micro-quizzes at home. Teachers get SMS progress updates without needing a laptop. Separates the learning layer (PC, rich) from the reach layer (SMS, universal).
 - **Pre-scripted branching dialogue** — a decision-tree conversation system. Student picks answers or types keywords, system follows pre-written paths. Runs on any hardware, fully offline, no hallucinations. Weakness: breaks when students go off-script. Could be authored in isiZulu with English embedded at key moments. Teachers could potentially contribute content over time.
 
 ---
@@ -87,6 +115,8 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
   - ⚠️ English-first — not built for non-English speakers or very low literacy levels
   - **Gap it highlights:** most existing African edtech still assumes a baseline of English and functional literacy that KwaXolo's Phase 1 students do not have. This is a space we need to design *below* the current market floor.
 
+- **M-Lugha** — Kenyan edtech specifically built to help children learn in their native language. More targeted at the language-first problem than M-Shule. Worth deeper investigation.
+
 - **UNESCO IICBA — "Empowering Education: Transformative Role of Technology in Africa"** ([link](https://www.iicba.unesco.org/en/empowering-education-transformative-role-technology-africa))
   - 97.5 million African children (primary–secondary age) not in school
   - 86% learning poverty rate in sub-Saharan Africa (can't read simple text by age 10)
@@ -103,6 +133,11 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 > Things we need answered before we can close certain design decisions.
 
 - What is the actual baseline of teacher readiness across the 9 schools — digital skill level, motivation, capacity to adopt new tools?
+- What is the actual isiZulu literacy level among students — can they read isiZulu text, or is literacy the deeper problem before language?
+- Is there any existing digital infrastructure at the schools (LAN, local server, UPS/battery backup)?
+- Who owns the PCs — KwaXolo, the schools, or government? This affects what software can be installed.
+- Has KwaXolo attempted any digital literacy intervention before, and what happened?
+- Are teachers paid by the school or government — and do they have any incentive structure tied to student outcomes?
 
 ---
 
@@ -123,6 +158,17 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 - Agreed: real tasks > gamification for initial engagement
 - Agreed: capital should prioritize infrastructure and teachers over UX polish
 - Open: long-term engagement, teacher training model, phased language approach
+
+### Session 2 — 2026-04-20
+
+- Introduced mobile learning as a component — researched M-Shule and Eneza Education
+- Key distinction surfaced: mobile *ownership* (89%) vs smartphone ownership (24%) vs SMS reach (near-universal)
+- Introduced local LLM, offline learning portal, and pre-scripted branching dialogue as ideas to keep warm
+- BCG + UNESCO research confirmed: KwaXolo is designing below the existing market floor — genuine whitespace
+- Eneza Education identified as a cautionary model: scaled to 6M users but stayed English-only — shallow reach
+- M-Shule identified as closer reference: 7 languages, SMS-based, strong outcomes
+- Deep unresolved tension flagged: 86% learning poverty means text-based interfaces may hit a literacy wall before a language wall
+- Added M-Lugha as a reference to investigate for native-language-first approach
 
 ---
 
