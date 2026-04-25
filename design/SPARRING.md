@@ -8,15 +8,18 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 
 > Non-negotiables. Every solution must work within these.
 
-- 65 students per PC — individual seat time ~1–2h/week maximum
-- No stable internet (7/9 schools)
-- Load shedding up to 6h/day
-- Hardware 8–12 years old
 - No IT support on-site
 - No licensed software
 - isiZulu is the primary language — English literacy cannot be assumed
 - 86% learning poverty rate in sub-Saharan Africa — many students cannot read simple text
 - Budget: DKK 2M total (covers strategy + MVP + rollout)
+- 1 PC per teacher only — students do not have PC access
+
+## Infrastructure (Updated 2026-04-22)
+- WiFi available at all schools
+- Stable power available
+- Near-universal phone access among students — mobile-first is viable and correct device strategy
+- Previous offline-first constraint no longer applies
 
 ---
 
@@ -32,10 +35,20 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 
 > Settled positions — things we've stress-tested and landed on.
 
-- **English embedded, not taught** — given ~1-2h seat time/week per student, explicit English instruction is not feasible. English should be ambient in the interface (labels, buttons, file names) while isiZulu carries the instructional layer.
+- **English embedded, not taught** — given ~1-2h seat time/week per student, explicit English instruction is not feasible. English should be ambient in the interface (labels, buttons, file names) while isiZulu carries the instructional layer. *(Sessions 1–2, now updated: English is primary, isiZulu hoverable on difficult words only)*
 - **Engagement is not the problem** — novelty of computers in this context means engagement is already there. The design challenge is directing it, not manufacturing it.
 - **Ownership over gamification** — tasks that feel personal and real (type your name, save a file) are more effective and cheaper than point systems.
 - **Capital should flow toward:** offline robustness, teacher enablement, hardware compatibility — not engagement mechanics.
+- **Phase 6, not Phase 1** — updated infrastructure (WiFi, power, near-universal phone access) removes the offline-first constraint. Focus is entrepreneurship, not basic PC literacy. *(Session 3, 2026-04-22)*
+- **Mobile-first for students** — phone is the student device. 1 PC per teacher only. *(Session 3)*
+- **LLM is invisible infrastructure** — students never interact with AI directly. LLM generates content in the background; students see guided tasks. Teachers use a simple form to trigger generation. *(Session 3)*
+- **Teacher as content trigger, not expert** — the form asks plain-language questions. LLM bridges the gap between teacher's simple input and structured curriculum. *(Session 3)*
+- **Two LLM outputs per lesson** — (1) blackboard lesson plan for teacher, (2) student mobile task. These are connected: same topic, complementary layers. *(Session 3)*
+- **Content is context-specific micro-business** — zero startup capital assumed. Examples and opportunities grounded in rural KwaZulu-Natal (food, artisan, agri-tech, local services). No generic business school content. *(Session 3)*
+- **Economic opportunity via Chain A + Chain B** — Chain A: skills → formal employment over time. Chain B: platform directly enables local micro-business creation now. *(Session 3)*
+- **WhatsApp is a business tool, not a distraction** — already universal, already trusted. Platform treats it as legitimate business infrastructure. *(Session 3)*
+- **MVP = 3 lessons end-to-end** — identify local opportunity → who is your customer → write your one-sentence business description. Demonstrates full system without overbuilding. *(Session 3)*
+- **Real LLM API for demo** — not hardcoded/simulated content. Claude API with KwaZulu-Natal system prompt. More impressive and closer to the real product. *(Session 3)*
 
 ---
 
@@ -43,16 +56,14 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 
 > Things still under debate or not yet resolved.
 
-- What is the right balance between isiZulu and English in the UI at different stages?
 - How do you sustain engagement *after* novelty wears off (months 3–12)?
-- What does teacher training actually look like under these constraints?
-- Is gamification worth anything at a later phase, once baseline is established?
-- Where on the isiZulu↔English friction spectrum should the interface sit? Pure labels vs. forced English input vs. something in between?
-- Can mobile play a meaningful role given 24% current smartphone penetration — and how does that change as penetration hits ~87% by 2030?
-- Is mobile better suited for the teacher layer than the student layer right now?
-- 86% learning poverty means many students can't read simple text — how much of the solution needs to be icon/audio/visual-first rather than text-first?
-- How do you sustain the teacher layer long-term — what's the incentive for teachers to keep using and updating the system?
-- What happens to a student's progress when they switch schools or the PC breaks — is there any continuity mechanism?
+- How do you sustain the teacher layer long-term — what's the incentive for teachers to keep using the platform?
+- What happens to a student's progress if they change schools or lose their phone?
+- How does the platform handle students with very low reading ability — is the text-based mobile task sufficient, or does it need audio/visual support?
+- Is the Business Profile card enough as a student outcome, or does the platform need to connect students to actual market opportunities?
+- What local data specifically feeds the LLM system prompt — who at KwaXolo owns and updates this?
+- Web scraping for daily local business data: who builds and maintains the scraper, and is it realistic before MVP?
+- Does the platform need student accounts for privacy reasons (minors), or is a simple code sufficient long-term?
 
 ---
 
@@ -169,6 +180,98 @@ A running record of sparring sessions, key arguments tested, and conclusions rea
 - M-Shule identified as closer reference: 7 languages, SMS-based, strong outcomes
 - Deep unresolved tension flagged: 86% learning poverty means text-based interfaces may hit a literacy wall before a language wall
 - Added M-Lugha as a reference to investigate for native-language-first approach
+
+### Session 3 — 2026-04-22
+
+**Major infrastructure update received from KwaXolo:**
+- Near-universal phone access among students (not 24%)
+- WiFi and stable power available at schools
+- 1 PC per teacher only — no student PC access
+- Offline-first constraint removed entirely
+
+**Strategic pivot: Phase 1 → Phase 6**
+- Focus shifts from basic PC literacy to entrepreneurship
+- Target: all students, universal — not just a self-selecting motivated subset
+- Content must be context-specific micro-business for rural KwaZulu-Natal, zero capital assumed
+
+**Platform architecture settled:**
+- Teacher (PC): simple form → LLM generates lesson plan + student task
+- Student (mobile): guided one-step-at-a-time tasks, no LLM interaction
+- LLM is invisible infrastructure — powered by Claude API with KwaZulu-Natal system prompt
+- Teacher uses chalk/blackboard only — lesson plan output must be blackboard-friendly
+- Two LLM outputs per lesson: (1) blackboard script for teacher, (2) mobile task for student
+
+**Economic opportunity framing resolved:**
+- Chain A + Chain B both valid
+- Chain B more immediate: platform directly enables micro-business creation in local context
+- Chain A: longer-term pathway through skill progression
+
+**MVP scope locked:**
+- 3 lessons: identify local opportunity → who is your customer → one-sentence business description
+- Real Claude API with pre-crafted KwaZulu-Natal system prompt (not hardcoded demo content)
+- Teacher-view and student-view split between group members
+- Build order: Supabase → Teacher View → Student View → end-to-end test
+
+**Language decision (revised by platform spec):**
+- Full bilingual: EN + isiZulu toggle on every screen (not just hoverable)
+- LLM generates both languages simultaneously
+- Teacher QAs isiZulu translation
+
+**20-topic lesson library defined** — see KwaXolo_Impact_Case.md for full list
+
+### Session 3 — Platform Spec Update (2026-04-22)
+
+**Read KwaXolo_Platform_System_Prompt.md — significant corrections and additions:**
+
+- **Platform name:** KwaXolo Learn
+- **Student device corrected:** shared PCs (4–6 per machine), NOT mobile-first — earlier update was partially wrong
+- **Connectivity corrected:** only 2 of 9 schools have internet; 7 are offline — earlier "WiFi everywhere" was incomplete
+- **Architecture:** online generation (Msenti Hub / 2 schools) → offline consumption (all 9 via USB/sync)
+- **Three roles:** Teacher, Student, Admin (Victor Jaca + Thubelihle Sikobi)
+- **Module templates:** 6 categories × 5 templates + custom (25 total structured templates)
+- **Module structure:** Learning Objectives → Key Concepts → Local Example → Exercise → Quiz → Take-Home Challenge → Local Resources
+- **Pedagogical evidence:** Educate! Build–Practice–Present model, 105% income increase RCT
+- **Local context locked in:** Msenti Hub, SEDA, specific community leaders, existing ventures, MTN Mobile Money
+- **Pitch date:** April 29
+- **5-phase roadmap:** MVP → Pilot (2 schools) → Expand (9 schools) → Connect (ventures + jobs) → Scale (open-source)
+
+### Session 4 — 2026-04-23
+
+**Built and tested the agent prototype. Key decisions locked in:**
+
+**Agent guide created (`agent-guide/`):**
+- Comprehensive 24-file spec covering system prompt, teacher material structure, student task structure, 25 content templates (A–F), language rules, design system, HTML/PDF output formats, and quality checklist
+- Two-output model confirmed: teacher lesson plan (blackboard script, PDF/HTML) + student interactive task (HTML, phone/PC)
+- Agent targets 80% finished; teacher applies final 20% (isiZulu QA, local context, class edit)
+
+**Working prototype built (`test-site/`):**
+- Local Express server + single HTML file
+- Run: `npm start` → http://localhost:3000
+- Free-form teacher topic input — teacher types anything, not just presets
+
+**3-phase pipeline settled:**
+1. **Gemini 2.0 Flash** (Google Search grounding) searches the real app UI — gets actual button labels, screen names, exact flow
+2. **GPT-4o** (JSON mode) generates structured lesson with `screenType` per step
+3. **GPT-4o-mini** validation pass checks that step 1 screenType matches the topic (e.g. "create Gmail account" → must start at `play_store_app`, not `gmail_inbox`)
+
+**Visual accuracy as a non-negotiable:**
+- Visuals must match instructions exactly. A lesson about creating a Gmail account must show the Play Store and Gmail signup screens, not the inbox.
+- Implemented per-step screen rendering: the phone screen rebuilds on every step based on `screenType`
+- 20 distinct screen builders: `play_store_app`, `gmail_signup_name`, `gmail_signup_user`, `gmail_signup_pass`, `gmail_inbox`, `gmail_compose`, `whatsapp_welcome`, `whatsapp_phone`, `whatsapp_verify`, `whatsapp_setup_name`, `whatsapp_chat_list`, `whatsapp_chat`, `whatsapp_business`, `facebook_feed`, `facebook_create_post`, `facebook_marketplace`, `fb_listing_form`, `sheets_blank`, `sheets_data`, `generic`
+
+**Arrow guidance system:**
+- Pulsing orange callout arrows positioned over the exact UI element described in each step
+- Arrow placement uses `data-label` matching — finds elements by their visible text label
+- Arrows float and bounce to draw attention
+
+**Student view design principle confirmed:**
+- Course material should look like the real app being taught — Gmail steps look like Gmail, WhatsApp steps look like WhatsApp
+- Students should feel they are practicing inside the actual tool, not reading about it
+- Each step is one screen, one action, one arrow — no multi-step overwhelm
+
+**API keys in use:**
+- `GEMINI_API_KEY` — free tier, Google AI Studio
+- `OPENAI_API_KEY` — paid, ~$0.04/lesson generation + $0.002/validation
 
 ---
 

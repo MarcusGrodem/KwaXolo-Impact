@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KwaXolo Learn — Agent Tester</title>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#F9F6F2;color:#1A1A1A}
+    header{background:#1A1A1A;padding:12px 28px;display:flex;align-items:center;gap:10px}
+    header h1{color:#fff;font-size:17px;font-weight:700}
+    header span{color:#F37021;font-size:12px}
+    .wrap{max-width:1240px;margin:0 auto;padding:20px}
+    /* Form */
+    .fc{background:#fff;border-radius:10px;padding:20px 24px;margin-bottom:20px;border-top:4px solid #F37021}
+    .fc h2{font-size:16px;font-weight:700;margin-bottom:14px}
+    .fg{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+    .f1{display:flex;flex-direction:column;gap:4px}
+    .f1.full{grid-column:1/-1}
+    label{font-size:11px;font-weight:700;color:#777;text-transform:uppercase;letter-spacing:.04em}
+    select,input[type=text],textarea{padding:8px 11px;font-size:14px;font-family:inherit;border:1px solid #ddd;border-radius:6px;width:100%}
+    select:focus,input:focus,textarea:focus{outline:2px solid #F37021;border-color:#F37021}
+    textarea{resize:vertical;min-height:58px}
+    .ti{font-size:14px;padding:10px 13px;border:2px solid #F37021;border-radius:8px}
+    .ti:focus{outline:none;border-color:#d95e0f}
+    .hint{font-size:11px;color:#999;margin-top:3px}
+    .qps{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+    .qp{background:#F9F6F2;border:1px solid #ddd;border-radius:20px;padding:3px 11px;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap}
+    .qp:hover{background:#F37021;color:#fff;border-color:#F37021}
+    .btn-g{margin-top:13px;width:100%;background:#F37021;color:#fff;border:none;padding:12px;font-size:15px;font-weight:700;border-radius:8px;cursor:pointer;transition:background .15s}
+    .btn-g:hover{background:#d95e0f}
+    .btn-g:disabled{background:#ccc;cursor:not-allowed}
+    /* Spinner */
+    /* Progress bar */
+    .pgwrap{display:none;background:#fff;border-radius:10px;padding:20px 24px;margin-bottom:20px}
+    .pgwrap.on{display:block}
+    .pgphases{display:flex;align-items:center;gap:6px;margin-bottom:14px}
+    .pgph{font-size:12px;font-weight:600;color:oklch(0.72 0.02 42);transition:color .3s}
+    .pgph.act{color:oklch(0.62 0.19 42)}
+    .pgph.done{color:oklch(0.52 0.13 145)}
+    .pgsep{color:oklch(0.82 0.015 42);font-size:11px}
+    .pgtrack{height:6px;background:oklch(0.93 0.015 42);border-radius:3px;overflow:hidden;margin-bottom:8px}
+    .pgfill{height:100%;background:oklch(0.62 0.19 42);border-radius:3px;width:0%;transition:width .5s cubic-bezier(.4,0,.2,1)}
+    .pglabel{font-size:12px;color:oklch(0.58 0.02 42)}
+    .err{display:none;background:#fff0f0;border:1px solid #D62B2B;border-radius:8px;padding:11px 15px;color:#D62B2B;font-size:13px;margin-bottom:18px}
+    .err.on{display:block}
+    /* Results */
+    .res{display:none}
+    .res.on{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+    .tc{background:#fff;border-radius:10px;padding:20px;border-top:4px solid #1B5EA7;max-height:88vh;overflow-y:auto}
+    .clbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:11px;color:#1B5EA7}
+    .tcont{font-size:13px;line-height:1.7}
+    /* ════ TEACHER PLAN ════ */
+    .tp{display:flex;flex-direction:column;gap:18px}
+    .tp-hd{background:#F9F6F2;border-radius:8px;padding:14px 16px}
+    .tp-obj-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1B5EA7;margin-bottom:5px}
+    .tp-title{font-size:19px;font-weight:800;color:#1A1A1A;margin-bottom:6px;line-height:1.25}
+    .tp-obj{font-size:13px;color:#555;font-style:italic;margin:0}
+    .tp-board{border:2px solid #1A1A1A;border-radius:7px;padding:13px 15px;background:#fff}
+    .tp-board-ttl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#1A1A1A;margin-bottom:3px}
+    .tp-board-sub{font-size:11px;color:#777;margin-bottom:11px}
+    .tp-bl{padding-left:18px;margin:0}
+    .tp-bl li{font-weight:700;font-size:13.5px;margin-bottom:7px;color:#1A1A1A}
+    .tp-bl li:last-child{margin-bottom:0}
+    .tp-sec{display:flex;flex-direction:column;gap:8px}
+    .tp-h2{font-size:13px;font-weight:700;color:#1A1A1A;display:flex;align-items:center;gap:8px;margin:0}
+    .tp-num{width:21px;height:21px;background:#1B5EA7;color:#fff;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .tp-script-note{font-size:11px;color:#1B5EA7;font-weight:600;background:#EEF4FB;border-radius:5px;padding:5px 10px;display:inline-block;align-self:flex-start}
+    .tp-expl{font-size:13px;line-height:1.75;color:#1A1A1A}
+    .tp-expl p{margin-bottom:11px}
+    .tp-expl p:last-child{margin-bottom:0}
+    .tp-qs{padding-left:0;margin:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+    .tp-qs li{font-size:13px;color:#1A1A1A;padding:10px 13px;background:#F9F6F2;border-radius:7px;display:flex;gap:10px;align-items:flex-start}
+    .tp-qn{font-weight:800;color:#1B5EA7;flex-shrink:0;min-width:14px}
+    .tp-local{font-size:13px;line-height:1.75;color:#1A1A1A;background:#F0FAF2;padding:13px 15px;border-radius:7px;font-style:italic}
+    .tp-tg{background:#1A1A1A;border-radius:8px;padding:13px 15px;display:flex;flex-direction:column;gap:9px}
+    .tp-tg-ttl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:2px}
+    .tp-ti{display:flex;align-items:baseline;gap:10px}
+    .tp-td{font-size:11px;font-weight:700;color:#F37021;white-space:nowrap;min-width:46px}
+    .tp-ta{font-size:12.5px;color:rgba(255,255,255,.85);line-height:1.4}
+    .tp-print{background:#1B5EA7;color:#fff;border:none;border-radius:7px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;width:100%;transition:background .15s}
+    .tp-print:hover{background:#154d8a}
+    @media print{
+      .tc{border:none;max-height:none;overflow:visible;box-shadow:none}
+      .tp-print,.no-print{display:none!important}
+      .tp-hd{background:#f5f5f5!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .tp-board{border:2px solid #000!important}
+      .tp-tg{background:#222!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .tp-local{background:#e8f5ea!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+    /* Phone */
+    .pw{display:flex;flex-direction:column;gap:7px}
+    .plbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#2D8B3E}
+    .phone{background:#111;border-radius:44px;padding:11px;box-shadow:0 18px 56px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.07);max-width:365px;position:relative}
+    .notch{height:24px;display:flex;align-items:center;justify-content:center}
+    .notchp{width:68px;height:5px;background:#2a2a2a;border-radius:3px}
+    .screen{border-radius:30px;overflow:hidden;min-height:560px;display:flex;flex-direction:column;background:#fff;position:relative}
+    /* Arrow overlay */
+    .aov{position:absolute;top:11px;left:11px;right:11px;bottom:11px;border-radius:30px;pointer-events:none;z-index:50;overflow:hidden}
+
+    /* ─── TAP ARROW ─── */
+    .arr{position:absolute;background:#F37021;color:#fff;font-size:11px;font-weight:800;padding:5px 9px 5px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;box-shadow:0 2px 10px rgba(243,112,33,.6);animation:abounce .85s infinite alternate ease-in-out;max-width:130px;text-align:center;line-height:1.3;z-index:51}
+    @keyframes abounce{0%{transform:translateX(-50%) translateY(0)}100%{transform:translateX(-50%) translateY(-6px)}}
+    .arr.ab::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#F37021}
+    .arr.al{animation-name:abounceL}
+    @keyframes abounceL{0%{transform:translateY(-50%) translateX(0)}100%{transform:translateY(-50%) translateX(-5px)}}
+    .arr.al::after{content:'';position:absolute;left:100%;top:50%;transform:translateY(-50%);border:6px solid transparent;border-left-color:#F37021}
+    .arr.ar::after{content:'';position:absolute;right:100%;top:50%;transform:translateY(-50%);border:6px solid transparent;border-right-color:#F37021}
+    .arr.at{animation-name:abounceT}
+    @keyframes abounceT{0%{transform:translateX(-50%) translateY(0)}100%{transform:translateX(-50%) translateY(5px)}}
+    .arr.at::before{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-bottom-color:#F37021}
+
+    /* ─── HIGHLIGHT ─── */
+    .hl{outline:2.5px solid #F37021!important;outline-offset:1px!important;border-radius:4px;animation:hlp 1.4s infinite}
+    @keyframes hlp{0%,100%{box-shadow:0 0 0 0 rgba(243,112,33,.45)}55%{box-shadow:0 0 0 5px rgba(243,112,33,0)}}
+
+    /* ─── STATUS BAR ─── */
+    .sb{height:19px;display:flex;align-items:center;justify-content:space-between;padding:0 11px;font-size:10px;font-weight:700;flex-shrink:0}
+
+    /* ════ PLAY STORE ════ */
+    .ps{background:#fff;display:flex;flex-direction:column;flex:1}
+    .ps-sb{background:#fff;color:#1A1A1A}
+    .ps-top{background:#fff;padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #eee;flex-shrink:0}
+    .ps-back{font-size:18px;color:#444}
+    .ps-search{flex:1;background:#f1f3f4;border-radius:20px;padding:5px 11px;font-size:12px;color:#555;display:flex;align-items:center;gap:5px}
+    .ps-mic{font-size:14px;color:#888}
+    .ps-body{flex:1;overflow-y:auto;padding:10px}
+    .ps-app-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+    .ps-icon{width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+    .ps-app-info{flex:1}
+    .ps-app-name{font-size:14px;font-weight:700;color:#1A1A1A}
+    .ps-app-dev{font-size:11px;color:#1A73E8;margin-top:1px}
+    .ps-app-cat{font-size:11px;color:#888}
+    .ps-stats{display:flex;gap:14px;padding:10px 0;border-top:1px solid #eee;border-bottom:1px solid #eee;margin-bottom:10px}
+    .ps-stat{text-align:center;flex:1}
+    .ps-stat-v{font-size:13px;font-weight:700;color:#1A1A1A}
+    .ps-stat-l{font-size:9px;color:#888;margin-top:1px}
+    .ps-install{width:100%;background:#1A73E8;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px}
+    .ps-screenshots{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px}
+    .ps-ss{width:90px;height:140px;border-radius:8px;background:linear-gradient(135deg,#e0e0e0,#f5f5f5);flex-shrink:0}
+    .ps-desc{font-size:12px;line-height:1.5;color:#333}
+
+    /* ════ GMAIL SIGNUP ════ */
+    .gs{background:#fff;display:flex;flex-direction:column;flex:1;align-items:center;padding:24px 18px}
+    .gs-g{font-size:36px;font-weight:700;margin-bottom:4px}
+    .gs-title{font-size:17px;font-weight:700;color:#1A1A1A;margin-bottom:4px;text-align:center}
+    .gs-sub{font-size:12px;color:#666;text-align:center;margin-bottom:20px}
+    .gs-row{display:flex;gap:8px;width:100%;margin-bottom:12px}
+    .gs-field{display:flex;flex-direction:column;gap:3px;flex:1}
+    .gs-label{font-size:11px;color:#666}
+    .gs-inp{border:1.5px solid #ddd;border-radius:6px;padding:9px 11px;font-size:14px;width:100%;font-family:inherit}
+    .gs-inp:focus{border-color:#1A73E8;outline:none}
+    .gs-inp.hl-inp{border-color:#F37021;box-shadow:0 0 0 3px rgba(243,112,33,.2)}
+    .gs-btn{width:100%;background:#1A73E8;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
+    .gs-link{font-size:12px;color:#1A73E8;text-align:center;margin-top:10px;cursor:pointer}
+
+    /* Gmail username screen */
+    .gu{background:#fff;display:flex;flex-direction:column;flex:1;padding:20px 16px}
+    .gu-title{font-size:16px;font-weight:700;margin-bottom:4px}
+    .gu-sub{font-size:12px;color:#666;margin-bottom:16px}
+    .gu-inp-wrap{border:1.5px solid #1A73E8;border-radius:6px;padding:10px 12px;display:flex;align-items:center;gap:4px;margin-bottom:10px}
+    .gu-inp{flex:1;border:none;outline:none;font-size:14px;font-family:inherit}
+    .gu-domain{font-size:14px;color:#888}
+    .gu-suggestions{margin-bottom:14px}
+    .gu-sug-lbl{font-size:11px;color:#666;margin-bottom:6px}
+    .gu-sug{background:#f1f3f4;border-radius:20px;padding:5px 12px;font-size:12px;display:inline-block;margin-right:6px;cursor:pointer}
+    .gu-next{width:100%;background:#1A73E8;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;margin-top:auto}
+
+    /* Gmail password screen */
+    .gpw{background:#fff;display:flex;flex-direction:column;flex:1;padding:20px 16px}
+    .gpw-title{font-size:16px;font-weight:700;margin-bottom:4px}
+    .gpw-sub{font-size:12px;color:#666;margin-bottom:16px}
+    .gpw-inp{border:1.5px solid #ddd;border-radius:6px;padding:10px 12px;font-size:14px;width:100%;margin-bottom:10px;font-family:inherit}
+    .gpw-inp:focus{border-color:#1A73E8;outline:none}
+    .gpw-conf{border:1.5px solid #ddd;border-radius:6px;padding:10px 12px;font-size:14px;width:100%;margin-bottom:10px;font-family:inherit}
+    .gpw-hint{font-size:11px;color:#666;margin-bottom:14px}
+    .gpw-next{width:100%;background:#1A73E8;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;margin-top:auto}
+
+    /* Gmail inbox */
+    .gi{background:#fff;display:flex;flex-direction:column;flex:1}
+    .gi-top{background:#fff;padding:5px 10px 6px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #f0f0f0;flex-shrink:0}
+    .gi-search{flex:1;background:#f1f3f4;border-radius:22px;padding:5px 11px;font-size:11px;color:#555;display:flex;align-items:center;gap:5px}
+    .gi-av{width:25px;height:25px;border-radius:50%;background:#D62B2B;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .gi-cat{padding:5px 12px;font-size:11px;font-weight:700;color:#1A73E8;border-bottom:2px solid #1A73E8;display:inline-block;flex-shrink:0}
+    .gi-list{flex:1;overflow-y:auto}
+    .gi-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #f5f5f5;cursor:pointer}
+    .gi-row.unread .gi-sender{font-weight:700;color:#1A1A1A}
+    .gi-ico{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+    .gi-bd{flex:1;min-width:0}
+    .gi-sender{font-size:11px;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .gi-subj{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .gi-snip{font-size:10px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .gi-time{font-size:10px;color:#888;flex-shrink:0}
+    .gi-row.unread .gi-time{color:#1A73E8;font-weight:700}
+    .gi-fab{position:absolute;bottom:76px;right:10px;background:#c5221f;color:#fff;border-radius:14px;padding:8px 13px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer;z-index:5}
+
+    /* Gmail compose */
+    .gc{background:#fff;display:flex;flex-direction:column;flex:1}
+    .gc-head{background:#404040;color:#fff;padding:8px 11px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;flex-shrink:0}
+    .gc-field{display:flex;align-items:center;border-bottom:1px solid #e8e8e8;padding:7px 10px;gap:5px;flex-shrink:0}
+    .gc-lbl{font-size:11px;color:#999;width:44px;flex-shrink:0}
+    .gc-field input{flex:1;border:none;outline:none;font-size:12px;color:#1A1A1A;background:transparent;font-family:inherit}
+    .gc-body-area{padding:8px 10px;flex:1}
+    .gc-body-area textarea{width:100%;border:none;outline:none;font-size:12px;line-height:1.65;height:100%;min-height:160px;resize:none;font-family:inherit}
+    .gc-actions{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-top:1px solid #eee;flex-shrink:0}
+    .gc-send{background:#1A73E8;color:#fff;border:none;border-radius:18px;padding:6px 15px;font-size:12px;font-weight:600;cursor:pointer}
+    .gc-icons{display:flex;gap:11px;color:#666;font-size:14px}
+
+    /* ════ WHATSAPP ════ */
+    .wa-sb{background:#075E54;color:rgba(255,255,255,.9)}
+    /* Welcome */
+    .waw{background:#fff;display:flex;flex-direction:column;flex:1;align-items:center;justify-content:center;padding:20px}
+    .waw-logo{font-size:52px;margin-bottom:12px}
+    .waw-name{font-size:20px;font-weight:800;color:#1A1A1A;margin-bottom:6px}
+    .waw-sub{font-size:12px;color:#666;text-align:center;line-height:1.5;margin-bottom:28px;max-width:240px}
+    .waw-btn{width:100%;background:#25D366;color:#fff;border:none;border-radius:28px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px}
+    .waw-link{font-size:12px;color:#1A73E8;text-align:center;cursor:pointer}
+    .waw-tos{font-size:10px;color:#888;text-align:center;margin-top:14px;line-height:1.4}
+    /* Phone number */
+    .wap{background:#fff;display:flex;flex-direction:column;flex:1}
+    .wap-hd{background:#075E54;padding:12px;color:#fff;font-size:14px;font-weight:700;flex-shrink:0}
+    .wap-body{flex:1;padding:16px}
+    .wap-title{font-size:16px;font-weight:700;margin-bottom:6px}
+    .wap-sub{font-size:12px;color:#666;line-height:1.5;margin-bottom:18px}
+    .wap-cc{display:flex;align-items:center;gap:8px;border-bottom:2px solid #25D366;padding-bottom:8px;margin-bottom:14px}
+    .wap-flag{font-size:18px}
+    .wap-ccnum{font-size:14px;color:#1A1A1A}
+    .wap-inp{border:none;border-bottom:2px solid #25D366;outline:none;font-size:16px;padding-bottom:6px;width:100%;font-family:inherit;margin-bottom:14px}
+    .wap-next{width:100%;background:#25D366;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer}
+    /* Verify */
+    .wav{background:#fff;display:flex;flex-direction:column;flex:1}
+    .wav-hd{background:#075E54;padding:12px;color:#fff;font-size:14px;font-weight:700;flex-shrink:0}
+    .wav-body{flex:1;padding:16px;text-align:center}
+    .wav-title{font-size:16px;font-weight:700;margin-bottom:8px}
+    .wav-sub{font-size:12px;color:#666;margin-bottom:20px;line-height:1.5}
+    .wav-phone{font-size:14px;font-weight:600;color:#1A1A1A;margin-bottom:20px}
+    .wav-boxes{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+    .wav-box{width:36px;height:44px;border:2px solid #25D366;border-radius:6px;font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#1A1A1A}
+    .wav-wait{font-size:12px;color:#888}
+    /* Setup name */
+    .wasn{background:#fff;display:flex;flex-direction:column;flex:1}
+    .wasn-hd{background:#075E54;padding:12px;color:#fff;font-size:14px;font-weight:700;flex-shrink:0}
+    .wasn-body{flex:1;padding:16px;display:flex;flex-direction:column;align-items:center}
+    .wasn-avatar{width:80px;height:80px;border-radius:50%;background:#ddd;margin:16px auto;display:flex;align-items:center;justify-content:center;font-size:30px;color:#aaa;position:relative;cursor:pointer}
+    .wasn-edit{position:absolute;bottom:0;right:0;background:#25D366;color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px}
+    .wasn-title{font-size:14px;font-weight:700;text-align:center;margin-bottom:6px}
+    .wasn-sub{font-size:11px;color:#888;text-align:center;margin-bottom:18px}
+    .wasn-field{border-bottom:2px solid #25D366;width:100%;margin-bottom:16px;padding-bottom:6px}
+    .wasn-field input{border:none;outline:none;font-size:16px;width:100%;font-family:inherit;text-align:center}
+    .wasn-next{background:#25D366;color:#fff;border:none;border-radius:8px;padding:11px 32px;font-size:14px;font-weight:700;cursor:pointer}
+    /* Chat list */
+    .wcl{background:#fff;display:flex;flex-direction:column;flex:1}
+    .wcl-hd{background:#075E54;padding:8px 11px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .wcl-title{font-size:15px;font-weight:700;color:#fff}
+    .wcl-icons{display:flex;gap:14px;color:#fff;font-size:16px;opacity:.9}
+    .wcl-row{display:flex;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid #f5f5f5;cursor:pointer}
+    .wcl-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+    .wcl-info{flex:1}
+    .wcl-name{font-size:13px;font-weight:600}
+    .wcl-last{font-size:11px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .wcl-meta{text-align:right}
+    .wcl-time{font-size:10px;color:#888}
+    .wcl-badge{background:#25D366;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-top:3px}
+    .wcl-fab{position:absolute;bottom:76px;right:10px;background:#25D366;color:#fff;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer;z-index:5}
+    /* WA Chat */
+    .wct{background:#ECE5DD;display:flex;flex-direction:column;flex:1}
+    .wct-hd{background:#075E54;padding:7px 10px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .wct-back{color:#fff;font-size:16px}
+    .wct-av{width:30px;height:30px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+    .wct-info{flex:1}
+    .wct-name{font-size:13px;font-weight:700;color:#fff}
+    .wct-status{font-size:10px;color:rgba(255,255,255,.75)}
+    .wct-chat{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:5px}
+    .wm{max-width:78%;padding:6px 9px 3px;border-radius:7px;font-size:12px;line-height:1.5}
+    .wm.r{background:#fff;align-self:flex-start;border-radius:0 7px 7px 7px}
+    .wm.s{background:#DCF8C6;align-self:flex-end;border-radius:7px 0 7px 7px}
+    .wmt{font-size:9px;color:#888;text-align:right;margin-top:2px;display:flex;align-items:center;justify-content:flex-end;gap:2px}
+    .wm.s .wmt{color:#7DB06B}
+    .wtk{color:#53BDEB;font-size:11px}
+    .wct-bar{background:#f0f0f0;padding:5px 7px;display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .wct-inp{flex:1;background:#fff;border-radius:18px;padding:6px 11px;font-size:12px;border:none;outline:none;font-family:inherit}
+    .wct-mic{width:32px;height:32px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0;cursor:pointer}
+    /* WA Business */
+    .wab{background:#fff;display:flex;flex-direction:column;flex:1}
+    .wab-hd{background:#075E54;padding:11px;color:#fff;font-size:14px;font-weight:700;flex-shrink:0;display:flex;align-items:center;gap:10px}
+    .wab-photo{width:66px;height:66px;border-radius:50%;background:#ddd;margin:14px auto 0;display:flex;align-items:center;justify-content:center;font-size:22px;color:#aaa;cursor:pointer;position:relative}
+    .wab-edit{position:absolute;bottom:0;right:0;background:#25D366;color:#fff;width:20px;height:20px;border-radius:50%;font-size:11px;display:flex;align-items:center;justify-content:center}
+    .wab-fld{border-bottom:2px solid #ddd;margin:12px 14px 0;padding-bottom:4px;transition:border-color .2s}
+    .wab-fld.act{border-color:#25D366}
+    .wab-flbl{font-size:10px;color:#888;margin-bottom:3px}
+    .wab-fld input,.wab-fld select{width:100%;border:none;outline:none;font-size:13px;font-family:inherit;color:#1A1A1A;background:transparent}
+    .wab-save{display:block;width:calc(100% - 28px);margin:16px 14px;background:#25D366;color:#fff;border:none;border-radius:8px;padding:10px;font-size:14px;font-weight:700;cursor:pointer;text-align:center}
+
+    /* ════ FACEBOOK ════ */
+    .fb-sb{background:#1877F2;color:rgba(255,255,255,.9)}
+    .fbf{background:#F0F2F5;display:flex;flex-direction:column;flex:1}
+    .fbf-hd{background:#1877F2;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+    .fbf-logo{color:#fff;font-size:20px;font-weight:800;font-family:Georgia,serif}
+    .fbf-icons{display:flex;gap:6px}
+    .fbf-ib{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+    .fbf-feed{flex:1;overflow-y:auto}
+    .fbf-comp{background:#fff;padding:9px 10px;border-bottom:7px solid #F0F2F5}
+    .fbf-ct{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+    .fbf-av{width:28px;height:28px;border-radius:50%;background:#1877F2;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .fbf-inp{flex:1;background:#F0F2F5;border-radius:16px;padding:6px 11px;font-size:12px;color:#888;border:none;outline:none;font-family:inherit;cursor:pointer}
+    .fbf-acts{display:flex;justify-content:space-around;border-top:1px solid #eee;padding-top:6px}
+    .fbf-act{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#606770;padding:3px 5px}
+    .fbf-post{background:#fff;margin-bottom:7px}
+    .fbf-phd{padding:8px 10px;display:flex;align-items:center;gap:7px}
+    .fbf-pav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+    .fbf-pname{font-size:12px;font-weight:700}
+    .fbf-ptime{font-size:10px;color:#888}
+    .fbf-pimg{width:100%;height:110px;display:flex;align-items:center;justify-content:center;font-size:32px}
+    .fbf-pbody{padding:8px 10px;font-size:11px;line-height:1.5}
+    .fbf-pbtns{display:flex;justify-content:space-around;padding:3px 10px;border-top:1px solid #eee}
+    .fbf-pbtn{display:flex;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#606770;padding:4px}
+    /* Create post */
+    .fbcp{background:#fff;display:flex;flex-direction:column;flex:1}
+    .fbcp-hd{background:#fff;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;flex-shrink:0}
+    .fbcp-title{font-size:15px;font-weight:700}
+    .fbcp-post{background:#1877F2;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer}
+    .fbcp-who{display:flex;align-items:center;gap:8px;padding:10px 12px}
+    .fbcp-av{width:32px;height:32px;border-radius:50%;background:#1877F2;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+    .fbcp-name{font-size:13px;font-weight:700}
+    .fbcp-ta{width:100%;border:none;outline:none;padding:0 12px;font-size:15px;font-family:inherit;min-height:100px;color:#1A1A1A;resize:none}
+    .fbcp-media{display:flex;gap:0;border-top:1px solid #eee;margin-top:auto;flex-shrink:0}
+    .fbcp-media-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;font-size:12px;font-weight:600;color:#606770;cursor:pointer;border-right:1px solid #eee}
+    .fbcp-media-btn:last-child{border:none}
+    /* Marketplace */
+    .fbm{background:#fff;display:flex;flex-direction:column;flex:1}
+    .fbm-hd{background:#fff;padding:9px 11px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #ddd;flex-shrink:0}
+    .fbm-title{font-size:15px;font-weight:800}
+    .fbm-sell{margin-left:auto;font-size:13px;font-weight:700;color:#1877F2;cursor:pointer}
+    .fbm-cats{display:flex;gap:7px;padding:8px 10px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid #eee}
+    .fbm-cat{background:#F0F2F5;border-radius:16px;padding:4px 11px;font-size:11px;font-weight:600;color:#1A1A1A;white-space:nowrap;cursor:pointer}
+    .fbm-cat.act{background:#1877F2;color:#fff}
+    .fbm-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:8px;overflow-y:auto;flex:1}
+    .fbm-item{background:#fff;border-radius:7px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer}
+    .fbm-img{height:86px;display:flex;align-items:center;justify-content:center;font-size:28px}
+    .fbm-info{padding:5px 7px}
+    .fbm-price{font-size:13px;font-weight:700}
+    .fbm-name{font-size:11px;color:#555}
+    .fbm-loc{font-size:10px;color:#888}
+    /* Create listing */
+    .fbcl{background:#fff;display:flex;flex-direction:column;flex:1}
+    .fbcl-hd{background:#1877F2;padding:10px 12px;color:#fff;font-size:14px;font-weight:700;flex-shrink:0;display:flex;align-items:center;gap:10px}
+    .fbcl-body{flex:1;overflow-y:auto;padding:12px}
+    .fbcl-photo{width:100%;height:100px;background:#F0F2F5;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:12px;cursor:pointer;border:2px dashed #ccc}
+    .fbcl-field{margin-bottom:11px}
+    .fbcl-lbl{font-size:11px;font-weight:700;color:#444;margin-bottom:4px}
+    .fbcl-inp{width:100%;border:1px solid #ddd;border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit}
+    .fbcl-inp:focus{border-color:#1877F2;outline:none}
+    .fbcl-next{width:100%;background:#1877F2;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px}
+
+    /* ════ SHEETS ════ */
+    .sh-sb{background:#0F9D58;color:rgba(255,255,255,.9)}
+    .shs{background:#fff;display:flex;flex-direction:column;flex:1}
+    .shs-hd{background:#0F9D58;padding:7px 10px;display:flex;align-items:center;gap:7px;flex-shrink:0}
+    .shs-fn{flex:1;color:#fff;font-size:12px;font-weight:600}
+    .shs-tb{background:#f8f9fa;padding:4px 7px;display:flex;gap:9px;border-bottom:1px solid #e0e0e0;font-size:13px;color:#444;flex-shrink:0}
+    .shs-fb{display:flex;align-items:center;padding:3px 7px;border-bottom:1px solid #e0e0e0;background:#fff;flex-shrink:0}
+    .shs-ref{font-size:11px;color:#444;width:30px;padding:1px 3px;border:1px solid #ccc;border-radius:2px;text-align:center;margin-right:5px}
+    .shs-fi{flex:1;font-size:11px;border:none;outline:none;font-family:monospace}
+    .shs-grid{flex:1;overflow:auto}
+    table.st{width:100%;border-collapse:collapse;font-size:11px}
+    table.st th{background:#f8f9fa;border:1px solid #e0e0e0;padding:3px 5px;text-align:center;color:#444;font-weight:500;min-width:60px}
+    table.st td{border:1px solid #e0e0e0;padding:3px 5px;color:#1A1A1A;min-width:60px;white-space:nowrap}
+    table.st td:first-child{background:#f8f9fa;text-align:center;color:#888;font-size:10px;min-width:22px}
+    table.st tr.hr td{background:#0F9D58;color:#fff;font-weight:700}
+    table.st td.act-c{outline:2px solid #1A73E8;outline-offset:-1px}
+    table.st td input{border:none;outline:none;width:100%;font-size:11px;font-family:inherit;background:transparent}
+    table.st tr.tot td{background:#E8F5E9;font-weight:700;color:#0F9D58}
+
+    /* ════ STEP SHEET ════ */
+    .ss{background:#fff;border-top:1px solid #eee;padding:11px 13px 13px;flex-shrink:0}
+    .ss-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+    .ss-bar{flex:1;height:4px;background:oklch(0.93 0.015 42);border-radius:2px;overflow:hidden}
+    .ss-fill{height:100%;background:oklch(0.62 0.19 42);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+    .ss-lbl{font-size:11px;font-weight:700;color:oklch(0.62 0.19 42);white-space:nowrap}
+    .ss-scr{font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+    .ss-txt{font-size:12.5px;line-height:1.65;color:#1A1A1A;margin-bottom:8px;min-height:46px}
+    .ss-tip{background:#FFF5EE;border-left:3px solid #F37021;padding:5px 8px;border-radius:0 5px 5px 0;font-size:11px;color:#555;margin-bottom:7px;display:none}
+    .ss-tip.on{display:block}
+    .btn-n{width:100%;background:#F37021;color:#fff;border:none;padding:11px;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:background .15s,transform .1s}
+    .btn-n:hover{background:#d95e0f}
+    .btn-n:active{transform:scale(.97)}
+    .btn-n.g{background:#2D8B3E}
+    .btn-n.g:hover{background:#247032}
+    .btn-back{width:100%;background:transparent;color:#888;border:1px solid #ddd;padding:8px;font-size:12px;font-weight:600;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:7px;transition:background .15s,color .15s}
+    .btn-back:hover{background:#f5f5f5;color:#444}
+    .btn-back.hidden{display:none}
+
+    /* ════ REFLECTION ════ */
+    .rfl{display:flex;flex-direction:column;flex:1}
+    .rfl-hd{background:#F37021;padding:13px}
+    .rfl-b{font-size:10px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+    .rfl-hd h2{font-size:15px;font-weight:700;color:#fff}
+    .rfl-body{padding:13px;display:flex;flex-direction:column;gap:9px;flex:1}
+    .rfl-q{background:#FFF5EE;border-left:3px solid #F37021;padding:9px 11px;border-radius:0 7px 7px 0;font-size:12.5px;line-height:1.6}
+    .rfl-ta{flex:1;border:1.5px solid #ddd;border-radius:9px;padding:9px;font-size:12.5px;font-family:inherit;resize:none;min-height:80px}
+    .rfl-ta:focus{border-color:#F37021;outline:none}
+    .btn-sub{width:100%;background:#2D8B3E;color:#fff;border:none;padding:11px;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;transition:background .15s,transform .1s}
+    .btn-sub:hover{background:#247032}
+
+    /* ════ COMPLETION ════ */
+    .done{background:#2D8B3E;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:24px 18px;text-align:center}
+    .done-c{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin-bottom:13px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+    @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    .done h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:5px}
+    .done p{font-size:12px;color:rgba(255,255,255,.85);line-height:1.5}
+    .done-task{margin-top:13px;background:rgba(255,255,255,.15);border-radius:9px;padding:8px 13px;font-size:12px;color:#fff;font-weight:600}
+    .btn-ag{margin-top:16px;background:#fff;color:#2D8B3E;border:none;padding:9px 20px;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer}
+
+    /* Confetti */
+    .cfwrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+    .cp{position:absolute;animation:fall linear forwards}
+    @keyframes fall{from{transform:translateY(-10px) rotate(0);opacity:1}to{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+    @media(max-width:820px){.fg{grid-template-columns:1fr}.res.on{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header><h1>KwaXolo Learn</h1><span>Agent Tester — Local</span></header>
+<div class="wrap">
+  <div class="fc">
+    <h2>Generate a Lesson</h2>
+    <div class="fg">
+      <div class="f1 full">
+        <label>What should the student learn to do?</label>
+        <input type="text" class="ti" id="topicInput" placeholder="e.g. How to create a Gmail account  /  Set up WhatsApp Business  /  List on Facebook Marketplace">
+        <div class="hint">Type anything — the AI searches the real app first, then builds the lesson around its actual screens.</div>
+        <div class="qps">
+          <div class="qp" onclick="st('How to create a Gmail account from scratch')">📧 Create Gmail</div>
+          <div class="qp" onclick="st('How to set up a WhatsApp Business profile')">💬 WhatsApp Business</div>
+          <div class="qp" onclick="st('How to create a Facebook page for a business')">📘 Facebook Page</div>
+          <div class="qp" onclick="st('How to list a product on Facebook Marketplace')">🛒 FB Marketplace</div>
+          <div class="qp" onclick="st('How to track income and expenses in Google Sheets')">📊 Google Sheets</div>
+          <div class="qp" onclick="st('How to make a flyer in Canva on a phone')">🎨 Canva flyer</div>
+          <div class="qp" onclick="st('How to send money with MTN Mobile Money')">💸 MTN MoMo</div>
+        </div>
+      </div>
+      <div class="f1"><label>What are students struggling with?</label><input type="text" id="struggles" placeholder="e.g. They have never used email before"></div>
+      <div class="f1"><label>Available time</label><select id="time"><option>20 minutes</option><option selected>30 minutes</option><option>45 minutes</option><option>1 hour</option></select></div>
+      <div class="f1 full"><label>Class context (optional)</label><textarea id="context" placeholder="e.g. Most students want to start a food or hair business"></textarea></div>
+    </div>
+    <button class="btn-g" id="genBtn" onclick="generate()">Generate Lesson</button>
+  </div>
+
+  <div class="err" id="err"></div>
+  <div class="pgwrap" id="pgwrap">
+    <div class="pgphases">
+      <div class="pgph" id="ph1">🔍 Search</div>
+      <div class="pgsep">→</div>
+      <div class="pgph" id="ph2">📋 Plan</div>
+      <div class="pgsep">→</div>
+      <div class="pgph" id="ph3">✏️ Generate</div>
+      <div class="pgsep">→</div>
+      <div class="pgph" id="ph4">✓ Check</div>
+    </div>
+    <div class="pgtrack"><div class="pgfill" id="pgfill"></div></div>
+    <div class="pglabel" id="pglabel">Starting...</div>
+  </div>
+
+  <div class="res" id="res">
+    <div class="tc"><div class="clbl">Teacher Lesson Plan</div><div class="tcont" id="tout"></div></div>
+    <div class="pw">
+      <div class="plbl" id="plbl">Student View</div>
+      <div class="phone" id="phoneFrame">
+        <div class="notch"><div class="notchp"></div></div>
+        <div class="screen" id="scr"></div>
+        <div class="aov" id="aov"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="cfwrap" id="cf"></div>
+
+<script>
+function st(t){document.getElementById('topicInput').value=t;document.getElementById('topicInput').focus()}
+
+// ── State ────────────────────────────────────────────────────────────────────
+let D=null, STEP=0;
+
+// ── Screen builders (one per screenType) ────────────────────────────────────
+function screens(type, step){
+  const fn = {
+    play_store_search: buildPSSearch,
+    play_store_app:    buildPSApp,
+    gmail_signup_name: buildGSignupName,
+    gmail_signup_user: buildGSignupUser,
+    gmail_signup_pass: buildGSignupPass,
+    gmail_inbox:       buildGInbox,
+    gmail_compose:     buildGCompose,
+    whatsapp_welcome:  buildWAWelcome,
+    whatsapp_phone:    buildWAPhone,
+    whatsapp_verify:   buildWAVerify,
+    whatsapp_setup_name:buildWASetupName,
+    whatsapp_chat_list:buildWAChatList,
+    whatsapp_chat:     buildWAChat,
+    whatsapp_business: buildWABusiness,
+    facebook_feed:     buildFBFeed,
+    facebook_create_post:buildFBCreatePost,
+    facebook_marketplace:buildFBMarketplace,
+    fb_listing_form:   buildFBListingForm,
+    sheets_blank:      buildSheetsBlank,
+    sheets_data:       buildSheetsData,
+  }[type];
+  return fn ? fn(step) : buildGeneric(step);
+}
+
+// ── PLAY STORE ───────────────────────────────────────────────────────────────
+function buildPSSearch(){return`<div class="ps"><div class="sb ps-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="ps-top"><div class="ps-back">←</div><div class="ps-search">🔍 Search for apps & games</div><div class="ps-mic">🎤</div></div>
+<div class="ps-body"><div style="font-size:12px;font-weight:700;margin-bottom:8px">Suggested for you</div>
+<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">
+${['Gmail','WhatsApp','Facebook','Canva','Google Maps'].map((a,i)=>`<div style="text-align:center;flex-shrink:0"><div style="width:52px;height:52px;border-radius:13px;background:${['#EA4335','#25D366','#1877F2','#7D2AE7','#4285F4'][i]};display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px">${['📧','💬','👤','🎨','🗺'][i]}</div><div style="font-size:10px">${a}</div></div>`).join('')}
+</div></div></div>`}
+
+function buildPSApp(s){
+  const app=D.appName||'App', color=D.appColor||'#4285F4', icon={'Gmail':'📧','WhatsApp':'💬','WhatsApp Business':'💼','Facebook':'👤','Google Sheets':'📊','Canva':'🎨','MTN Mobile Money':'💸','Google Maps':'🗺'}[app]||'📱';
+  return`<div class="ps"><div class="sb ps-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="ps-top"><div class="ps-back" data-label="Back">←</div><div class="ps-search">🔍 ${app}</div></div>
+<div class="ps-body">
+<div class="ps-app-header">
+  <div class="ps-icon" style="background:${color}">${icon}</div>
+  <div class="ps-app-info"><div class="ps-app-name">${app}</div><div class="ps-app-dev">Google LLC</div><div class="ps-app-cat">Productivity · Free</div></div>
+</div>
+<div class="ps-stats">
+  <div class="ps-stat"><div class="ps-stat-v">4.3★</div><div class="ps-stat-l">Rating</div></div>
+  <div class="ps-stat"><div class="ps-stat-v">1B+</div><div class="ps-stat-l">Downloads</div></div>
+  <div class="ps-stat"><div class="ps-stat-v">Free</div><div class="ps-stat-l">Price</div></div>
+</div>
+<button class="ps-install" id="ps-install" data-label="Install">Install</button>
+<div class="ps-screenshots">
+  ${[1,2,3].map(()=>`<div class="ps-ss" style="background:linear-gradient(135deg,${color}44,${color}22)"></div>`).join('')}
+</div>
+<div class="ps-desc">Download ${app} to get started. It's free. After installing, tap Open to launch the app.</div>
+</div></div>`}
+
+// ── GMAIL ────────────────────────────────────────────────────────────────────
+function buildGSignupName(){return`<div class="gs">
+<div class="sb" style="background:#fff;color:#1A1A1A;width:100%"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div style="font-size:26px;font-weight:800;color:#4285F4;margin-top:4px">G</div>
+<div class="gs-title">Create your Google Account</div>
+<div class="gs-sub">Enter your name</div>
+<div class="gs-row">
+  <div class="gs-field"><div class="gs-label">First name</div><input class="gs-inp" id="gs-first" data-label="First name" placeholder="e.g. Thandi"/></div>
+  <div class="gs-field"><div class="gs-label">Last name</div><input class="gs-inp" id="gs-last" data-label="Last name" placeholder="e.g. Nzama"/></div>
+</div>
+<button class="gs-btn" data-label="Next" id="gs-next">Next</button>
+<div class="gs-link">Sign in instead</div>
+</div>`}
+
+function buildGSignupUser(){return`<div class="gu">
+<div class="sb" style="background:#fff;color:#1A1A1A;width:100%"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div style="font-size:22px;font-weight:800;color:#4285F4;margin-bottom:12px">G</div>
+<div class="gu-title">Choose your Gmail address</div>
+<div class="gu-sub">Pick a username that looks professional. Use your real name.</div>
+<div class="gu-inp-wrap" id="gu-inp-wrap" data-label="Username">
+  <input class="gu-inp" id="gu-inp" placeholder="yourname" data-label="Gmail address"/><div class="gu-domain">@gmail.com</div>
+</div>
+<div class="gu-suggestions"><div class="gu-sug-lbl">Suggestions:</div>
+  <span class="gu-sug">thandi.nzama</span><span class="gu-sug">t.nzama2006</span><span class="gu-sug">thandi.nzama2</span>
+</div>
+<button class="gu-next" data-label="Next">Next</button>
+</div>`}
+
+function buildGSignupPass(){return`<div class="gpw">
+<div class="sb" style="background:#fff;color:#1A1A1A;width:100%"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div style="font-size:22px;font-weight:800;color:#4285F4;margin-bottom:12px">G</div>
+<div class="gpw-title">Create a strong password</div>
+<div class="gpw-sub">Use 8 or more characters with a mix of letters, numbers, and symbols.</div>
+<input class="gpw-inp" type="password" id="gpw-inp" data-label="Password" placeholder="Password"/>
+<input class="gpw-conf" type="password" id="gpw-conf" data-label="Confirm" placeholder="Confirm password"/>
+<div class="gpw-hint">💡 Write it down somewhere safe — you will need it every time you log in.</div>
+<button class="gpw-next" data-label="Next" style="margin-top:auto">Next</button>
+</div>`}
+
+function buildGInbox(){return`<div class="gi">
+<div class="sb" style="background:#fff;color:#1A1A1A"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="gi-top"><span style="font-size:16px;color:#444">☰</span><div class="gi-search">🔍 Search in mail</div><div class="gi-av">T</div></div>
+<div style="padding:0 11px 3px;flex-shrink:0"><span class="gi-cat">Primary</span></div>
+<div class="gi-list" id="gi-list">
+  ${[['#0F9D58','M','Msenti Hub','Welcome to business mentorship','Hi Thandi, we are happy...','9:30',true],
+     ['#4285F4','S','SEDA Port Shepstone','Business registration docs','Please find your docs attached...','Mon',true],
+     ['#D62B2B','I','Inkify Store','Your flyer order is ready','Hello, your 50 flyers are...','Sun',false],
+     ['#F37021','V','Victor Jaca','Meeting at Msenti Hub','Confirming our meeting for 10am...','Sat',false]]
+  .map(([c,l,s,j,k,t,u])=>`<div class="gi-row${u?' unread':''}"><div class="gi-ico" style="background:${c}">${l}</div>
+  <div class="gi-bd"><div class="gi-sender">${s}</div><div class="gi-subj">${j}</div><div class="gi-snip">${k}</div></div>
+  <div class="gi-time">${t}</div></div>`).join('')}
+</div>
+<div class="gi-fab" id="gi-fab" data-label="Compose" onclick="gcOpen()">✏ Compose</div>
+</div>`}
+
+function buildGCompose(){return`<div class="gc">
+<div class="sb" style="background:#404040;color:#fff"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="gc-head"><span>New Message</span><div style="display:flex;gap:12px;font-size:14px;opacity:.8"><span>⤓</span><span onclick="gcClose()" style="cursor:pointer">✕</span></div></div>
+<div class="gc-field"><div class="gc-lbl">To</div><input id="gc-to" data-label="To" placeholder="Recipients"/></div>
+<div class="gc-field"><div class="gc-lbl">Subject</div><input id="gc-subj" data-label="Subject" placeholder="Subject"/></div>
+<div class="gc-body-area"><textarea id="gc-body" data-label="Body" placeholder="Write your message here...
+
+Dear [Name],
+
+I am writing to...
+
+Kind regards,
+Thandi"></textarea></div>
+<div class="gc-actions"><div class="gc-icons"><span>📎</span><span>🖼</span><span>🔗</span></div>
+<button class="gc-send" id="gc-send" data-label="Send" onclick="gcSend()">Send ▶</button></div>
+</div>`}
+
+function gcOpen(){document.getElementById('scr').innerHTML=buildShellHTML('gmail_compose')}
+function gcClose(){document.getElementById('scr').innerHTML=buildShellHTML('gmail_inbox')}
+function gcSend(){
+  document.getElementById('scr').innerHTML=`<div style="background:#fff;display:flex;flex-direction:column;flex:1;align-items:center;justify-content:center;padding:20px;text-align:center">
+  <div style="font-size:40px;margin-bottom:12px">📤</div>
+  <div style="font-size:16px;font-weight:700;margin-bottom:6px">Message sent!</div>
+  <div style="font-size:12px;color:#888">Your email has been delivered.</div>
+  </div>`;
+  setTimeout(()=>renderScreen(STEP),1500);
+}
+
+// ── WHATSAPP ─────────────────────────────────────────────────────────────────
+function buildWAWelcome(){return`<div class="waw">
+<div class="sb wa-sb" style="width:100%"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="waw-logo">💬</div>
+<div class="waw-name">WhatsApp</div>
+<div class="waw-sub">Simple. Reliable. Private. WhatsApp makes messaging and calling free.</div>
+<button class="waw-btn" data-label="Agree and Continue" id="wa-agree">Agree and Continue</button>
+<div class="waw-link">Read our Privacy Policy</div>
+<div class="waw-tos">By tapping "Agree and Continue" you agree to our Terms of Service and Privacy Policy.</div>
+</div>`}
+
+function buildWAPhone(){return`<div class="wap">
+<div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="wap-hd">Enter your phone number</div>
+<div class="wap-body">
+<div class="wap-title">Enter your phone number</div>
+<div class="wap-sub">WhatsApp will send you an SMS to verify your number. Carrier rates may apply.</div>
+<div class="wap-cc"><div class="wap-flag">🇿🇦</div><div class="wap-ccnum">+27 ›</div></div>
+<input class="wap-inp" id="wap-num" data-label="Phone number" type="tel" placeholder="Enter phone number"/>
+<button class="wap-next" data-label="Next" id="wap-next">Next</button>
+</div></div>`}
+
+function buildWAVerify(){return`<div class="wav">
+<div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="wav-hd">Verifying your number</div>
+<div class="wav-body">
+<div class="wav-title">Enter the 6-digit code</div>
+<div class="wav-sub">WhatsApp sent an SMS to your number. Enter the code from that message.</div>
+<div class="wav-phone">+27 71 234 5678</div>
+<div class="wav-boxes" id="wav-boxes">
+  ${[...Array(6)].map((_,i)=>`<div class="wav-box" id="wav-b${i}">${i===0?'3':''}</div>`).join('')}
+</div>
+<div class="wav-wait">Resend code in 00:57</div>
+</div></div>`}
+
+function buildWASetupName(){return`<div class="wasn">
+<div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="wasn-hd">Profile info</div>
+<div class="wasn-body">
+<div class="wasn-avatar" id="wasn-photo" data-label="Profile photo">📷<div class="wasn-edit">✏</div></div>
+<div class="wasn-title">Enter your name</div>
+<div class="wasn-sub">This is how you appear to others in WhatsApp.</div>
+<div class="wasn-field"><input id="wasn-name" data-label="Your name" placeholder="Enter your name"/></div>
+<button class="wasn-next" data-label="Next" id="wasn-next">Next</button>
+</div></div>`}
+
+function buildWAChatList(){return`<div class="wcl">
+<div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="wcl-hd"><div class="wcl-title">WhatsApp</div><div class="wcl-icons"><span>🔍</span><span>⋮</span></div></div>
+${[['#25D366','T','Thandi (me) ✓','Your account is set up!'],
+   ['#0F9D58','V','Victor Jaca','See you at Msenti Hub!'],
+   ['#4285F4','S','SEDA Port Shepstone','Your docs are ready'],
+   ['#D62B2B','I','Inkify Store','Flyers are ready for collection']]
+.map(([c,l,n,m],i)=>`<div class="wcl-row"><div class="wcl-av" style="background:${c}">${l}</div>
+<div class="wcl-info"><div class="wcl-name">${n}</div><div class="wcl-last">${m}</div></div>
+<div class="wcl-meta"><div class="wcl-time">${['9:41','9:30','Mon','Sun'][i]}</div>${i===0?'<div class="wcl-badge">1</div>':''}</div></div>`).join('')}
+<div class="wcl-fab" data-label="New chat">✏</div>
+</div>`}
+
+function buildWAChat(){return`<div class="wct">
+<div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="wct-hd"><div class="wct-back">←</div><div class="wct-av">T</div>
+<div class="wct-info"><div class="wct-name">Thandi's Business</div><div class="wct-status">online</div></div>
+<div style="display:flex;gap:14px;color:#fff;font-size:15px">📞 ⋮</div></div>
+<div class="wct-chat" id="wct-chat">
+  <div class="wm r">Hi, do you still do hair braids?<div class="wmt">9:10</div></div>
+  <div class="wm s">Yes! I do braids, relaxers and trims 😊<div class="wmt">9:11 <span class="wtk">✓✓</span></div></div>
+  <div class="wm r">Great — how much for braids?<div class="wmt">9:12</div></div>
+  <div class="wm s">Full head R120, half head R70. Saturday at 10am works?<div class="wmt">9:13 <span class="wtk">✓✓</span></div></div>
+</div>
+<div class="wct-bar">
+  <div style="color:#666;font-size:18px">😊</div>
+  <input class="wct-inp" id="wct-inp" data-label="Type a message" placeholder="Type a message"/>
+  <div style="color:#666;font-size:18px">📎</div>
+  <div class="wct-mic" id="wct-send" data-label="Send" onclick="waSend()">➤</div>
+</div></div>`}
+
+function buildWABusiness(){return`<div class="wab">
+<div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="wab-hd"><span style="cursor:pointer">←</span> Business Profile</div>
+<div style="overflow-y:auto;flex:1">
+<div class="wab-photo" id="wab-photo" data-label="Profile photo">📷<div class="wab-edit">✏</div></div>
+<div class="wab-fld act" id="wab-name-f"><div class="wab-flbl">Business name</div><input id="wab-name" data-label="Business name" placeholder="e.g. Thandi's Hair & Beauty"/></div>
+<div class="wab-fld" id="wab-cat-f"><div class="wab-flbl">Category</div>
+<select id="wab-cat" data-label="Category"><option>Select category...</option><option>Beauty, Spa &amp; Salon</option><option>Food &amp; Beverage</option><option>Shopping &amp; Retail</option><option>Education</option><option>Professional Services</option></select></div>
+<div class="wab-fld" id="wab-desc-f"><div class="wab-flbl">Description</div><input id="wab-desc" data-label="Description" placeholder="e.g. Braids, relaxers and trims in Port Shepstone"/></div>
+<div class="wab-fld" id="wab-hrs-f"><div class="wab-flbl">Business hours</div><input id="wab-hrs" data-label="Business hours" placeholder="e.g. Mon-Sat 8am-6pm"/></div>
+<button class="wab-save" data-label="Save" id="wab-save">Save Profile</button>
+</div></div>`}
+
+// ── FACEBOOK ─────────────────────────────────────────────────────────────────
+function buildFBFeed(){return`<div class="fbf">
+<div class="sb fb-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="fbf-hd"><div class="fbf-logo">f</div><div class="fbf-icons"><div class="fbf-ib">🔍</div><div class="fbf-ib">💬</div><div class="fbf-ib">🔔</div></div></div>
+<div class="fbf-feed">
+<div class="fbf-comp" id="fbf-comp"><div class="fbf-ct">
+  <div class="fbf-av">T</div><input class="fbf-inp" id="fbf-inp" data-label="What's on your mind" placeholder="What's on your mind, Thandi?"/>
+</div><div class="fbf-acts">
+  <div class="fbf-act">🎬 <span>Video</span></div>
+  <div class="fbf-act" id="fbf-photo" data-label="Photo">🖼 <span>Photo</span></div>
+  <div class="fbf-act">😊 <span>Feeling</span></div>
+</div></div>
+<div class="fbf-post"><div class="fbf-phd"><div class="fbf-pav" style="background:#0F9D58">H</div><div><div class="fbf-pname">Hlobisile Pearl Studios</div><div class="fbf-ptime">2h · 🌐</div></div></div>
+<div class="fbf-pimg" style="background:linear-gradient(135deg,#667eea,#764ba2)">📸</div>
+<div class="fbf-pbody">📸 Booking events for December! DM us for packages. Port Shepstone.</div>
+<div class="fbf-pbtns"><div class="fbf-pbtn">👍 Like</div><div class="fbf-pbtn">💬 Comment</div><div class="fbf-pbtn">↗ Share</div></div></div>
+</div></div>`}
+
+function buildFBCreatePost(){return`<div class="fbcp">
+<div class="sb fb-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="fbcp-hd"><span style="font-size:15px;cursor:pointer">✕</span><div class="fbcp-title">Create Post</div><button class="fbcp-post" data-label="Post" id="fbcp-post">Post</button></div>
+<div class="fbcp-who"><div class="fbcp-av">T</div><div class="fbcp-name">Thandi Nzama<br><span style="font-size:10px;color:#888;font-weight:400">🌐 Public ▾</span></div></div>
+<textarea class="fbcp-ta" id="fbcp-ta" data-label="Write something" placeholder="What's on your mind, Thandi?"></textarea>
+<div class="fbcp-media">
+  <div class="fbcp-media-btn" data-label="Photo/Video" id="fbcp-photo">🖼 Photo/Video</div>
+  <div class="fbcp-media-btn" data-label="Tag People">👥 Tag</div>
+  <div class="fbcp-media-btn" data-label="Feeling">😊 Feeling</div>
+</div></div>`}
+
+function buildFBMarketplace(){return`<div class="fbm">
+<div class="sb fb-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="fbm-hd"><span style="font-size:16px">🏪</span><div class="fbm-title">Marketplace</div><div class="fbm-sell" id="fbm-sell" data-label="Sell">+ Sell</div></div>
+<div class="fbm-cats"><div class="fbm-cat act">All</div><div class="fbm-cat">Food</div><div class="fbm-cat">Clothing</div><div class="fbm-cat">Services</div><div class="fbm-cat">Electronics</div></div>
+<div class="fbm-grid">
+  ${[['🥖','#f6d365','#fda085','R15','Fresh bread loaves','Port Shepstone'],
+     ['💈','#a18cd1','#fbc2eb','R80','Hair braiding','Ezinqoleni'],
+     ['🥬','#84fab0','#8fd3f4','R20','Fresh vegetables','Marburg'],
+     ['📱','#4facfe','#00f2fe','R150','Phone repair','Scottburgh']]
+  .map(([e,c1,c2,p,n,l])=>`<div class="fbm-item"><div class="fbm-img" style="background:linear-gradient(135deg,${c1},${c2})">${e}</div>
+  <div class="fbm-info"><div class="fbm-price">${p}</div><div class="fbm-name">${n}</div><div class="fbm-loc">📍 ${l}</div></div></div>`).join('')}
+</div></div>`}
+
+function buildFBListingForm(){return`<div class="fbcl">
+<div class="sb fb-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="fbcl-hd"><span style="cursor:pointer">←</span> Create Listing</div>
+<div class="fbcl-body">
+<div class="fbcl-photo" id="fbcl-photo" data-label="Add photo"><span style="font-size:24px">📷</span><span style="font-size:12px;color:#888;margin-top:4px">Add photo</span></div>
+<div class="fbcl-field"><div class="fbcl-lbl">Price</div><input class="fbcl-inp" id="fbcl-price" data-label="Price" placeholder="R 0.00" type="number"/></div>
+<div class="fbcl-field"><div class="fbcl-lbl">Title</div><input class="fbcl-inp" id="fbcl-title" data-label="Title" placeholder="What are you selling?"/></div>
+<div class="fbcl-field"><div class="fbcl-lbl">Category</div>
+<select class="fbcl-inp" id="fbcl-cat" data-label="Category"><option>Select...</option><option>Food</option><option>Clothing</option><option>Services</option><option>Crafts</option><option>Other</option></select></div>
+<div class="fbcl-field"><div class="fbcl-lbl">Location</div><input class="fbcl-inp" id="fbcl-loc" data-label="Location" placeholder="e.g. Port Shepstone"/></div>
+<div class="fbcl-field"><div class="fbcl-lbl">Description</div><textarea class="fbcl-inp" id="fbcl-desc" data-label="Description" placeholder="Describe what you're selling..." style="min-height:56px;resize:none"></textarea></div>
+<button class="fbcl-next" data-label="Next" id="fbcl-next">Next</button>
+</div></div>`}
+
+// ── SHEETS ───────────────────────────────────────────────────────────────────
+function buildSheetsBlank(){return`<div class="shs">
+<div class="sb sh-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="shs-hd"><span style="font-size:18px">📊</span><span class="shs-fn">My Business Tracker</span><div style="display:flex;gap:8px;color:#fff;opacity:.9">⋮</div></div>
+<div class="shs-tb"><span>B</span><span><i>I</i></span><span>U</span><span>$</span><span>%</span></div>
+<div class="shs-fb"><div class="shs-ref" id="shs-ref">A1</div><input class="shs-fi" id="shs-fi" placeholder=""/></div>
+<div class="shs-grid"><table class="st">
+<thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+<tbody>
+${[1,2,3,4,5,6].map(r=>`<tr><td>${r}</td>${['A','B','C','D'].map(c=>`<td id="s-${c}${r}" data-label="Cell ${c}${r}"><input placeholder=""/></td>`).join('')}</tr>`).join('')}
+</tbody></table></div></div>`}
+
+function buildSheetsData(){return`<div class="shs">
+<div class="sb sh-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="shs-hd"><span style="font-size:18px">📊</span><span class="shs-fn">My Business Tracker</span><div style="display:flex;gap:8px;color:#fff;opacity:.9">⋮</div></div>
+<div class="shs-tb"><span>B</span><span><i>I</i></span><span>U</span><span>$</span><span>%</span></div>
+<div class="shs-fb"><div class="shs-ref" id="shs-ref">A1</div><input class="shs-fi" id="shs-fi" placeholder=""/></div>
+<div class="shs-grid"><table class="st">
+<thead><tr><th></th><th>A</th><th>B</th><th>C</th></tr></thead>
+<tbody>
+<tr class="hr"><td>1</td><td><input value="Date"/></td><td><input value="Description"/></td><td><input value="Amount (R)"/></td></tr>
+<tr><td>2</td><td id="s-A2" data-label="Date"><input placeholder="22/04"/></td><td id="s-B2" data-label="Description"><input placeholder="Bread sold"/></td><td id="s-C2" data-label="Amount"><input placeholder="+150"/></td></tr>
+<tr><td>3</td><td><input value="22/04"/></td><td><input value="Ingredients"/></td><td><input value="-45"/></td></tr>
+<tr><td>4</td><td><input value="23/04"/></td><td><input value="Bread sold"/></td><td><input value="+150"/></td></tr>
+<tr><td>5</td><td id="s-A5" data-label="Row 5"><input/></td><td id="s-B5"><input/></td><td id="s-C5"><input/></td></tr>
+<tr class="tot"><td>6</td><td><input value="TOTAL"/></td><td><input/></td><td id="s-total" data-label="Total"><input placeholder="=SUM(C2:C5)" style="color:#0F9D58;font-weight:700"/></td></tr>
+</tbody></table></div></div>`}
+
+// ── GENERIC ──────────────────────────────────────────────────────────────────
+function buildGeneric(step){
+  const c=D.appColor||'#333', tc=D.appTextColor||'#fff', name=D.appName||'App';
+  const s=step||D.steps[STEP]||{};
+  return`<div class="gen-wrap" style="display:flex;flex-direction:column;flex:1">
+<div class="sb" style="background:${c};color:${tc}"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div style="background:${c};padding:8px 11px;display:flex;align-items:center;gap:8px;flex-shrink:0">
+  <span style="color:${tc};font-size:16px">←</span>
+  <span style="color:${tc};font-size:13px;font-weight:700;flex:1">${name}</span>
+  <span style="color:${tc};font-size:15px;opacity:.8">⋮</span>
+</div>
+<div style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px">
+  <div style="font-size:10px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.05em">${s.screenName||''}</div>
+  <div style="background:#f5f5f5;border-radius:10px;padding:13px;display:flex;flex-direction:column;gap:8px">
+    ${s.targetLabel?`<div style="background:${c};color:${tc};border-radius:7px;padding:10px 14px;font-size:13px;font-weight:700;text-align:center;cursor:pointer" id="gen-btn" data-label="${s.targetLabel}">${s.targetLabel}</div>`:''}
+    <div style="background:#fff;border:1.5px solid #ddd;border-radius:7px;padding:9px 12px;font-size:12px;color:#888;cursor:text" id="gen-inp" data-label="Input">Tap to type here...</div>
+  </div>
+  <div style="background:#fff;border-radius:10px;padding:11px 13px;font-size:12px;line-height:1.6;color:#444">
+    ${s.screenName?`This is the <strong>${s.screenName}</strong> screen.`:''} Follow the instruction below.
+  </div>
+</div></div>`}
+
+// ── Render screen (called on every step) ─────────────────────────────────────
+function buildShellHTML(type){
+  const step = D.steps[STEP];
+  return screens(type, step);
+}
+
+function renderScreen(idx){
+  const step = D.steps[idx];
+  if(!step){ showRefl(); return; }
+  const type = step.screenType || 'generic';
+  const el = document.getElementById('scr');
+  // Build: shell content + step sheet
+  el.innerHTML = `
+    <div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden">
+      <div style="flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column" id="shell-body">${buildShellHTML(type)}</div>
+      <div class="ss">
+        <div class="ss-top"><div class="ss-bar"><div class="ss-fill" id="ss-fill"></div></div><div class="ss-lbl" id="ss-lbl"></div></div>
+        <div class="ss-scr" id="ss-scr"></div>
+        <div class="ss-txt" id="ss-txt"></div>
+        <div class="ss-tip" id="ss-tip"></div>
+        <button class="btn-back hidden" id="ss-back">← Go back</button>
+        <button class="btn-n" id="ss-btn"></button>
+      </div>
+    </div>`;
+  updateStepUI(idx);
+}
+
+function updateStepUI(idx){
+  STEP = idx;
+  const steps = D.steps, total = steps.length;
+  const s = steps[idx];
+  if(!s) return;
+
+  const pct = Math.round(((idx+1)/(total+1))*100);
+  const isLast = idx === total-1;
+
+  document.getElementById('ss-fill').style.width = pct+'%';
+  document.getElementById('ss-lbl').textContent = `Step ${idx+1} of ${total}`;
+  document.getElementById('ss-scr').textContent = s.screenName || '';
+  document.getElementById('ss-txt').innerHTML = (s.instruction || '').replace(/\n/g,'<br>');
+
+  const tip = document.getElementById('ss-tip');
+  if(s.tip){ tip.textContent='💡 '+s.tip; tip.classList.add('on'); }
+  else { tip.classList.remove('on'); }
+
+  const btn = document.getElementById('ss-btn');
+  if(isLast){ btn.innerHTML='Answer the question →'; btn.className='btn-n g'; btn.onclick=showRefl; }
+  else{ btn.innerHTML='Done — Next Step →'; btn.className='btn-n'; btn.onclick=()=>nextStep(idx); }
+
+  const back = document.getElementById('ss-back');
+  if(idx === 0){ back.className='btn-back hidden'; }
+  else{ back.className='btn-back'; back.onclick=()=>prevStep(idx); }
+
+  setTimeout(()=>placeArrow(s.targetLabel||'', s.arrowText||'', s.arrowPosition||'above'), 180);
+}
+
+function nextStep(idx){
+  const next = idx + 1;
+  if(!D.steps[next]){ showRefl(); return; }
+  renderScreen(next);
+}
+
+function prevStep(idx){
+  const prev = idx - 1;
+  if(prev < 0) return;
+  renderScreen(prev);
+}
+
+// ── Arrow ────────────────────────────────────────────────────────────────────
+function clearArrows(){
+  document.getElementById('aov').innerHTML='';
+  document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));
+}
+
+function findEl(label){
+  if(!label) return null;
+  const lo = label.toLowerCase().trim();
+  // data-label match
+  for(const el of document.querySelectorAll('[data-label]')){
+    if(el.getAttribute('data-label').toLowerCase().trim().includes(lo)) return el;
+  }
+  // text content match for buttons
+  for(const el of document.querySelectorAll('button,input,textarea,select')){
+    const t=(el.textContent||el.placeholder||el.value||'').toLowerCase();
+    if(t.includes(lo)) return el;
+  }
+  return null;
+}
+
+function placeArrow(label, text, pos){
+  clearArrows();
+  if(!label||!text) return;
+  const target = findEl(label);
+  if(!target) return;
+  target.classList.add('hl');
+
+  const screen = document.getElementById('scr');
+  const aov    = document.getElementById('aov');
+  const sr = screen.getBoundingClientRect();
+  const er = target.getBoundingClientRect();
+  if(!er.width) return;
+
+  const top  = er.top  - sr.top;
+  const left = er.left - sr.left;
+  const w = er.width, h = er.height;
+
+  const arr = document.createElement('div');
+  const p = pos||'above';
+  arr.className = 'arr ' + ({above:'ab',below:'at',left:'al',right:'ar'}[p]||'ab');
+  arr.textContent = text;
+  arr.style.position='absolute';
+
+  if(p==='above'){
+    arr.style.top  = Math.max(2,top-40)+'px';
+    arr.style.left = (left+w/2)+'px';
+  } else if(p==='below'){
+    arr.style.top  = (top+h+8)+'px';
+    arr.style.left = (left+w/2)+'px';
+  } else if(p==='left'){
+    arr.style.top  = (top+h/2)+'px';
+    arr.style.left = Math.max(2,left-10)+'px';
+    arr.style.transform='translateY(-50%)';
+    return aov.appendChild(arr);
+  } else if(p==='right'){
+    arr.style.top  = (top+h/2)+'px';
+    arr.style.left = (left+w+10)+'px';
+    arr.style.transform='translateY(-50%)';
+    return aov.appendChild(arr);
+  }
+  aov.appendChild(arr);
+}
+
+// ── WA helpers ───────────────────────────────────────────────────────────────
+function waSend(){
+  const inp=document.getElementById('wct-inp');
+  if(!inp||!inp.value.trim())return;
+  const chat=document.getElementById('wct-chat');if(!chat)return;
+  const m=document.createElement('div');m.className='wm s';
+  m.innerHTML=inp.value+'<div class="wmt">Now <span class="wtk">✓</span></div>';
+  chat.appendChild(m);inp.value='';chat.scrollTop=9999;
+}
+
+// ── Reflection ───────────────────────────────────────────────────────────────
+function showRefl(){
+  clearArrows();
+  document.getElementById('scr').innerHTML=`
+  <div class="rfl">
+    <div class="rfl-hd"><div class="rfl-b">Almost done!</div><h2>Think About This</h2></div>
+    <div class="rfl-body">
+      <div class="rfl-q">${D.taskReflection||'What did you learn? How will you use this?'}</div>
+      <textarea class="rfl-ta" id="rfl-ans" placeholder="Write your answer here..."></textarea>
+      <button class="btn-sub" onclick="complete()">Submit Answer ✓</button>
+    </div>
+  </div>`;}
+
+function complete(){
+  const a=document.getElementById('rfl-ans')?.value.trim();
+  if(!a||a.length<5){const e=document.getElementById('rfl-ans');if(e){e.style.borderColor='#D62B2B';e.focus()}return}
+  boom();
+  document.getElementById('scr').innerHTML=`
+  <div class="done">
+    <div class="done-c"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Great work!</h2><p>Task complete.<br>Answer saved.</p>
+    <div class="done-task">${D.taskTitle}</div>
+    <button class="btn-ag" onclick="restart()">Try Again ↺</button>
+  </div>`;}
+
+function restart(){renderScreen(0)}
+
+function boom(){
+  const w=document.getElementById('cf'),c=['#F37021','#2D8B3E','#1B5EA7','#D62B2B','#FFD700'];
+  for(let i=0;i<70;i++){const e=document.createElement('div');e.className='cp';const s=6+Math.random()*9;
+  e.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${s}px;height:${s}px;background:${c[~~(Math.random()*c.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.2+Math.random()*1.6}s;animation-delay:${Math.random()*.5}s;`;
+  w.appendChild(e);e.addEventListener('animationend',()=>e.remove())}}
+
+// ── Progress helpers ──────────────────────────────────────────────────────────
+function setProgress(pct, label){
+  document.getElementById('pgfill').style.width = pct + '%';
+  document.getElementById('pglabel').textContent = label;
+  const p1=document.getElementById('ph1'), p2=document.getElementById('ph2'),
+        p3=document.getElementById('ph3'), p4=document.getElementById('ph4');
+  const cls = (lo, hi) => 'pgph'+(pct>=lo&&pct<hi?' act':pct>=hi?' done':'');
+  p1.className=cls(5,25);
+  p2.className=cls(25,45);
+  p3.className=cls(45,88);
+  p4.className=cls(88,100)+(pct>=100?' done':'');
+}
+
+// ── Generate ─────────────────────────────────────────────────────────────────
+async function generate(){
+  const topic=document.getElementById('topicInput').value.trim();
+  if(!topic){document.getElementById('topicInput').focus();document.getElementById('topicInput').style.borderColor='#D62B2B';return}
+  document.getElementById('topicInput').style.borderColor='#F37021';
+
+  const btn=document.getElementById('genBtn'),pg=document.getElementById('pgwrap'),
+        res=document.getElementById('res'),err=document.getElementById('err');
+  btn.disabled=true;pg.classList.add('on');res.classList.remove('on');err.classList.remove('on');
+  setProgress(0,'Starting...');
+  clearArrows();
+
+  // Generate a request ID and open SSE stream first
+  const reqId = Date.now().toString();
+  const evtSource = new EventSource('/progress/'+reqId);
+  evtSource.onmessage = (e) => {
+    const {pct, phase} = JSON.parse(e.data);
+    setProgress(pct, phase);
+  };
+
+  try{
+    const r=await fetch('/generate',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        reqId,
+        topic,
+        struggles:document.getElementById('struggles').value,
+        time:document.getElementById('time').value,
+        context:document.getElementById('context').value
+      })});
+    const data=await r.json();
+    if(!r.ok||data.error) throw new Error(data.error||'Unknown error');
+
+    D=data; STEP=0;
+    document.getElementById('tout').innerHTML=data.teacherPlanHTML||`<pre style="white-space:pre-wrap;font-size:12px">${JSON.stringify(data,null,2)}</pre>`;
+    document.getElementById('plbl').textContent=`Student View — ${data.appName||'App'} Prototype`;
+
+    if(D.steps&&D.steps.length>0) renderScreen(0);
+    else document.getElementById('scr').innerHTML=`<div style="padding:16px;font-size:13px;color:#888">No steps returned</div>`;
+    res.classList.add('on');
+  }catch(e){err.textContent='Error: '+e.message;err.classList.add('on');console.error(e)}
+  finally{
+    evtSource.close();
+    btn.disabled=false;
+    pg.classList.remove('on');
+    setProgress(0,'');
+  }
+}
+</script>
+</body>
+</html>
