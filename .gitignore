@@ -1,3 +1,8 @@
 node_modules/
 .env
 .DS_Store
+
+# Raw generation logs (high volume, not needed in git)
+test-site/logs/raw/
+
+# Saved good/bad examples live in agent-guide/examples/ — those ARE committed

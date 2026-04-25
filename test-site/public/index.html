@@ -10,6 +10,9 @@
     header{background:#1A1A1A;padding:12px 28px;display:flex;align-items:center;gap:10px}
     header h1{color:#fff;font-size:17px;font-weight:700}
     header span{color:#F37021;font-size:12px}
+    .btn-feedback-toggle{margin-left:auto;background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.6);border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s}
+    .btn-feedback-toggle:hover{border-color:rgba(255,255,255,.6);color:#fff}
+    .btn-feedback-toggle.fb-hidden{border-color:#F37021;color:#F37021}
     .wrap{max-width:1240px;margin:0 auto;padding:20px}
     /* Form */
     .fc{background:#fff;border-radius:10px;padding:20px 24px;margin-bottom:20px;border-top:4px solid #F37021}
@@ -91,6 +94,23 @@
     /* Phone */
     .pw{display:flex;flex-direction:column;gap:7px}
     .plbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#2D8B3E}
+    .ex-btns{display:none;gap:7px}
+    .ex-btns.visible{display:flex}
+    .btn-save{background:#fff;border:1.5px solid #2D8B3E;color:#2D8B3E;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s,color .15s;flex:1}
+    .btn-save:hover{background:#2D8B3E;color:#fff}
+    .btn-save.saved{background:#2D8B3E;color:#fff;border-color:#2D8B3E;cursor:default}
+    .btn-bad{background:#fff;border:1.5px solid #D62B2B;color:#D62B2B;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s,color .15s;flex:1}
+    .btn-bad:hover{background:#D62B2B;color:#fff}
+    .btn-bad.saved{background:#D62B2B;color:#fff;border-color:#D62B2B;cursor:default}
+    .bad-form{display:none;background:#fff0f0;border:1px solid #D62B2B;border-radius:8px;padding:11px 13px;margin-top:2px}
+    .bad-form.open{display:block}
+    .bad-form textarea{width:100%;padding:8px 10px;font-size:12px;font-family:inherit;border:1px solid #ddd;border-radius:6px;resize:vertical;min-height:68px;box-sizing:border-box;margin-bottom:8px}
+    .bad-form textarea:focus{outline:2px solid #D62B2B;border-color:#D62B2B}
+    .bad-form-footer{display:flex;gap:7px;align-items:center}
+    .bad-submit{background:#D62B2B;color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer}
+    .bad-submit:hover{background:#b52020}
+    .bad-cancel{background:none;border:none;color:#888;font-size:12px;cursor:pointer}
+    .ex-status{font-size:11px;font-weight:600;padding:4px 0;display:none}
     .phone{background:#111;border-radius:44px;padding:11px;box-shadow:0 18px 56px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.07);max-width:365px;position:relative}
     .notch{height:24px;display:flex;align-items:center;justify-content:center}
     .notchp{width:68px;height:5px;background:#2a2a2a;border-radius:3px}
@@ -372,18 +392,56 @@
     table.st tr.tot td{background:#E8F5E9;font-weight:700;color:#0F9D58}
 
     /* ════ STEP SHEET ════ */
-    .ss{background:#fff;border-top:1px solid #eee;padding:11px 13px 13px;flex-shrink:0}
+    .ss{background:#fff;border-top:1px solid #eee;padding:11px 13px 13px;flex-shrink:0;overflow-y:auto;max-height:52vh}
     .ss-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
     .ss-bar{flex:1;height:4px;background:oklch(0.93 0.015 42);border-radius:2px;overflow:hidden}
     .ss-fill{height:100%;background:oklch(0.62 0.19 42);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
     .ss-lbl{font-size:11px;font-weight:700;color:oklch(0.62 0.19 42);white-space:nowrap}
     .ss-scr{font-size:10px;font-weight:600;color:#bbb;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
-    .ss-txt{font-size:12.5px;line-height:1.65;color:#1A1A1A;margin-bottom:8px;min-height:46px}
+    .ss-txt{font-size:12.5px;line-height:1.65;color:#1A1A1A;margin-bottom:8px}
     .ss-tip{background:#FFF5EE;border-left:3px solid #F37021;padding:5px 8px;border-radius:0 5px 5px 0;font-size:11px;color:#555;margin-bottom:7px;display:none}
     .ss-tip.on{display:block}
+    /* ── Exercise area ── */
+    .ss-ex{margin-bottom:8px}
+    .ss-q{font-size:12px;font-weight:700;color:#1A1A1A;margin-bottom:7px;line-height:1.45}
+    .ex-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .ex-opt{background:#F9F6F2;border:1.5px solid #ddd;border-radius:8px;padding:8px 6px;font-size:11.5px;font-weight:600;color:#1A1A1A;cursor:pointer;text-align:center;min-height:42px;display:flex;align-items:center;justify-content:center;transition:border-color .15s,background .15s}
+    .ex-opt:hover{border-color:#F37021;background:#fff8f3}
+    .ex-opt.ex-correct{border-color:#2D8B3E;background:#e8f8ed;color:#1e7a3c;pointer-events:none}
+    .ex-opt.ex-wrong{border-color:#D62B2B;background:#fde8e8;color:#c0392b}
+    .ex-opt:disabled{pointer-events:none;opacity:.6}
+    .ex-blank{width:100%;padding:9px 11px;font-size:13px;font-family:inherit;border:1.5px solid #ddd;border-radius:8px;box-sizing:border-box;margin-bottom:6px}
+    .ex-blank:focus{outline:2px solid #F37021;border-color:#F37021}
+    .ex-blank.ex-correct{border-color:#2D8B3E;background:#e8f8ed}
+    .ex-blank.ex-wrong{border-color:#D62B2B;background:#fde8e8}
+    .ex-check{width:100%;background:#1B5EA7;color:#fff;border:none;padding:9px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer}
+    .ex-check:hover{background:#154d8a}
+    .ex-tiles-pool{display:flex;flex-wrap:wrap;gap:5px;padding:6px;background:#f9f6f2;border:1px dashed #ccc;border-radius:7px;min-height:32px;margin-bottom:5px}
+    .ex-tiles-queue{display:flex;flex-direction:column;gap:4px;padding:5px;background:#fff;border:1px solid #ddd;border-radius:7px;min-height:28px;margin-bottom:5px}
+    .ex-tile{background:#fff;border:1.5px solid #ddd;border-radius:6px;padding:6px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:border-color .12s}
+    .ex-tile:hover{border-color:#F37021}
+    .ex-tile.ex-queued{background:#F9F6F2;border-color:#F37021;color:#F37021}
+    .ex-tile.ex-correct{border-color:#2D8B3E;background:#e8f8ed;color:#1e7a3c}
+    .ex-tile.ex-wrong{border-color:#D62B2B;background:#fde8e8;color:#c0392b}
+    .ex-pairs{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
+    .ex-pair-item{background:#F9F6F2;border:1.5px solid #ddd;border-radius:7px;padding:7px 5px;font-size:10.5px;font-weight:600;cursor:pointer;text-align:center;min-height:38px;display:flex;align-items:center;justify-content:center;line-height:1.3;transition:border-color .12s,background .12s}
+    .ex-pair-item:hover{border-color:#F37021}
+    .ex-pair-item.ex-selected{border-color:#F37021;background:#fff8f3}
+    .ex-pair-item.ex-matched{border-color:#2D8B3E;background:#e8f8ed;color:#1e7a3c;pointer-events:none}
+    .ex-pair-item.ex-wrong{border-color:#D62B2B;background:#fde8e8}
+    .ex-do-box{background:#EEF4FB;border-left:3px solid #1B5EA7;padding:8px 10px;border-radius:0 7px 7px 0;font-size:11.5px;color:#1A1A1A;margin-bottom:6px;line-height:1.5}
+    .ex-visible{font-size:10.5px;color:#555;font-style:italic;margin-bottom:8px}
+    /* ── Feedback ── */
+    .ss-fb{border-radius:7px;padding:7px 10px;font-size:11.5px;font-weight:600;margin-bottom:7px;display:none}
+    .ss-fb.fb-ok{background:#e8f8ed;color:#1e7a3c;border:1px solid #a8e0ba;display:block}
+    .ss-fb.fb-err{background:#fde8e8;color:#c0392b;border:1px solid #f5b7b1;display:block}
+    /* ── Shake ── */
+    @keyframes ss-shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+    .ss-shake{animation:ss-shake 0.38s ease}
     .btn-n{width:100%;background:#F37021;color:#fff;border:none;padding:11px;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:background .15s,transform .1s}
     .btn-n:hover{background:#d95e0f}
     .btn-n:active{transform:scale(.97)}
+    .btn-n:disabled{background:#ccc;cursor:not-allowed;transform:none}
     .btn-n.g{background:#2D8B3E}
     .btn-n.g:hover{background:#247032}
     .btn-back{width:100%;background:transparent;color:#888;border:1px solid #ddd;padding:8px;font-size:12px;font-weight:600;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:7px;transition:background .15s,color .15s}
@@ -420,7 +478,7 @@
   </style>
 </head>
 <body>
-<header><h1>KwaXolo Learn</h1><span>Agent Tester — Local</span></header>
+<header><h1>KwaXolo Learn</h1><span>Agent Tester — Local</span><button class="btn-feedback-toggle" id="fbToggle" onclick="toggleFeedback()">Feedback mode: ON</button></header>
 <div class="wrap">
   <div class="fc">
     <h2>Generate a Lesson</h2>
@@ -465,6 +523,19 @@
     <div class="tc"><div class="clbl">Teacher Lesson Plan</div><div class="tcont" id="tout"></div></div>
     <div class="pw">
       <div class="plbl" id="plbl">Student View</div>
+      <div class="ex-btns" id="ex-btns">
+        <button class="btn-save" id="btn-save" onclick="saveGood()">⭐ Good example</button>
+        <button class="btn-bad"  id="btn-bad"  onclick="openBadForm()">👎 Bad example</button>
+      </div>
+      <div class="bad-form" id="bad-form">
+        <div style="font-size:11px;font-weight:700;color:#D62B2B;margin-bottom:6px">What was wrong with this output?</div>
+        <textarea id="bad-comment" placeholder="e.g. Steps were too vague, local example was generic, wrong screen types, exercises didn't match the content…"></textarea>
+        <div class="bad-form-footer">
+          <button class="bad-submit" onclick="saveBad()">Save bad example</button>
+          <button class="bad-cancel" onclick="closeBadForm()">Cancel</button>
+        </div>
+      </div>
+      <div class="ex-status" id="ex-status"></div>
       <div class="phone" id="phoneFrame">
         <div class="notch"><div class="notchp"></div></div>
         <div class="screen" id="scr"></div>
@@ -479,7 +550,7 @@
 function st(t){document.getElementById('topicInput').value=t;document.getElementById('topicInput').focus()}
 
 // ── State ────────────────────────────────────────────────────────────────────
-let D=null, STEP=0;
+let D=null, STEP=0, LAST_REQ_ID=null;
 
 // ── Screen builders (one per screenType) ────────────────────────────────────
 function screens(type, step){
@@ -835,6 +906,8 @@ function renderScreen(idx){
         <div class="ss-top"><div class="ss-bar"><div class="ss-fill" id="ss-fill"></div></div><div class="ss-lbl" id="ss-lbl"></div></div>
         <div class="ss-scr" id="ss-scr"></div>
         <div class="ss-txt" id="ss-txt"></div>
+        <div class="ss-ex" id="ss-ex"></div>
+        <div class="ss-fb" id="ss-fb"></div>
         <div class="ss-tip" id="ss-tip"></div>
         <button class="btn-back hidden" id="ss-back">← Go back</button>
         <button class="btn-n" id="ss-btn"></button>
@@ -843,33 +916,325 @@ function renderScreen(idx){
   updateStepUI(idx);
 }
 
+// ── Exercise state ────────────────────────────────────────────────────────────
+var EX_ANSWERED   = false; // tracks whether current step is answered
+var EX_TILE_QUEUE = [];    // for arrange_steps
+var EX_SEL_TERM   = null;  // for match_pairs
+var EX_SEL_MATCH  = null;
+var EX_PAIRS_DONE = 0;
+var EX_BLANK_TRIES = 0;    // wrong attempts on fill_blank
+
 function updateStepUI(idx){
   STEP = idx;
+  EX_ANSWERED    = false;
+  EX_TILE_QUEUE  = [];
+  EX_SEL_TERM    = null;
+  EX_SEL_MATCH   = null;
+  EX_PAIRS_DONE  = 0;
+  EX_BLANK_TRIES = 0;
+
   const steps = D.steps, total = steps.length;
   const s = steps[idx];
   if(!s) return;
 
   const pct = Math.round(((idx+1)/(total+1))*100);
   const isLast = idx === total-1;
+  const hasExercise = !!s.exerciseType;
 
   document.getElementById('ss-fill').style.width = pct+'%';
   document.getElementById('ss-lbl').textContent = `Step ${idx+1} of ${total}`;
   document.getElementById('ss-scr').textContent = s.screenName || '';
-  document.getElementById('ss-txt').innerHTML = (s.instruction || '').replace(/\n/g,'<br>');
 
+  // Show teach text (new field) falling back to instruction (old field)
+  const teachText = s.teach || s.instruction || '';
+  document.getElementById('ss-txt').innerHTML = teachText.replace(/\n/g,'<br>');
+
+  // Clear feedback
+  const fb = document.getElementById('ss-fb');
+  fb.className = 'ss-fb';
+  fb.textContent = '';
+
+  // Render exercise
+  renderExercise(s, idx);
+
+  // Tip
   const tip = document.getElementById('ss-tip');
   if(s.tip){ tip.textContent='💡 '+s.tip; tip.classList.add('on'); }
   else { tip.classList.remove('on'); }
 
+  // Next button — locked until exercise answered (if there is one)
   const btn = document.getElementById('ss-btn');
-  if(isLast){ btn.innerHTML='Answer the question →'; btn.className='btn-n g'; btn.onclick=showRefl; }
-  else{ btn.innerHTML='Done — Next Step →'; btn.className='btn-n'; btn.onclick=()=>nextStep(idx); }
+  if(isLast){
+    btn.innerHTML = 'Answer the question →';
+    btn.className = 'btn-n g';
+    btn.disabled = hasExercise ? true : false;
+    btn.onclick = showRefl;
+  } else {
+    btn.innerHTML = 'Done — Next Step →';
+    btn.className = 'btn-n';
+    btn.disabled = hasExercise ? true : false;
+    btn.onclick = () => nextStep(idx);
+  }
 
   const back = document.getElementById('ss-back');
   if(idx === 0){ back.className='btn-back hidden'; }
   else{ back.className='btn-back'; back.onclick=()=>prevStep(idx); }
 
   setTimeout(()=>placeArrow(s.targetLabel||'', s.arrowText||'', s.arrowPosition||'above'), 180);
+}
+
+// ── Exercise renderer ─────────────────────────────────────────────────────────
+function renderExercise(s, idx){
+  const el = document.getElementById('ss-ex');
+  if(!s.exerciseType){ el.innerHTML=''; return; }
+
+  const q = s.question || '';
+  let html = `<div class="ss-q">${escH(q)}</div>`;
+
+  switch(s.exerciseType){
+    case 'tap_correct':
+    case 'do_and_confirm':
+      if(s.exerciseType === 'do_and_confirm' && s.instruction){
+        html += `<div class="ex-do-box">${escH(s.instruction)}</div>`;
+        if(s.visibleResult) html += `<div class="ex-visible">✓ ${escH(s.visibleResult)}</div>`;
+      }
+      html += '<div class="ex-opts">';
+      (s.options||[]).forEach(opt => {
+        html += `<button class="ex-opt" onclick="checkTapOpt(this,'${escQ(opt)}',${idx})">${escH(opt)}</button>`;
+      });
+      html += '</div>';
+      break;
+
+    case 'fill_blank':
+      html += `<input class="ex-blank" id="ex-blank-input" type="text" placeholder="Type your answer…" autocomplete="off" autocorrect="off" autocapitalize="off">`;
+      html += `<button class="ex-check" onclick="checkBlankInput(${idx})">Check answer</button>`;
+      break;
+
+    case 'arrange_steps':
+      html += `<div style="font-size:10px;color:#888;margin-bottom:4px">Tap steps in the correct order:</div>`;
+      html += `<div class="ex-tiles-queue" id="ex-queue"></div>`;
+      html += `<div class="ex-tiles-pool" id="ex-pool">`;
+      shuffle([...(s.tiles||[])]).forEach((t,i) => {
+        html += `<div class="ex-tile" id="ex-tile-${i}" data-text="${escQ(t)}" onclick="tapTileEx(this,${idx})">${escH(t)}</div>`;
+      });
+      html += `</div>`;
+      html += `<button class="ex-check" onclick="checkOrderEx(${idx})">Check order</button>`;
+      break;
+
+    case 'match_pairs':
+      const pairs = s.pairs||[];
+      const rights = shuffle(pairs.map(p=>p.match));
+      html += `<div class="ex-pairs">`;
+      pairs.forEach((p,i) => {
+        html += `<div class="ex-pair-item" id="ex-term-${i}" data-val="${escQ(p.term)}" data-side="term" onclick="tapPairEx(this,${idx})">${escH(p.term)}</div>`;
+      });
+      rights.forEach((m,i) => {
+        html += `<div class="ex-pair-item" id="ex-match-${i}" data-val="${escQ(m)}" data-side="match" onclick="tapPairEx(this,${idx})">${escH(m)}</div>`;
+      });
+      html += `</div>`;
+      break;
+
+    default:
+      el.innerHTML=''; return;
+  }
+  el.innerHTML = html;
+}
+
+// ── Exercise check functions ──────────────────────────────────────────────────
+function checkTapOpt(btn, value, idx){
+  if(EX_ANSWERED) return;
+  const s = D.steps[idx];
+  const correct = value.toLowerCase().trim() === (s.correctAnswer||'').toLowerCase().trim();
+  btn.closest('.ex-opts').querySelectorAll('.ex-opt').forEach(b=>b.disabled=true);
+  if(correct){
+    btn.classList.add('ex-correct');
+    showFB(true, s.feedbackCorrect || 'Correct!');
+    EX_ANSWERED = true;
+    unlockNext();
+  } else {
+    btn.classList.add('ex-wrong');
+    shakeSheet();
+    showFB(false, s.feedbackWrong || 'Not quite — try again.');
+    setTimeout(()=>{ btn.classList.remove('ex-wrong'); btn.disabled=false; }, 1000);
+  }
+}
+
+// Levenshtein distance — counts how many single-character edits separate two strings
+function levenshtein(a, b){
+  var m=a.length, n=b.length, dp=[];
+  for(var i=0;i<=m;i++){ dp[i]=[i]; }
+  for(var j=0;j<=n;j++){ dp[0][j]=j; }
+  for(var i=1;i<=m;i++){
+    for(var j=1;j<=n;j++){
+      dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1]
+               : 1+Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+// Returns true if the typed value is close enough to any accepted answer.
+// Tolerance: 1 edit for short words (≤5 chars), 2 edits for longer answers.
+function fuzzyMatch(val, accepted){
+  for(var i=0;i<accepted.length;i++){
+    var a = accepted[i];
+    var tolerance = a.length <= 5 ? 1 : 2;
+    if(levenshtein(val, a) <= tolerance) return true;
+  }
+  return false;
+}
+
+function checkBlankInput(idx){
+  if(EX_ANSWERED) return;
+  const s = D.steps[idx];
+  const input = document.getElementById('ex-blank-input');
+  const checkBtn = document.querySelector('.ex-check');
+  if(!input) return;
+
+  const val = (input.value||'').toLowerCase().trim();
+  if(!val) return;
+
+  const accepted = (s.acceptedAnswers||[]).map(a=>a.toLowerCase().trim());
+  if(accepted.length === 0 && s.correctAnswer) accepted.push(s.correctAnswer.toLowerCase().trim());
+
+  const correct = accepted.includes(val) || fuzzyMatch(val, accepted);
+
+  if(correct){
+    input.classList.add('ex-correct');
+    input.disabled = true;
+    if(checkBtn) checkBtn.disabled = true;
+    showFB(true, s.feedbackCorrect || 'Correct!');
+    EX_ANSWERED = true;
+    unlockNext();
+  } else {
+    EX_BLANK_TRIES++;
+    input.classList.add('ex-wrong');
+    shakeSheet();
+
+    if(EX_BLANK_TRIES >= 3){
+      // Reveal the answer after 3 failed attempts
+      const reveal = accepted[0] || '';
+      showFB(false, 'The answer is: "' + reveal + '". Read it, then tap Next.');
+      input.value = reveal;
+      input.classList.remove('ex-wrong');
+      input.classList.add('ex-correct');
+      input.disabled = true;
+      if(checkBtn) checkBtn.disabled = true;
+      EX_ANSWERED = true;
+      unlockNext();
+    } else {
+      const triesLeft = 3 - EX_BLANK_TRIES;
+      showFB(false, (s.feedbackWrong || 'Not quite.') + ' (' + triesLeft + ' ' + (triesLeft===1?'try':'tries') + ' left)');
+      setTimeout(()=>{ input.classList.remove('ex-wrong'); }, 900);
+    }
+  }
+}
+
+function tapTileEx(el, idx){
+  if(EX_ANSWERED) return;
+  const text = el.dataset.text;
+  if(el.classList.contains('ex-queued')){
+    EX_TILE_QUEUE = EX_TILE_QUEUE.filter(t=>t!==text);
+    el.classList.remove('ex-queued');
+  } else {
+    EX_TILE_QUEUE.push(text);
+    el.classList.add('ex-queued');
+  }
+  const q = document.getElementById('ex-queue');
+  if(q) q.innerHTML = EX_TILE_QUEUE.map(t=>`<div class="ex-tile ex-queued">${escH(t)}</div>`).join('');
+}
+
+function checkOrderEx(idx){
+  if(EX_ANSWERED) return;
+  const s = D.steps[idx];
+  const correct = JSON.stringify(EX_TILE_QUEUE) === JSON.stringify(s.correctOrder||[]);
+  if(correct){
+    document.querySelectorAll('#ex-pool .ex-tile').forEach(t=>t.classList.add('ex-correct'));
+    showFB(true, s.feedbackCorrect || 'Correct order!');
+    EX_ANSWERED = true;
+    unlockNext();
+  } else {
+    shakeSheet();
+    showFB(false, s.feedbackWrong || 'Not quite — check the order and try again.');
+  }
+}
+
+function tapPairEx(el, idx){
+  if(EX_ANSWERED) return;
+  if(el.classList.contains('ex-matched')) return;
+  const side = el.dataset.side;
+  if(side==='term'){
+    if(EX_SEL_TERM) EX_SEL_TERM.classList.remove('ex-selected');
+    EX_SEL_TERM = el;
+  } else {
+    if(EX_SEL_MATCH) EX_SEL_MATCH.classList.remove('ex-selected');
+    EX_SEL_MATCH = el;
+  }
+  el.classList.add('ex-selected');
+  if(EX_SEL_TERM && EX_SEL_MATCH) tryMatchPairEx(idx);
+}
+
+function tryMatchPairEx(idx){
+  const s = D.steps[idx];
+  const tVal = EX_SEL_TERM.dataset.val;
+  const mVal = EX_SEL_MATCH.dataset.val;
+  const valid = (s.pairs||[]).some(p=>p.term===tVal && p.match===mVal);
+  if(valid){
+    EX_SEL_TERM.classList.replace('ex-selected','ex-matched');
+    EX_SEL_MATCH.classList.replace('ex-selected','ex-matched');
+    EX_PAIRS_DONE++;
+    if(EX_PAIRS_DONE === (s.pairs||[]).length){
+      showFB(true, s.feedbackCorrect || 'All matched!');
+      EX_ANSWERED = true;
+      unlockNext();
+    }
+  } else {
+    EX_SEL_TERM.classList.add('ex-wrong');
+    EX_SEL_MATCH.classList.add('ex-wrong');
+    shakeSheet();
+    setTimeout(()=>{
+      EX_SEL_TERM.classList.remove('ex-wrong','ex-selected');
+      EX_SEL_MATCH.classList.remove('ex-wrong','ex-selected');
+    }, 750);
+  }
+  EX_SEL_TERM = null; EX_SEL_MATCH = null;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function unlockNext(){
+  const btn = document.getElementById('ss-btn');
+  if(btn){ btn.disabled = false; }
+}
+
+function showFB(ok, text){
+  const fb = document.getElementById('ss-fb');
+  if(!fb) return;
+  fb.textContent = (ok ? '✓ ' : '✗ ') + (text||'');
+  fb.className = 'ss-fb ' + (ok ? 'fb-ok' : 'fb-err');
+}
+
+function shakeSheet(){
+  const ss = document.querySelector('.ss');
+  if(!ss) return;
+  ss.classList.remove('ss-shake');
+  void ss.offsetWidth;
+  ss.classList.add('ss-shake');
+  setTimeout(()=>ss.classList.remove('ss-shake'), 400);
+}
+
+function shuffle(arr){
+  for(var i=arr.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+  }
+  return arr;
+}
+
+function escH(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escQ(s){
+  return String(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
 }
 
 function nextStep(idx){
@@ -1036,9 +1401,21 @@ async function generate(){
     const data=await r.json();
     if(!r.ok||data.error) throw new Error(data.error||'Unknown error');
 
-    D=data; STEP=0;
+    D=data; STEP=0; LAST_REQ_ID=data._reqId||reqId;
     document.getElementById('tout').innerHTML=data.teacherPlanHTML||`<pre style="white-space:pre-wrap;font-size:12px">${JSON.stringify(data,null,2)}</pre>`;
     document.getElementById('plbl').textContent=`Student View — ${data.appName||'App'} Prototype`;
+    // Show rating buttons and reset state (only if feedback mode is on)
+    document.getElementById('ex-btns').className='ex-btns' + (FEEDBACK_ON ? ' visible' : '');
+    document.getElementById('btn-save').className='btn-save';
+    document.getElementById('btn-save').textContent='⭐ Good example';
+    document.getElementById('btn-save').disabled=false;
+    document.getElementById('btn-bad').className='btn-bad';
+    document.getElementById('btn-bad').textContent='👎 Bad example';
+    document.getElementById('btn-bad').disabled=false;
+    document.getElementById('bad-form').className='bad-form';
+    document.getElementById('bad-comment').value='';
+    const exStatus=document.getElementById('ex-status');
+    exStatus.style.display='none'; exStatus.textContent='';
 
     if(D.steps&&D.steps.length>0) renderScreen(0);
     else document.getElementById('scr').innerHTML=`<div style="padding:16px;font-size:13px;color:#888">No steps returned</div>`;
@@ -1049,6 +1426,80 @@ async function generate(){
     btn.disabled=false;
     pg.classList.remove('on');
     setProgress(0,'');
+  }
+}
+
+var FEEDBACK_ON = true;
+function toggleFeedback(){
+  FEEDBACK_ON = !FEEDBACK_ON;
+  const btn = document.getElementById('fbToggle');
+  btn.textContent = 'Feedback mode: ' + (FEEDBACK_ON ? 'ON' : 'OFF');
+  btn.className = 'btn-feedback-toggle' + (FEEDBACK_ON ? '' : ' fb-hidden');
+  // Hide/show the whole feedback block
+  const panel = document.getElementById('ex-btns');
+  const form   = document.getElementById('bad-form');
+  const status = document.getElementById('ex-status');
+  if(!FEEDBACK_ON){
+    if(panel)  panel.style.display  = 'none';
+    if(form)   form.className       = 'bad-form';
+    if(status) status.style.display = 'none';
+  } else {
+    // Restore visibility only if a lesson has been generated
+    if(panel && LAST_REQ_ID) panel.style.display = '';
+  }
+}
+
+function showExStatus(msg, color){
+  const el=document.getElementById('ex-status');
+  el.textContent=msg; el.style.color=color; el.style.display='block';
+}
+
+async function saveGood(){
+  if(!LAST_REQ_ID) return;
+  const btn=document.getElementById('btn-save');
+  btn.disabled=true; btn.textContent='Saving…';
+  try{
+    const r=await fetch('/save-good/'+LAST_REQ_ID,{method:'POST'});
+    const data=await r.json();
+    if(!r.ok||data.error) throw new Error(data.error||'Save failed');
+    btn.className='btn-save saved'; btn.textContent='⭐ Saved!';
+    showExStatus('Saved to agent-guide/examples/good/ — committed with git.','#2D8B3E');
+  }catch(e){
+    btn.disabled=false; btn.textContent='⭐ Good example';
+    showExStatus('Could not save: '+e.message,'#D62B2B');
+  }
+}
+
+function openBadForm(){
+  document.getElementById('bad-form').className='bad-form open';
+  document.getElementById('bad-comment').focus();
+}
+
+function closeBadForm(){
+  document.getElementById('bad-form').className='bad-form';
+  document.getElementById('bad-comment').value='';
+}
+
+async function saveBad(){
+  if(!LAST_REQ_ID) return;
+  const comment=(document.getElementById('bad-comment').value||'').trim();
+  const submit=document.querySelector('.bad-submit');
+  submit.disabled=true; submit.textContent='Saving…';
+  try{
+    const r=await fetch('/save-bad/'+LAST_REQ_ID,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({comment})
+    });
+    const data=await r.json();
+    if(!r.ok||data.error) throw new Error(data.error||'Save failed');
+    document.getElementById('btn-bad').className='btn-bad saved';
+    document.getElementById('btn-bad').textContent='👎 Marked bad';
+    closeBadForm();
+    showExStatus('Saved to agent-guide/examples/bad/ — will help improve the prompt.','#D62B2B');
+  }catch(e){
+    submit.disabled=false; submit.textContent='Save bad example';
+    showExStatus('Could not save: '+e.message,'#D62B2B');
   }
 }
 </script>
