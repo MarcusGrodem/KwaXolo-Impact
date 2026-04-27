@@ -1,0 +1,72 @@
+{
+  "reqId": "1777138831883",
+  "topic": "How to create a Gmail account from scratch",
+  "category": "D",
+  "generatedAt": "2026-04-25T17:41:48.860Z",
+  "stepCount": 5,
+  "localGrounding": true,
+  "inputs": {
+    "topic": "How to create a Gmail account from scratch",
+    "struggles": "",
+    "time": "1 hour",
+    "context": ""
+  },
+  "lesson": {
+    "teacherTitle": "How to Create a Gmail Account",
+    "teacherObjective": "After this lesson, you will be able to create your own Gmail account and send an email.",
+    "teacherBoardPoints": [
+      "A professional email is important",
+      "Use your real name for email",
+      "Subject line is brief and clear",
+      "One email, one topic",
+      "Gmail is free on your phone"
+    ],
+    "teacherExplanation": "Today we will learn how to create a Gmail account from scratch. Gmail is one of the most used email services around the world, especially for business purposes. Having a professional email address is essential in today's digital age, especially if you're looking to apply for jobs or run a business.\n\nIn KwaZulu-Natal, businesses like Inkify use email alongside WhatsApp to send important documents, like invoices, to their customers. With a Gmail account, you can reach not only local businesses but also explore global opportunities.\n\nBy the end of this lesson, you will know how to create your Gmail account and send an email. This skill will help you stay connected and look professional in your interactions—even if you're just starting your own small business.",
+    "teacherDiscussionQuestions": [
+      "Why is a professional email important for young people today?",
+      "What challenges might someone face when creating their first email account?",
+      "How can having a Gmail account help you with opportunities in your local area?"
+    ],
+    "teacherLocalExample": "Inkify, run by Samke Jaca and Ntokozo Gwacela, uses Gmail to send formal quotations and invoices to their customers. This ensures they maintain professionalism and keep a reliable record of communication.",
+    "teacherTimeGuide": [
+      "5 min: write board points, students copy",
+      "15 min: teacher explains",
+      "10 min: class discussion",
+      "10 min: students do task on phones",
+      "5 min: recap — what is one thing you learned?"
+    ],
+    "appName": "Gmail",
+    "appColor": "#D93025",
+    "appTextColor": "#fff",
+    "taskTitle": "How to Create a Gmail Account",
+    "taskIntro": "You will have your own Gmail account and be ready to send emails professionally.",
+    "taskTime": "10–15 minutes",
+    "taskReflection": "Describe a situation where you might need to use your new Gmail account in the next few months, such as applying for a job or sending important documents.",
+    "steps": [
+      {
+        "screenType": "play_store_search",
+        "teach": "You are going to open the Google Play Store on your phone. This is where you can"
+      },
+      {
+        "screenType": "play_store_search",
+        "teach": "Now you will type 'Gmail' into the search bar. This allows you to find the Gmail"
+      },
+      {
+        "screenType": "play_store_app",
+        "teach": "You have found the Gmail app. Tap the 'Install' button to download it to your ph"
+      },
+      {
+        "screenType": "generic",
+        "teach": "The app is now downloading. Wait for the installation to complete. This might ta"
+      },
+      {
+        "screenType": "gmail_inbox",
+        "teach": "Now you can open the Gmail app to start using it. Tap 'Open' to begin setting up"
+      }
+    ],
+    "teacherPlanHTML": "<div class=\"tp\">\n  <div class=\"tp-hd\">\n    <div class=\"tp-obj-lbl\">Learning Objective</div>\n    <h1 class=\"tp-title\">How to Create a Gmail Account</h1>\n    <p class=\"tp-obj\">After this lesson, you will be able to create your own Gmail account and send an email.</p>\n  </div>\n  <div class=\"tp-board\">\n    <div class=\"tp-board-ttl\">✏ Write on the Board</div>\n    <div class=\"tp-board-sub\">Write these before class starts — students copy them down</div>\n    <ul class=\"tp-bl\"><li>A professional email is important</li><li>Use your real name for email</li><li>Subject line is brief and clear</li><li>One email, one topic</li><li>Gmail is free on your phone</li></ul>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">2</span>Explain to Students</h2>\n    <div class=\"tp-script-note\">Read this aloud — then explain in your own words</div>\n    <div class=\"tp-expl\"><p>Today we will learn how to create a Gmail account from scratch. Gmail is one of the most used email services around the world, especially for business purposes. Having a professional email address is essential in today's digital age, especially if you're looking to apply for jobs or run a business.</p><p>In KwaZulu-Natal, businesses like Inkify use email alongside WhatsApp to send important documents, like invoices, to their customers. With a Gmail account, you can reach not only local businesses but also explore global opportunities.</p><p>By the end of this lesson, you will know how to create your Gmail account and send an email. This skill will help you stay connected and look professional in your interactions—even if you're just starting your own small business.</p></div>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">3</span>Discussion Questions</h2>\n    <ol class=\"tp-qs\"><li><span class=\"tp-qn\">1</span><span>Why is a professional email important for young people today?</span></li><li><span class=\"tp-qn\">2</span><span>What challenges might someone face when creating their first email account?</span></li><li><span class=\"tp-qn\">3</span><span>How can having a Gmail account help you with opportunities in your local area?</span></li></ol>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">4</span>Local Example</h2>\n    <div class=\"tp-local\">Inkify, run by Samke Jaca and Ntokozo Gwacela, uses Gmail to send formal quotations and invoices to their customers. This ensures they maintain professionalism and keep a reliable record of communication.</div>\n  </div>\n  <div class=\"tp-tg\">\n    <div class=\"tp-tg-ttl\">Time Guide — 1 hour</div>\n    <div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">write board points, students copy</span></div><div class=\"tp-ti\"><span class=\"tp-td\">15 min</span><span class=\"tp-ta\">teacher explains</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">class discussion</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">students do task on phones</span></div><div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">recap — what is one thing you learned?</span></div>\n  </div>\n  <button class=\"tp-print no-print\" onclick=\"window.print()\">Print Lesson Plan</button>\n</div>"
+  },
+  "savedAt": "2026-04-25T17:46:57.719Z",
+  "rating": "bad",
+  "comment": "Wrong screens, few steps, missing text."
+}

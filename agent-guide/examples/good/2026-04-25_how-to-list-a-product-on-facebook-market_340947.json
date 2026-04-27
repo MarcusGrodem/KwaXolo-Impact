@@ -1,0 +1,75 @@
+{
+  "reqId": "1777140340947",
+  "topic": "How to list a product on Facebook Marketplace",
+  "category": "C",
+  "generatedAt": "2026-04-25T18:06:39.490Z",
+  "stepCount": 6,
+  "localGrounding": true,
+  "inputs": {
+    "topic": "How to list a product on Facebook Marketplace",
+    "struggles": "",
+    "time": "30 minutes",
+    "context": ""
+  },
+  "lesson": {
+    "teacherTitle": "How to List on Facebook Marketplace",
+    "teacherObjective": "After this lesson, you will be able to list a product on Facebook Marketplace, making it visible to buyers.",
+    "teacherBoardPoints": [
+      "Use Facebook app",
+      "Tap Marketplace icon",
+      "Create new listing",
+      "Choose item type",
+      "Publish listing"
+    ],
+    "teacherExplanation": "Today we will learn how to use Facebook Marketplace to sell products locally. This tool allows you to reach potential buyers in your community for free.\n\nFacebook Marketplace can be accessed through the Facebook app on your phone. It is widely used in KwaZulu-Natal, and businesses like Inkify use it to list services and products to reach more customers in a cost-effective way.\n\nYou will practice by listing a product on Facebook Marketplace during the task. This will show you how easy it is to start selling items without needing a physical shop.",
+    "teacherDiscussionQuestions": [
+      "What kinds of products could you sell on Facebook Marketplace?",
+      "How can listing a product online benefit a small business?",
+      "What might be some challenges of selling products on Facebook?"
+    ],
+    "teacherLocalExample": "Inkify, run by Samke Jaca and Ntokozo Gwacela, uses Facebook Marketplace to offer printing services. This allows them to reach more customers without needing a physical store.",
+    "teacherTimeGuide": [
+      "5 min: write board points, students copy",
+      "15 min: teacher explains",
+      "10 min: class discussion",
+      "10 min: students do task on phones",
+      "5 min: recap — what is one thing you learned?"
+    ],
+    "appName": "Facebook",
+    "appColor": "#1877F2",
+    "appTextColor": "#fff",
+    "taskTitle": "How to List a Product on Facebook Marketplace",
+    "taskIntro": "You will have your product listed on Facebook Marketplace where buyers can see it.",
+    "taskTime": "10–15 minutes",
+    "taskReflection": "Describe a product you might want to sell on Facebook Marketplace. Why would local buyers be interested?",
+    "steps": [
+      {
+        "screenType": "play_store_search",
+        "teach": "On this screen, you will search for the Facebook app. It is essential to have th"
+      },
+      {
+        "screenType": "play_store_app",
+        "teach": "Here you will see details about the Facebook app. Tapping Install will download "
+      },
+      {
+        "screenType": "play_store_app",
+        "teach": "Wait for Facebook to download and install. Once complete, the option to open the"
+      },
+      {
+        "screenType": "facebook_feed",
+        "teach": "After opening, you'll land on your feed. This is where you see posts and updates"
+      },
+      {
+        "screenType": "facebook_marketplace",
+        "teach": "You're now on the browse screen for Marketplace. This is where you create new it"
+      },
+      {
+        "screenType": "fb_listing_form",
+        "teach": "Now, fill out the create listing form with details such as photo, price, title, location."
+      }
+    ],
+    "teacherPlanHTML": "<div class=\"tp\">\n  <div class=\"tp-hd\">\n    <div class=\"tp-obj-lbl\">Learning Objective</div>\n    <h1 class=\"tp-title\">How to List on Facebook Marketplace</h1>\n    <p class=\"tp-obj\">After this lesson, you will be able to list a product on Facebook Marketplace, making it visible to buyers.</p>\n  </div>\n  <div class=\"tp-board\">\n    <div class=\"tp-board-ttl\">✏ Write on the Board</div>\n    <div class=\"tp-board-sub\">Write these before class starts — students copy them down</div>\n    <ul class=\"tp-bl\"><li>Use Facebook app</li><li>Tap Marketplace icon</li><li>Create new listing</li><li>Choose item type</li><li>Publish listing</li></ul>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">2</span>Explain to Students</h2>\n    <div class=\"tp-script-note\">Read this aloud — then explain in your own words</div>\n    <div class=\"tp-expl\"><p>Today we will learn how to use Facebook Marketplace to sell products locally. This tool allows you to reach potential buyers in your community for free.</p><p>Facebook Marketplace can be accessed through the Facebook app on your phone. It is widely used in KwaZulu-Natal, and businesses like Inkify use it to list services and products to reach more customers in a cost-effective way.</p><p>You will practice by listing a product on Facebook Marketplace during the task. This will show you how easy it is to start selling items without needing a physical shop.</p></div>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">3</span>Discussion Questions</h2>\n    <ol class=\"tp-qs\"><li><span class=\"tp-qn\">1</span><span>What kinds of products could you sell on Facebook Marketplace?</span></li><li><span class=\"tp-qn\">2</span><span>How can listing a product online benefit a small business?</span></li><li><span class=\"tp-qn\">3</span><span>What might be some challenges of selling products on Facebook?</span></li></ol>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">4</span>Local Example</h2>\n    <div class=\"tp-local\">Inkify, run by Samke Jaca and Ntokozo Gwacela, uses Facebook Marketplace to offer printing services. This allows them to reach more customers without needing a physical store.</div>\n  </div>\n  <div class=\"tp-tg\">\n    <div class=\"tp-tg-ttl\">Time Guide — 30 minutes</div>\n    <div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">write board points, students copy</span></div><div class=\"tp-ti\"><span class=\"tp-td\">15 min</span><span class=\"tp-ta\">teacher explains</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">class discussion</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">students do task on phones</span></div><div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">recap — what is one thing you learned?</span></div>\n  </div>\n  <button class=\"tp-print no-print\" onclick=\"window.print()\">Print Lesson Plan</button>\n</div>"
+  },
+  "savedAt": "2026-04-25T18:08:11.869Z",
+  "rating": "good"
+}

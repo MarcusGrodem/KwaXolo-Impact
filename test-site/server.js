@@ -30,6 +30,92 @@ function exampleFilename(reqId, topic) {
   return `${new Date().toISOString().slice(0,10)}_${slugify(topic)}_${reqId.slice(-6)}.json`;
 }
 
+// ─── Load saved good/bad examples at request time ────────────────────────────
+// Called fresh each generation so newly saved examples are always picked up.
+// Returns a formatted string ready to inject into the system prompt.
+function loadExamples() {
+  function readDir(dir, max) {
+    try {
+      return fs.readdirSync(dir)
+        .filter(f => f.endsWith(".json"))
+        .sort()           // alphabetical = chronological given the date prefix
+        .slice(-max)      // take the most recent N
+        .map(f => {
+          try { return JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")); }
+          catch { return null; }
+        })
+        .filter(Boolean);
+    } catch { return []; }
+  }
+
+  const goods = readDir(GOOD_DIR, 4);
+  const bads  = readDir(BAD_DIR,  4);
+
+  if (goods.length === 0 && bads.length === 0) return "";
+
+  const lines = [];
+
+  // ── Good examples ──────────────────────────────────────────────────────────
+  if (goods.length > 0) {
+    lines.push("═══════════════════════════════════════════");
+    lines.push("SAVED GOOD EXAMPLES — outputs that were rated high quality");
+    lines.push("Study the patterns: what made the local example specific, how the teach text is written, how exercises are varied.");
+    lines.push("Where a ★ POINT TO IMPROVE note is listed, act on it — do better on that specific aspect in your output.");
+    lines.push("═══════════════════════════════════════════");
+    goods.forEach((ex, i) => {
+      const l = ex.lesson || {};
+      // Pick one representative step with an exercise
+      const sampleStep = (l.steps || []).find(s => s.exerciseType && s.question) || (l.steps||[])[0] || {};
+      lines.push(`\nGOOD EXAMPLE ${i + 1} — Topic: "${ex.topic}" (Category ${ex.category || "?"})`);
+      if (l.teacherTitle)       lines.push(`  Title: ${l.teacherTitle}`);
+      if (l.teacherObjective)   lines.push(`  Objective: ${l.teacherObjective}`);
+      if (l.teacherLocalExample) lines.push(`  Local example used: "${l.teacherLocalExample.slice(0, 200)}"`);
+      if (l.teacherExplanation) {
+        const firstPara = l.teacherExplanation.split(/\n\n/)[0] || "";
+        lines.push(`  Explanation opening: "${firstPara.slice(0, 300)}"`);
+      }
+      if (sampleStep.teach) {
+        lines.push(`  Sample step teach: "${sampleStep.teach.slice(0, 200)}"`);
+        lines.push(`  Sample exercise type: ${sampleStep.exerciseType}`);
+        if (sampleStep.question)        lines.push(`  Sample question: "${sampleStep.question}"`);
+        if (sampleStep.feedbackCorrect) lines.push(`  feedbackCorrect: "${sampleStep.feedbackCorrect}"`);
+        if (sampleStep.feedbackWrong)   lines.push(`  feedbackWrong: "${sampleStep.feedbackWrong}"`);
+      }
+      const exerciseTypes = (l.steps||[]).map(s=>s.exerciseType).filter(Boolean);
+      if (exerciseTypes.length) lines.push(`  Exercise types used across ${exerciseTypes.length} steps: ${[...new Set(exerciseTypes)].join(", ")}`);
+      if (ex.improvementNote) lines.push(`  ★ POINT TO IMPROVE: "${ex.improvementNote}"`);
+    });
+  }
+
+  // ── Bad examples ───────────────────────────────────────────────────────────
+  if (bads.length > 0) {
+    lines.push("\n═══════════════════════════════════════════");
+    lines.push("SAVED BAD EXAMPLES — outputs that failed quality review");
+    lines.push("Read the comments. Do NOT repeat these mistakes.");
+    lines.push("═══════════════════════════════════════════");
+    bads.forEach((ex, i) => {
+      const l = ex.lesson || {};
+      lines.push(`\nBAD EXAMPLE ${i + 1} — Topic: "${ex.topic}"`);
+      lines.push(`  ⚠ WHAT WAS WRONG: "${ex.comment || "No comment recorded"}"`);
+      // Show a problematic step if available
+      const badStep = (l.steps||[]).find(s => !s.exerciseType || !s.teach || !s.feedbackWrong);
+      if (badStep) {
+        lines.push(`  Example of a weak step from this output:`);
+        if (badStep.teach)         lines.push(`    teach: "${(badStep.teach||"").slice(0,150)}"`);
+        if (!badStep.exerciseType) lines.push(`    → Missing exerciseType`);
+        if (!badStep.feedbackWrong || badStep.feedbackWrong === "Try again.") lines.push(`    → feedbackWrong was empty or generic`);
+      }
+      if (l.teacherLocalExample && !hasLocalGrounding(l.teacherLocalExample)) {
+        lines.push(`  → Local example lacked a named KZN reference`);
+      }
+    });
+  }
+
+  const block = lines.join("\n");
+  console.log(`  → Loaded ${goods.length} good / ${bads.length} bad examples for prompt`);
+  return block;
+}
+
 const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -232,9 +318,10 @@ Return JSON:
 
 // ─── Phase 3: generate the full lesson ───────────────────────────────────────
 async function generateLesson(inputs, uiContext, plan) {
-  const client   = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const category = detectCategory(inputs.topic);
-  const catRules = CAT[category] || CAT["F"];
+  const client      = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const category    = detectCategory(inputs.topic);
+  const catRules    = CAT[category] || CAT["F"];
+  const examplesBlock = loadExamples(); // fresh read every call
 
   console.log(`  → Detected category: ${category}`);
 
@@ -253,6 +340,7 @@ ${EXAMPLE_LESSON}
 REFERENCE STUDENT TASK:
 ${EXAMPLE_TASK}
 
+${examplesBlock ? examplesBlock + "\n" : ""}
 ═══════════════════════════════════════════
 CORE CONSTRAINTS (non-negotiable)
 ═══════════════════════════════════════════
@@ -700,7 +788,8 @@ app.post("/generate", async (req, res) => {
 
 // ─── Save a good example → agent-guide/examples/good/ ────────────────────────
 app.post("/save-good/:reqId", (req, res) => {
-  const { reqId } = req.params;
+  const { reqId }   = req.params;
+  const { comment } = req.body;   // optional "point to improve" note from teacher
   const src = path.join(LOGS_DIR, `${reqId}.json`);
   if (!fs.existsSync(src)) {
     return res.status(404).json({ error: "Log not found for this session." });
@@ -710,8 +799,14 @@ app.post("/save-good/:reqId", (req, res) => {
   const filename = exampleFilename(reqId, data.topic);
   const dest     = path.join(GOOD_DIR, filename);
 
-  fs.writeFileSync(dest, JSON.stringify({ ...data, savedAt: new Date().toISOString(), rating: "good" }, null, 2));
+  fs.writeFileSync(dest, JSON.stringify({
+    ...data,
+    savedAt: new Date().toISOString(),
+    rating: "good",
+    improvementNote: (comment || "").trim()
+  }, null, 2));
   console.log(`  ⭐ Good example saved: agent-guide/examples/good/${filename}  (topic: "${data.topic}")`);
+  if (comment) console.log(`     Improvement note: ${(comment).slice(0, 120)}`);
   res.json({ ok: true, file: `agent-guide/examples/good/${filename}` });
 });
 

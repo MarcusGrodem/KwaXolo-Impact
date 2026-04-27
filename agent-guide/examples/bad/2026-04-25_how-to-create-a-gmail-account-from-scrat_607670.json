@@ -1,0 +1,72 @@
+{
+  "reqId": "1777139607670",
+  "topic": "How to create a Gmail account from scratch",
+  "category": "D",
+  "generatedAt": "2026-04-25T17:54:28.373Z",
+  "stepCount": 5,
+  "localGrounding": true,
+  "inputs": {
+    "topic": "How to create a Gmail account from scratch",
+    "struggles": "",
+    "time": "30 minutes",
+    "context": ""
+  },
+  "lesson": {
+    "teacherTitle": "Create a Gmail Account",
+    "teacherObjective": "After this lesson, you will be able to create a Gmail account from scratch on your Android phone.",
+    "teacherBoardPoints": [
+      "Gmail is free",
+      "Use your real name",
+      "Secure your account",
+      "Verify with SMS code",
+      "Privacy matters"
+    ],
+    "teacherExplanation": "Today we will learn how to create a Gmail account on your Android phone. This email account is useful for communication with businesses, schools, and friends professionally. Unlike WhatsApp, email is often used for more formal situations, such as sending job applications or important documents.\n\nIn our community, businesses like Inkify use email to send quotes and invoices to their clients. This ensures that both parties have a clear record of communication and transactions, which builds trust and professionalism.\n\nYou will create your Gmail account step by step. This lesson will show you how to set it up and start using it by sending your first practice email. By the end, you will have a professional email address you can use for various purposes.",
+    "teacherDiscussionQuestions": [
+      "Why might a business prefer using email for important communication?",
+      "What are some benefits of having a professional email address?",
+      "How do you think creating an email account can help you in your daily life?"
+    ],
+    "teacherLocalExample": "Inkify, a local printing business run by Samke Jaca and Ntokozo Gwacela, frequently uses Gmail to communicate efficiently with their clients. They send detailed quotes via email, allowing clients to have all information stored for future reference.",
+    "teacherTimeGuide": [
+      "5 min: write board points, students copy",
+      "15 min: teacher explains",
+      "10 min: class discussion",
+      "10 min: students do task on phones",
+      "5 min: recap — what is one thing you learned?"
+    ],
+    "appName": "Gmail",
+    "appColor": "#D93025",
+    "appTextColor": "#fff",
+    "taskTitle": "Create a Gmail Account",
+    "taskIntro": "You will create a Gmail account on your Android phone.",
+    "taskTime": "10–15 minutes",
+    "taskReflection": "Think of a situation where having a professional email might be important for you. What would you use it for and why?",
+    "steps": [
+      {
+        "screenType": "play_store_search",
+        "teach": "You are going to open the Play Store to find and download Gmail. This step ensur"
+      },
+      {
+        "screenType": "play_store_app",
+        "teach": "Type 'Gmail' into the search bar in the Play Store. This helps you find the app "
+      },
+      {
+        "screenType": "play_store_app",
+        "teach": "After finding Gmail in the search results, tap on it to see more details. This p"
+      },
+      {
+        "screenType": "gmail_inbox",
+        "teach": "Once you've installed the app, open it by tapping its icon from your home screen"
+      },
+      {
+        "screenType": "gmail_signup_name",
+        "teach": "After choosing to create an account, enter your real first and last name. This i"
+      }
+    ],
+    "teacherPlanHTML": "<div class=\"tp\">\n  <div class=\"tp-hd\">\n    <div class=\"tp-obj-lbl\">Learning Objective</div>\n    <h1 class=\"tp-title\">Create a Gmail Account</h1>\n    <p class=\"tp-obj\">After this lesson, you will be able to create a Gmail account from scratch on your Android phone.</p>\n  </div>\n  <div class=\"tp-board\">\n    <div class=\"tp-board-ttl\">✏ Write on the Board</div>\n    <div class=\"tp-board-sub\">Write these before class starts — students copy them down</div>\n    <ul class=\"tp-bl\"><li>Gmail is free</li><li>Use your real name</li><li>Secure your account</li><li>Verify with SMS code</li><li>Privacy matters</li></ul>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">2</span>Explain to Students</h2>\n    <div class=\"tp-script-note\">Read this aloud — then explain in your own words</div>\n    <div class=\"tp-expl\"><p>Today we will learn how to create a Gmail account on your Android phone. This email account is useful for communication with businesses, schools, and friends professionally. Unlike WhatsApp, email is often used for more formal situations, such as sending job applications or important documents.</p><p>In our community, businesses like Inkify use email to send quotes and invoices to their clients. This ensures that both parties have a clear record of communication and transactions, which builds trust and professionalism.</p><p>You will create your Gmail account step by step. This lesson will show you how to set it up and start using it by sending your first practice email. By the end, you will have a professional email address you can use for various purposes.</p></div>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">3</span>Discussion Questions</h2>\n    <ol class=\"tp-qs\"><li><span class=\"tp-qn\">1</span><span>Why might a business prefer using email for important communication?</span></li><li><span class=\"tp-qn\">2</span><span>What are some benefits of having a professional email address?</span></li><li><span class=\"tp-qn\">3</span><span>How do you think creating an email account can help you in your daily life?</span></li></ol>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">4</span>Local Example</h2>\n    <div class=\"tp-local\">Inkify, a local printing business run by Samke Jaca and Ntokozo Gwacela, frequently uses Gmail to communicate efficiently with their clients. They send detailed quotes via email, allowing clients to have all information stored for future reference.</div>\n  </div>\n  <div class=\"tp-tg\">\n    <div class=\"tp-tg-ttl\">Time Guide — 30 minutes</div>\n    <div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">write board points, students copy</span></div><div class=\"tp-ti\"><span class=\"tp-td\">15 min</span><span class=\"tp-ta\">teacher explains</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">class discussion</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">students do task on phones</span></div><div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">recap — what is one thing you learned?</span></div>\n  </div>\n  <button class=\"tp-print no-print\" onclick=\"window.print()\">Print Lesson Plan</button>\n</div>"
+  },
+  "savedAt": "2026-04-25T17:57:16.449Z",
+  "rating": "bad",
+  "comment": "Missing interactions. Missing more steps. Missing completion throughtout"
+}
