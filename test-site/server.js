@@ -267,6 +267,10 @@ VISUAL ACCURACY RULES:
 - Steps must follow the EXACT ORDER a first-time user experiences them`;
 
 // ─── Web search cache helpers ─────────────────────────────────────────────────
+// Cache TTL: re-scrape if the cached result is older than this many days.
+// App UIs change occasionally, so 30 days is a reasonable balance.
+const CACHE_TTL_DAYS = parseInt(process.env.SEARCH_CACHE_TTL_DAYS || "30", 10);
+
 function searchCachePath(topic) {
   return path.join(SEARCH_CACHE_DIR, `${slugify(topic)}.json`);
 }
@@ -276,7 +280,11 @@ function readSearchCache(topic) {
   if (!fs.existsSync(file)) return null;
   try {
     const data = JSON.parse(fs.readFileSync(file, "utf8"));
-    return data.result || null;
+    if (!data.result || !data.cachedAt) return null;
+    const ageMs  = Date.now() - new Date(data.cachedAt).getTime();
+    const ageDays = ageMs / (1000 * 60 * 60 * 24);
+    if (ageDays > CACHE_TTL_DAYS) return null; // stale — force re-scrape
+    return { result: data.result, ageDays: Math.floor(ageDays) };
   } catch { return null; }
 }
 
@@ -289,12 +297,13 @@ function writeSearchCache(topic, result) {
 
 // ─── Phase 1: web search targeted at the exact topic ─────────────────────────
 // Stays on OpenAI — Azure Foundry has no drop-in web_search_preview equivalent.
-// Results are cached to disk so re-generating the same topic skips the API call.
+// Results are cached to disk and reused for CACHE_TTL_DAYS (default 30 days).
+// After that the cache is considered stale and a fresh scrape runs automatically.
 async function searchUIContext(topic) {
   const cached = readSearchCache(topic);
   if (cached) {
-    console.log(`  → Web search cache HIT: "${topic}"`);
-    return cached;
+    console.log(`  → Web search cache HIT (${cached.ageDays}d old, TTL ${CACHE_TTL_DAYS}d): "${topic}"`);
+    return cached.result;
   }
 
   const client = openaiClient();
@@ -318,7 +327,7 @@ Under 500 words total.`
     });
     const result = response.output_text;
     writeSearchCache(topic, result);
-    console.log(`  → Web search cache MISS — saved: cache/web-search/${slugify(topic)}.json`);
+    console.log(`  → Web search complete — cached: cache/web-search/${slugify(topic)}.json`);
     return result;
   } catch (e) {
     console.warn("Web search failed:", e.message);

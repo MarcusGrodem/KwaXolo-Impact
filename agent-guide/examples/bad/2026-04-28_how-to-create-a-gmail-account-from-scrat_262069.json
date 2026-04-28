@@ -1,0 +1,75 @@
+{
+  "reqId": "1777395262069",
+  "topic": "How to create a Gmail account from scratch",
+  "category": "D",
+  "generatedAt": "2026-04-28T16:55:50.527Z",
+  "stepCount": 5,
+  "localGrounding": true,
+  "inputs": {
+    "topic": "How to create a Gmail account from scratch",
+    "struggles": "",
+    "time": "30 minutes",
+    "context": ""
+  },
+  "lesson": {
+    "teacherTitle": "Create a Gmail Account",
+    "teacherObjective": "After this lesson, you will be able to create a Gmail account from scratch and reach your inbox ready to use.",
+    "teacherBoardPoints": [
+      "Email is formal business tool",
+      "Use your real name",
+      "Username shows who you are",
+      "Choose a strong password",
+      "Check inbox after setup"
+    ],
+    "teacherExplanation": "Today we are going to learn how to create a Gmail account. Email is a formal way to send messages for school, jobs, and business. It is not the same as WhatsApp, but it is also easy to use once you learn the steps.\n\nA good email address uses your real name. It should look neat and professional. If you use a nickname, it can look careless to a school, a customer, or an employer. You also need a strong password that other people cannot guess. After that, Google may ask for extra details like a phone number, your birth date, and your agreement to the terms. These screens help protect your account and finish setup.\n\nInkify, run by Samke Jaca and Ntokozo Gwacela, uses email to send quotes and invoices to customers in a clear and professional way. A customer may first ask on WhatsApp, but the email gives a written record that is easy to save. This is why students need to know how email works before they leave school. In today’s task, you will create your own Gmail account and make sure it opens to the inbox.",
+    "teacherDiscussionQuestions": [
+      "Where in your life could an email help more than WhatsApp?",
+      "What name would you choose for an email address that looks professional?",
+      "Why would a local business in KwaZulu-Natal want a clear email record?"
+    ],
+    "teacherLocalExample": "Inkify, run by Samke Jaca and Ntokozo Gwacela, uses email to send quotes and invoices to customers. The customer can first ask on WhatsApp, then receive a clear email for record keeping. This shows why email matters for school, jobs, and local business.",
+    "teacherTimeGuide": [
+      "5 min: write board points, students copy",
+      "15 min: teacher explains",
+      "10 min: class discussion"
+    ],
+    "appName": "Gmail",
+    "appColor": "#EA4335",
+    "appTextColor": "#fff",
+    "taskTitle": "How to Create a Gmail Account",
+    "taskIntro": "You will have a new Gmail <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> that opens to your inbox and is ready to use.",
+    "taskTime": "10–15 minutes",
+    "taskReflection": "You now have a Gmail account. Write about one real time in the next few months when you could use this email for school, a job <span class=\"hover-word\" data-zu=\"isicelo\">application</span>, or a <span class=\"hover-word\" data-zu=\"umthengi\">customer</span>, and explain what kind of message you would send.",
+    "steps": [
+      {
+        "step": 1,
+        "screenType": "generic",
+        "teach": "Start on your phone home screen. Look for the Play Store icon and tap it to open"
+      },
+      {
+        "step": 2,
+        "screenType": "play_store_search",
+        "teach": "At the top of the Play Store, you will see a search bar. Tap it, type Gmail, and"
+      },
+      {
+        "step": 3,
+        "screenType": "play_store_app",
+        "teach": "The Gmail app page shows the app name, icon, and a button. Tap Install and wait "
+      },
+      {
+        "step": 4,
+        "screenType": "play_store_app",
+        "teach": "After Gmail finishes installing, the button changes to Open. Tap Open in Play St"
+      },
+      {
+        "step": 5,
+        "screenType": "generic",
+        "teach": "When Gmail opens for the first time, you may see a screen that says Welcome to G"
+      }
+    ],
+    "teacherPlanHTML": "<div class=\"tp\">\n  <div class=\"tp-hd\">\n    <div class=\"tp-obj-lbl\">Learning Objective</div>\n    <h1 class=\"tp-title\">Create a Gmail Account</h1>\n    <p class=\"tp-obj\">After this lesson, you will be able to create a Gmail account from scratch and reach your inbox ready to use.</p>\n  </div>\n  <div class=\"tp-board\">\n    <div class=\"tp-board-ttl\">✏ Write on the Board</div>\n    <div class=\"tp-board-sub\">Write these before class starts — students copy them down</div>\n    <ul class=\"tp-bl\"><li>Email is formal business tool</li><li>Use your real name</li><li>Username shows who you are</li><li>Choose a strong password</li><li>Check inbox after setup</li></ul>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">2</span>Explain to Students</h2>\n    <div class=\"tp-script-note\">Read this aloud — then explain in your own words</div>\n    <div class=\"tp-expl\"><p>Today we are going to learn how to create a Gmail account. Email is a formal way to send messages for school, jobs, and business. It is not the same as WhatsApp, but it is also easy to use once you learn the steps.</p><p>A good email address uses your real name. It should look neat and professional. If you use a nickname, it can look careless to a school, a customer, or an employer. You also need a strong password that other people cannot guess. After that, Google may ask for extra details like a phone number, your birth date, and your agreement to the terms. These screens help protect your account and finish setup.</p><p>Inkify, run by Samke Jaca and Ntokozo Gwacela, uses email to send quotes and invoices to customers in a clear and professional way. A customer may first ask on WhatsApp, but the email gives a written record that is easy to save. This is why students need to know how email works before they leave school. In today’s task, you will create your own Gmail account and make sure it opens to the inbox.</p></div>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">3</span>Discussion Questions</h2>\n    <ol class=\"tp-qs\"><li><span class=\"tp-qn\">1</span><span>Where in your life could an email help more than WhatsApp?</span></li><li><span class=\"tp-qn\">2</span><span>What name would you choose for an email address that looks professional?</span></li><li><span class=\"tp-qn\">3</span><span>Why would a local business in KwaZulu-Natal want a clear email record?</span></li></ol>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">4</span>Local Example</h2>\n    <div class=\"tp-local\">Inkify, run by Samke Jaca and Ntokozo Gwacela, uses email to send quotes and invoices to customers. The customer can first ask on WhatsApp, then receive a clear email for record keeping. This shows why email matters for school, jobs, and local business.</div>\n  </div>\n  <div class=\"tp-tg\">\n    <div class=\"tp-tg-ttl\">Time Guide — 30 minutes</div>\n    <div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">write board points, students copy</span></div><div class=\"tp-ti\"><span class=\"tp-td\">15 min</span><span class=\"tp-ta\">teacher explains</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">class discussion</span></div>\n  </div>\n  <button class=\"tp-print no-print\" onclick=\"window.print()\">Print Lesson Plan</button>\n</div>"
+  },
+  "savedAt": "2026-04-28T16:56:37.786Z",
+  "rating": "bad",
+  "comment": "steps to vague, the steps are not aligned with content"
+}
