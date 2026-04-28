@@ -40,7 +40,9 @@ const LOGS_DIR = path.join(__dirname, "logs", "raw");
 const EXAMPLES_DIR = path.join(__dirname, "../agent-guide/examples");
 const GOOD_DIR     = path.join(EXAMPLES_DIR, "good");
 const BAD_DIR      = path.join(EXAMPLES_DIR, "bad");
-[LOGS_DIR, GOOD_DIR, BAD_DIR].forEach(d => fs.mkdirSync(d, { recursive: true }));
+// Web search cache: keyed by topic slug, persists across server restarts
+const SEARCH_CACHE_DIR = path.join(__dirname, "cache", "web-search");
+[LOGS_DIR, GOOD_DIR, BAD_DIR, SEARCH_CACHE_DIR].forEach(d => fs.mkdirSync(d, { recursive: true }));
 
 function writeLog(reqId, data) {
   const file = path.join(LOGS_DIR, `${reqId}.json`);
@@ -264,9 +266,37 @@ VISUAL ACCURACY RULES:
 - Creating account → early steps MUST use signup screens, NOT the app home
 - Steps must follow the EXACT ORDER a first-time user experiences them`;
 
+// ─── Web search cache helpers ─────────────────────────────────────────────────
+function searchCachePath(topic) {
+  return path.join(SEARCH_CACHE_DIR, `${slugify(topic)}.json`);
+}
+
+function readSearchCache(topic) {
+  const file = searchCachePath(topic);
+  if (!fs.existsSync(file)) return null;
+  try {
+    const data = JSON.parse(fs.readFileSync(file, "utf8"));
+    return data.result || null;
+  } catch { return null; }
+}
+
+function writeSearchCache(topic, result) {
+  fs.writeFileSync(
+    searchCachePath(topic),
+    JSON.stringify({ topic, result, cachedAt: new Date().toISOString() }, null, 2)
+  );
+}
+
 // ─── Phase 1: web search targeted at the exact topic ─────────────────────────
 // Stays on OpenAI — Azure Foundry has no drop-in web_search_preview equivalent.
+// Results are cached to disk so re-generating the same topic skips the API call.
 async function searchUIContext(topic) {
+  const cached = readSearchCache(topic);
+  if (cached) {
+    console.log(`  → Web search cache HIT: "${topic}"`);
+    return cached;
+  }
+
   const client = openaiClient();
   if (!client) return "";
   try {
@@ -286,7 +316,10 @@ I need the following for a student who has NEVER done this before:
 Be very specific about button labels — use the exact text as it appears in the app.
 Under 500 words total.`
     });
-    return response.output_text;
+    const result = response.output_text;
+    writeSearchCache(topic, result);
+    console.log(`  → Web search cache MISS — saved: cache/web-search/${slugify(topic)}.json`);
+    return result;
   } catch (e) {
     console.warn("Web search failed:", e.message);
     return "";
@@ -300,7 +333,7 @@ async function planSteps(topic, uiContext) {
   const response = await client.chat.completions.create({
     model: DEP_VALIDATOR,
     response_format: { type: "json_object" },
-    max_tokens: 1500,
+    max_completion_tokens: 3500,
     messages: [{
       role: "user",
       content: `Create a thorough step plan for teaching a complete beginner: "${topic}"
@@ -468,7 +501,7 @@ The teacherExplanation AND teacherLocalExample MUST each name a specific KZN ent
   const response = await client.chat.completions.create({
     model: DEP_TEACHER,
     response_format: { type: "json_object" },
-    max_tokens: 4000,
+    max_completion_tokens: 8000,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user",   content: userMsg }
@@ -579,7 +612,7 @@ Use arrange_steps at least once per task if the topic involves a sequence.`;
   const response = await client.chat.completions.create({
     model: DEP_STUDENT,
     response_format: { type: "json_object" },
-    max_tokens: 16000,
+    max_completion_tokens: 16000,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user",   content: userMsg }
@@ -624,7 +657,7 @@ async function validateStepCount(lesson, topic, plan) {
   const response = await client.chat.completions.create({
     model: DEP_STUDENT,
     response_format: { type: "json_object" },
-    max_tokens: 4000,
+    max_completion_tokens: 4000,
     messages: [{
       role: "user",
       content: `A lesson about "${topic}" only has ${count} steps. It needs at least 8.
@@ -698,7 +731,7 @@ Return JSON: { "valid": false, "issues": ["Step 2: ..."] } listing real issues o
   const response = await client.chat.completions.create({
     model: DEP_VALIDATOR,
     response_format: { type: "json_object" },
-    max_tokens: 800,
+    max_completion_tokens: 800,
     messages: [{ role: "user", content: prompt }]
   });
 
@@ -713,7 +746,7 @@ Return JSON: { "valid": false, "issues": ["Step 2: ..."] } listing real issues o
 
 // ─── Validation 4: screen types match steps ──────────────────────────────────
 async function validateScreenTypes(lesson, topic) {
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const client = azClient(DEP_VALIDATOR);
 
   const preview = lesson.steps.slice(0, 5).map(s =>
     `Step ${s.number}: screenType="${s.screenType}", teach: "${(s.teach||"").slice(0,80)}"`
@@ -733,9 +766,9 @@ Return JSON: { "correct": true } if all screenTypes are correct.
 Return JSON: { "correct": false, "steps": [full corrected steps array — fix screenType only, all other fields identical] } if mismatches exist.`;
 
   const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: DEP_VALIDATOR,
     response_format: { type: "json_object" },
-    max_tokens: 3500,
+    max_completion_tokens: 3500,
     messages: [{ role: "user", content: prompt }]
   });
 
@@ -823,7 +856,7 @@ function progress(id, pct, phase) {
 // ─── Generate route ───────────────────────────────────────────────────────────
 app.post("/generate", async (req, res) => {
   const { topic, struggles, time, context, reqId } = req.body;
-  if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: "OPENAI_API_KEY not set" });
+  if (!AZ_ENDPOINT || !AZ_KEY) return res.status(500).json({ error: "AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_API_KEY must be set in .env" });
 
   try {
     progress(reqId, 5,  `Searching: "${topic}"...`);
