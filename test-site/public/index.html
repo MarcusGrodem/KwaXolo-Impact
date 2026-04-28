@@ -54,14 +54,21 @@
     .clbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:11px;color:#1B5EA7}
     .tcont{font-size:13px;line-height:1.7}
     /* ════ TEACHER PLAN ════ */
-    .tp{display:flex;flex-direction:column;gap:18px}
+    .tp{display:flex;flex-direction:column;gap:16px}
     .tp-hd{background:#F9F6F2;border-radius:8px;padding:14px 16px}
     .tp-obj-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#1B5EA7;margin-bottom:5px}
     .tp-title{font-size:19px;font-weight:800;color:#1A1A1A;margin-bottom:6px;line-height:1.25}
     .tp-obj{font-size:13px;color:#555;font-style:italic;margin:0}
+    .tp-linked{font-size:11px;color:#1B5EA7;font-weight:700;margin-top:8px}
     .tp-board{border:2px solid #1A1A1A;border-radius:7px;padding:13px 15px;background:#fff}
     .tp-board-ttl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#1A1A1A;margin-bottom:3px}
     .tp-board-sub{font-size:11px;color:#777;margin-bottom:11px}
+    .tp-board-title{font-size:15px;font-weight:800;text-align:center;border-bottom:1px solid #1A1A1A;padding-bottom:7px;margin-bottom:10px}
+    .tp-board-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .tp-board-col{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#777;margin-bottom:6px}
+    .tp-board-bottom{font-size:12px;font-weight:700;background:#F9F6F2;border-radius:5px;padding:8px 10px;margin-top:10px;text-align:center}
+    .tp-list{padding-left:18px;margin:0;display:flex;flex-direction:column;gap:6px}
+    .tp-list li{font-size:12.5px;line-height:1.45;color:#1A1A1A}
     .tp-bl{padding-left:18px;margin:0}
     .tp-bl li{font-weight:700;font-size:13.5px;margin-bottom:7px;color:#1A1A1A}
     .tp-bl li:last-child{margin-bottom:0}
@@ -72,10 +79,30 @@
     .tp-expl{font-size:13px;line-height:1.75;color:#1A1A1A}
     .tp-expl p{margin-bottom:11px}
     .tp-expl p:last-child{margin-bottom:0}
+    .tp-script{display:flex;flex-direction:column;gap:9px}
+    .tp-step{border:1px solid #e6e0d8;border-radius:7px;padding:10px 12px;background:#fff}
+    .tp-step-h{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px}
+    .tp-step-name{font-size:12px;font-weight:800;color:#1B5EA7}
+    .tp-step-min{font-size:10px;font-weight:800;color:#777;background:#F9F6F2;border-radius:12px;padding:2px 8px;white-space:nowrap}
+    .tp-say,.tp-do{font-size:12.5px;line-height:1.55;color:#1A1A1A}
+    .tp-say{margin-bottom:5px}
+    .tp-say strong,.tp-do strong{color:#1A1A1A}
+    .tp-vocab{display:grid;gap:7px}
+    .tp-vrow{display:grid;grid-template-columns:minmax(72px,.7fr) 1.4fr minmax(58px,.6fr);gap:8px;align-items:start;background:#F9F6F2;border-radius:7px;padding:8px 10px}
+    .tp-vword{font-size:12px;font-weight:800;color:#1A1A1A}
+    .tp-vmean,.tp-vzu{font-size:12px;line-height:1.45;color:#444}
+    .tp-vzu{font-weight:700;color:#2D8B3E}
     .tp-qs{padding-left:0;margin:0;list-style:none;display:flex;flex-direction:column;gap:7px}
     .tp-qs li{font-size:13px;color:#1A1A1A;padding:10px 13px;background:#F9F6F2;border-radius:7px;display:flex;gap:10px;align-items:flex-start}
     .tp-qn{font-weight:800;color:#1B5EA7;flex-shrink:0;min-width:14px}
     .tp-local{font-size:13px;line-height:1.75;color:#1A1A1A;background:#F0FAF2;padding:13px 15px;border-radius:7px;font-style:italic}
+    .tp-note{font-size:13px;line-height:1.65;color:#1A1A1A;background:#F9F6F2;padding:11px 13px;border-radius:7px}
+    .tp-device-grid{display:grid;gap:8px}
+    .tp-device-grid div{font-size:12.5px;line-height:1.55;background:#F9F6F2;border-radius:7px;padding:10px 12px;color:#1A1A1A}
+    .tp-device-grid span{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#1B5EA7;margin-bottom:3px}
+    .tp-mistakes{display:grid;gap:8px}
+    .tp-mistake{display:grid;grid-template-columns:.8fr 1.2fr;gap:5px 10px;background:#FFF8F2;border:1px solid #F3D1B8;border-radius:7px;padding:10px 12px;font-size:12.5px;line-height:1.45}
+    .tp-m-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#9A4B16}
     .tp-tg{background:#1A1A1A;border-radius:8px;padding:13px 15px;display:flex;flex-direction:column;gap:9px}
     .tp-tg-ttl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:2px}
     .tp-ti{display:flex;align-items:baseline;gap:10px}
@@ -90,6 +117,7 @@
       .tp-board{border:2px solid #000!important}
       .tp-tg{background:#222!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
       .tp-local{background:#e8f5ea!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+      .tp-step,.tp-mistake,.tp-device-grid div,.tp-vrow{break-inside:avoid}
     }
     /* Phone column */
     .pw{display:flex;flex-direction:column;gap:7px}
@@ -124,6 +152,8 @@
     .notch{height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .notchp{width:68px;height:5px;background:#2a2a2a;border-radius:3px}
     .screen{border-radius:24px;overflow:hidden;display:flex;flex-direction:column;background:#fff;height:624px;position:relative}
+    .screen.ok-flash::after{content:'';position:absolute;inset:0;background:rgba(45,139,62,.26);pointer-events:none;z-index:120;animation:okFlash .38s cubic-bezier(.22,1,.36,1)}
+    @keyframes okFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
     /* Arrow overlay */
     .aov{position:absolute;top:11px;left:11px;right:11px;bottom:14px;border-radius:24px;pointer-events:none;z-index:50;overflow:hidden}
 
@@ -521,6 +551,10 @@
     @keyframes fall{from{transform:translateY(-10px) rotate(0);opacity:1}to{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
     @media(max-width:820px){.fg{grid-template-columns:1fr}.res.on{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){
+      .screen.ok-flash::after{animation:none;opacity:0}
+      .tap-rpl{animation:none;display:none}
+    }
   </style>
 </head>
 <body>
@@ -682,6 +716,7 @@ function screens(type, step){
     android_home:      buildAndroidHome,
     play_store_search: buildPSSearch,
     play_store_app:    buildPSApp,
+    gmail_welcome:     buildGWelcome,
     gmail_signup_name: buildGSignupName,
     gmail_signup_user: buildGSignupUser,
     gmail_signup_pass: buildGSignupPass,
@@ -704,118 +739,253 @@ function screens(type, step){
   return fn ? fn(step) : buildGeneric(step);
 }
 
-// ── Logo helper — uses cached real logo, falls back to emoji ─────────────────
-var LOGO_CACHE = {};   // slug → true/false (loaded at startup via /api/logos)
+// ── App Registry — single source of truth for all apps ───────────────────────
+// preInstalled: already on the phone before the lesson starts.
+var APP_REG = {
+  'Play Store':        { id:'play_store',  bg:'#01875F', preInstalled:true  },
+  'Chrome':            { id:'chrome',      bg:'#4285F4', preInstalled:true  },
+  'Phone':             { id:'phone',       bg:'#34A853', preInstalled:true  },
+  'Messages':          { id:'messages',    bg:'#4285F4', preInstalled:true  },
+  'Camera':            { id:'camera',      bg:'#1A1A1A', preInstalled:true  },
+  'Settings':          { id:'settings',    bg:'#607D8B', preInstalled:true  },
+  'Calculator':        { id:'calculator',  bg:'#FF6F00', preInstalled:true  },
+  'Files':             { id:'files',       bg:'#1E88E5', preInstalled:true  },
+  'Gmail':             { id:'gmail',       bg:'#EA4335', preInstalled:true  },
+  'YouTube':           { id:'youtube',     bg:'#FF0000', preInstalled:false },
+  'Google Maps':       { id:'maps',        bg:'#4285F4', preInstalled:false },
+  'Google Sheets':     { id:'sheets',      bg:'#0F9D58', preInstalled:false },
+  'WhatsApp':          { id:'whatsapp',    bg:'#25D366', preInstalled:false },
+  'WhatsApp Business': { id:'whatsapp_biz',bg:'#25D366', preInstalled:false },
+  'Facebook':          { id:'facebook',    bg:'#1877F2', preInstalled:false },
+  'Instagram':         { id:'instagram',   bg:'#E1306C', preInstalled:false },
+  'TikTok':            { id:'tiktok',      bg:'#010101', preInstalled:false },
+  'Canva':             { id:'canva',       bg:'#7D2AE7', preInstalled:false },
+  'MTN Mobile Money':  { id:'mtn_momo',    bg:'#FFCB00', preInstalled:false },
+  'Capitec Bank':      { id:'capitec',     bg:'#003B5C', preInstalled:false },
+  'Spotify':           { id:'spotify',     bg:'#1DB954', preInstalled:false },
+  'Bolt':              { id:'bolt',        bg:'#34D058', preInstalled:false },
+  'Uber':              { id:'uber',        bg:'#000000', preInstalled:false },
+  'Takealot':          { id:'takealot',    bg:'#0079BF', preInstalled:false },
+  'LinkedIn':          { id:'linkedin',    bg:'#0077B5', preInstalled:false },
+};
 
+// ── Phone state — tracks what the simulator "knows" about the current phone ──
+var PHONE_STATE = {
+  currentScreen: 'home',   // updated on every renderScreen call
+};
+
+// Maps screenType → readable screen name for PHONE_STATE
+var SCREEN_STATE_MAP = {
+  android_home:'home', play_store_search:'playStore', play_store_app:'playStore',
+  gmail_welcome:'gmail',
+  gmail_signup_name:'gmail', gmail_signup_user:'gmail', gmail_signup_pass:'gmail',
+  gmail_inbox:'gmail', gmail_compose:'gmail',
+  whatsapp_welcome:'whatsapp', whatsapp_phone:'whatsapp', whatsapp_verify:'whatsapp',
+  whatsapp_setup_name:'whatsapp', whatsapp_chat_list:'whatsapp', whatsapp_chat:'whatsapp',
+  whatsapp_business:'whatsapp',
+  facebook_feed:'facebook', facebook_create_post:'facebook',
+  facebook_marketplace:'facebook', fb_listing_form:'facebook',
+  sheets_blank:'sheets', sheets_data:'sheets',
+  generic:'other',
+};
+
+// Returns true if the lesson's target app needs to be downloaded (Play Store steps exist).
+function lessonNeedsInstall(){
+  return !!(D && D.steps && D.steps.some(s =>
+    s.screenType === 'play_store_search' || s.screenType === 'play_store_app'
+  ));
+}
+
+// Returns true if the lesson's target app is already installed at the current step.
+// "Installed" means: preInstalled OR the lesson's install step is already past.
+function appIsInstalled(name){
+  const reg = APP_REG[name];
+  if (reg && reg.preInstalled) return true;
+  if (!D || !D.steps) return false;
+  const installStep = D.steps.findIndex(s => s.screenType === 'play_store_app');
+  return installStep !== -1 && STEP > installStep;
+}
+
+// Context-aware instruction: adapts teach text to actual phone state.
+function resolveStepInstruction(step){
+  if (!step) return '';
+  const appName = D && D.appName;
+  if (!appName) return step.teach || '';
+
+  if (step.screenType === 'android_home'){
+    if (!appIsInstalled(appName) && lessonNeedsInstall()){
+      return `${appName} is not on your phone yet.\nTap the Play Store icon to download it.`;
+    }
+    return `Find ${appName} on your home screen and tap it to open the app.`;
+  }
+  return step.teach || '';
+}
+
+// ── Logo helpers ──────────────────────────────────────────────────────────────
+var LOGO_CACHE = {};
 fetch('/api/logos').then(r=>r.json()).then(m=>{ LOGO_CACHE = m; }).catch(()=>{});
 
 function slugify(n){
   return (n||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
 }
 
-// Returns an <img> tag for the real logo, or the fallback emoji string.
-// size = px (the img will be square). css = extra inline style string.
+// Emoji fallback — used only if local/web icon lookup fails.
+var APP_EMOJI = {
+  'Play Store':'▶', 'Chrome':'🌐', 'Phone':'📞', 'Messages':'💬', 'Camera':'📷',
+  'Settings':'⚙️', 'Calculator':'🔢', 'Files':'📁', 'Gmail':'✉️',
+  'YouTube':'▶️', 'Google Maps':'📍', 'Google Sheets':'📊',
+  'WhatsApp':'💬', 'WhatsApp Business':'💬', 'Facebook':'f', 'Instagram':'📷',
+  'TikTok':'♪', 'Canva':'🎨', 'MTN Mobile Money':'💸', 'Capitec Bank':'🏦',
+  'Spotify':'♪', 'Bolt':'→', 'Uber':'U', 'Takealot':'🛒', 'LinkedIn':'in'
+};
+
+function appEmoji(name){
+  return APP_EMOJI[name] || (String(name||'').trim().charAt(0).toUpperCase() || '📱');
+}
+
+// Clean emoji/letter fallback — brand colour background, never blank.
+function getLogoFallback(name, size){
+  const bg  = (APP_REG[name] && APP_REG[name].bg) || '#5F6368';
+  const mark = appEmoji(name);
+  const fs  = Math.round(size * 0.45);
+  const br  = Math.round(size * 0.22);
+  const txt = bg === '#FFCB00' ? '#333' : '#fff';  // dark text on yellow (MTN)
+  return `<div style="width:${size}px;height:${size}px;border-radius:${br}px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:${fs}px;font-weight:800;color:${txt};flex-shrink:0;line-height:1">${mark}</div>`;
+}
+
+function jsAttr(s){
+  return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+
+function handleLogoError(img, name, size){
+  if(img.dataset.fetchTried === '1'){
+    img.outerHTML = getLogoFallback(name, size);
+    return;
+  }
+  img.dataset.fetchTried = '1';
+  fetch('/api/fetch-logo?app=' + encodeURIComponent(name))
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {
+      if(data && data.path){
+        img.src = data.path + '?v=' + Date.now();
+      } else {
+        img.outerHTML = getLogoFallback(name, size);
+      }
+    })
+    .catch(() => {
+      img.outerHTML = getLogoFallback(name, size);
+    });
+}
+
+// Returns an <img>; if missing, fetches an icon server-side, then uses emoji fallback.
 function appLogo(name, size, css){
   const sl = slugify(name);
-  const fallback = {
-    'Gmail':'<span style="font-size:'+(size*.6)+'px">📧</span>',
-    'WhatsApp':'<span style="font-size:'+(size*.6)+'px">💬</span>',
-    'Facebook':'<span style="font-size:'+(size*.6)+'px">👤</span>',
-    'Canva':'<span style="font-size:'+(size*.6)+'px">🎨</span>',
-    'Google Maps':'<span style="font-size:'+(size*.6)+'px">🗺️</span>',
-    'Google Sheets':'<span style="font-size:'+(size*.6)+'px">📊</span>',
-    'YouTube':'<span style="font-size:'+(size*.6)+'px">▶️</span>',
-    'Instagram':'<span style="font-size:'+(size*.6)+'px">📸</span>',
-    'TikTok':'<span style="font-size:'+(size*.6)+'px">🎵</span>',
-    'MTN Mobile Money':'<span style="font-size:'+(size*.6)+'px">💸</span>',
-    'Capitec':'<span style="font-size:'+(size*.6)+'px">🏦</span>',
-    'LinkedIn':'<span style="font-size:'+(size*.6)+'px">💼</span>',
-  }[name] || '<span style="font-size:'+(size*.6)+'px">📱</span>';
   return `<img src="/logos/${sl}.png" width="${size}" height="${size}"
     style="object-fit:contain;${css||''}"
     alt="${name}"
-    onerror="this.outerHTML='${fallback.replace(/'/g,'&apos;')}'">`
+    onerror="handleLogoError(this,'${jsAttr(name)}',${size})">`
 }
 
 // ── ANDROID HOME SCREEN ──────────────────────────────────────────────────────
+// Renders a context-aware home screen:
+// - If the lesson's target app needs to be installed → Play Store is visible, target app is absent.
+// - If the target app is already installed → it appears on the home screen.
 function buildAndroidHome(){
-  const grid=[
-    {n:'Phone',        ic:'📞', bg:'#34A853'},
-    {n:'Messages',     ic:'💬', bg:'#4285F4'},
-    {n:'Chrome',       ic:'🌐', bg:'#EA4335'},
-    {n:'Camera',       ic:'📷', bg:'#222'},
-    {n:'Gmail',        ic:'',   bg:'#EA4335'},
-    {n:'YouTube',      ic:'',   bg:'#FF0000'},
-    {n:'Google Maps',  ic:'',   bg:'#4285F4'},
-    {n:'WhatsApp',     ic:'',   bg:'#25D366'},
-    {n:'Settings',     ic:'⚙️', bg:'#607D8B'},
-    {n:'Calculator',   ic:'🔢', bg:'#FF6F00'},
-    {n:'Play Store',   ic:'',   bg:'#01875F'},
-    {n:'Facebook',     ic:'',   bg:'#1877F2'},
-  ];
+  const appName    = D && D.appName;
+  const needInstall = lessonNeedsInstall();
+
+  // Fixed system row always visible
+  const sys = ['Phone','Messages','Chrome','Camera'];
+  // Common pre-installed apps
+  const common = ['Gmail','YouTube','Google Maps','Settings','Calculator','Files'];
+  // Play Store always present — prominent when install is needed
+  const base = [...sys, 'Play Store', ...common];
+
+  // Add target app only if it is (or will be) installed
+  if (appName && !needInstall && !base.includes(appName)) base.push(appName);
+
+  // Dedupe, remove target app if it needs installing, cap at 12
+  const grid = [...new Set(base)]
+    .filter(n => !(needInstall && n === appName))
+    .slice(0, 12);
+
+  function homeIcon(n){
+    const reg = APP_REG[n] || { bg:'#5F6368' };
+    return `<div class="ah-app" data-label="${n}">
+      <div class="ah-icon" style="background:${reg.bg}">${appLogo(n, 40, 'border-radius:8px')}</div>
+      <div class="ah-lbl">${n}</div>
+    </div>`;
+  }
+
   return`<div class="ah">
 <div class="sb ah-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
-<div class="ah-grid">
-  ${grid.map(a=>`<div class="ah-app" data-label="${a.n}">
-    <div class="ah-icon" style="background:${a.bg}">
-      ${a.ic ? `<span>${a.ic}</span>` : appLogo(a.n,40,'border-radius:8px')}
-    </div>
-    <div class="ah-lbl">${a.n}</div>
-  </div>`).join('')}
-</div>
+<div class="ah-grid">${grid.map(homeIcon).join('')}</div>
 <div class="ah-dock">
-  <div class="ah-app" data-label="Phone"><div class="ah-icon" style="background:#34A853;width:40px;height:40px">📞</div></div>
-  <div class="ah-app" data-label="All apps" style="gap:0"><div style="display:grid;grid-template-columns:repeat(3,8px);gap:3px;padding:12px">${Array(9).fill('<div style="width:8px;height:8px;background:rgba(255,255,255,.8);border-radius:50%"></div>').join('')}</div></div>
-  <div class="ah-app" data-label="Messages"><div class="ah-icon" style="background:#4285F4;width:40px;height:40px">💬</div></div>
+  <div class="ah-app" data-label="Phone">
+    <div class="ah-icon" style="background:#34A853;width:40px;height:40px">${appLogo('Phone',36,'border-radius:50%')}</div>
+  </div>
+  <div class="ah-app" data-label="All apps" style="gap:0">
+    <div style="display:grid;grid-template-columns:repeat(3,8px);gap:3px;padding:12px">
+      ${Array(9).fill('<div style="width:8px;height:8px;background:rgba(255,255,255,.8);border-radius:50%"></div>').join('')}
+    </div>
+  </div>
+  <div class="ah-app" data-label="Messages">
+    <div class="ah-icon" style="background:#4285F4;width:40px;height:40px">${appLogo('Messages',36,'border-radius:50%')}</div>
+  </div>
 </div>
 </div>`;
 }
 
 // ── PLAY STORE ───────────────────────────────────────────────────────────────
+// App catalogue — derived from APP_REG, extended with store metadata.
+// Augmenting APP_REG in-place is safe; these fields are only used by the PS UI.
+var PS_META = {
+  'Gmail':             { dev:'Google LLC',           cat:'Productivity'  },
+  'WhatsApp':          { dev:'WhatsApp LLC',         cat:'Communication' },
+  'WhatsApp Business': { dev:'WhatsApp LLC',         cat:'Business'      },
+  'Facebook':          { dev:'Meta Platforms',       cat:'Social'        },
+  'Canva':             { dev:'Canva Pty Ltd',        cat:'Design'        },
+  'Google Maps':       { dev:'Google LLC',           cat:'Navigation'    },
+  'Google Sheets':     { dev:'Google LLC',           cat:'Productivity'  },
+  'YouTube':           { dev:'Google LLC',           cat:'Entertainment' },
+  'Instagram':         { dev:'Meta Platforms',       cat:'Social'        },
+  'TikTok':            { dev:'TikTok Pte. Ltd.',     cat:'Entertainment' },
+  'Capitec Bank':      { dev:'Capitec Bank',         cat:'Finance'       },
+  'MTN Mobile Money':  { dev:'MTN South Africa',     cat:'Finance'       },
+  'Spotify':           { dev:'Spotify AB',           cat:'Music'         },
+  'Bolt':              { dev:'Bolt Technology OÜ',   cat:'Transport'     },
+  'Uber':              { dev:'Uber Technologies',    cat:'Transport'     },
+  'Takealot':          { dev:'Takealot.com',         cat:'Shopping'      },
+  'LinkedIn':          { dev:'LinkedIn Corp.',       cat:'Professional'  },
+};
+// Searchable app list — built from APP_REG + PS_META
+var PS_APPS = Object.keys(PS_META).map(n => ({
+  n, bg: (APP_REG[n] || {}).bg || '#5F6368',
+  dev: PS_META[n].dev, cat: PS_META[n].cat
+}));
+
 function buildPSSearch(){
-  const apps=[
-    {n:'Gmail',      bg:'#EA4335'},
-    {n:'WhatsApp',   bg:'#25D366'},
-    {n:'Facebook',   bg:'#1877F2'},
-    {n:'Canva',      bg:'#7D2AE7'},
-    {n:'Google Maps',bg:'#4285F4'},
-  ];
+  // Featured row: lesson target app first, then popular apps
+  const target  = D && D.appName;
+  const featured = [target, 'WhatsApp','Gmail','Facebook','Canva','Google Maps']
+    .filter((n,i,a) => n && APP_REG[n] && a.indexOf(n)===i)
+    .slice(0, 5);
   return`<div class="ps">
 <div class="sb ps-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
 <div class="ps-top">
   <div class="ps-back" data-label="Back">←</div>
-  <input class="ps-search-inp" id="ps-search-inp" data-label="Search for apps & games" placeholder="🔍  Search for apps &amp; games" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="psSearchType(this.value)"/>
+  <input class="ps-search-inp" id="ps-search-inp" data-label="Search for apps &amp; games" placeholder="🔍  Search for apps &amp; games" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="psSearchType(this.value)"/>
   <div class="ps-mic" data-label="Voice search">🎤</div>
 </div>
 <div class="ps-body" id="ps-body-area">
   <div style="font-size:12px;font-weight:700;margin-bottom:8px">Suggested for you</div>
   <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">
-    ${apps.map(a=>`<div style="text-align:center;flex-shrink:0;cursor:pointer" data-label="${a.n}" onclick="psSearchType('${a.n}')">
-      <div style="width:56px;height:56px;border-radius:13px;background:${a.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:4px">${appLogo(a.n,52)}</div>
-      <div style="font-size:10px">${a.n}</div>
-    </div>`).join('')}
+    ${featured.map(n=>{const bg=(APP_REG[n]||{}).bg||'#5F6368';return`<div style="text-align:center;flex-shrink:0;cursor:pointer" data-label="${n}" onclick="psSearchType('${n}')">
+      <div style="width:56px;height:56px;border-radius:13px;background:${bg};display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:4px">${appLogo(n,52)}</div>
+      <div style="font-size:10px">${n}</div>
+    </div>`;}).join('')}
   </div>
 </div></div>`}
-
-// App catalogue for search results
-var PS_APPS=[
-  {n:'Gmail',             bg:'#EA4335',dev:'Google LLC',           cat:'Productivity'},
-  {n:'WhatsApp',          bg:'#25D366',dev:'WhatsApp LLC',         cat:'Communication'},
-  {n:'WhatsApp Business', bg:'#25D366',dev:'WhatsApp LLC',         cat:'Business'},
-  {n:'Facebook',          bg:'#1877F2',dev:'Meta Platforms',       cat:'Social'},
-  {n:'Canva',             bg:'#7D2AE7',dev:'Canva Pty Ltd',        cat:'Design'},
-  {n:'Google Maps',       bg:'#4285F4',dev:'Google LLC',           cat:'Navigation'},
-  {n:'Google Sheets',     bg:'#0F9D58',dev:'Google LLC',           cat:'Productivity'},
-  {n:'YouTube',           bg:'#FF0000',dev:'Google LLC',           cat:'Entertainment'},
-  {n:'Instagram',         bg:'#E1306C',dev:'Meta Platforms',       cat:'Social'},
-  {n:'TikTok',            bg:'#010101',dev:'TikTok Pte. Ltd.',     cat:'Entertainment'},
-  {n:'Capitec Bank',      bg:'#003B5C',dev:'Capitec Bank',         cat:'Finance'},
-  {n:'MTN Mobile Money',  bg:'#FFCB00',dev:'MTN South Africa',     cat:'Finance'},
-  {n:'Spotify',           bg:'#1DB954',dev:'Spotify AB',           cat:'Music'},
-  {n:'Bolt',              bg:'#34D058',dev:'Bolt Technology OÜ',   cat:'Transport'},
-  {n:'Uber',              bg:'#000000',dev:'Uber Technologies',     cat:'Transport'},
-  {n:'Takealot',          bg:'#0079BF',dev:'Takealot.com',         cat:'Shopping'},
-];
 
 function psSearchType(val){
   const inp = document.getElementById('ps-search-inp');
@@ -869,6 +1039,18 @@ function buildPSApp(s){
 </div></div>`}
 
 // ── GMAIL ────────────────────────────────────────────────────────────────────
+function buildGWelcome(){return`<div style="display:flex;flex-direction:column;flex:1;background:#fff;overflow:hidden">
+<div class="sb" style="background:#EA4335;color:#fff;width:100%"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px 24px">
+  <div style="margin-bottom:18px">${appLogo('Gmail',72,'border-radius:16px')}</div>
+  <div style="font-size:22px;font-weight:700;color:#202124;margin-bottom:8px">Gmail</div>
+  <div style="font-size:14px;color:#5F6368;text-align:center;margin-bottom:32px;line-height:1.5">Sign in to your Google Account or create a new one to get started.</div>
+  <button class="gs-btn" data-label="Create account" id="gwelcome-create" style="width:100%;margin-bottom:12px;background:#1A73E8;color:#fff;border:none;border-radius:6px;padding:14px;font-size:15px;font-weight:600;cursor:pointer">Create account</button>
+  <button data-label="Sign in" id="gwelcome-signin" style="width:100%;background:#fff;color:#1A73E8;border:2px solid #1A73E8;border-radius:6px;padding:12px;font-size:15px;font-weight:600;cursor:pointer">Sign in</button>
+</div>
+<div style="padding:16px 24px;text-align:center;font-size:11px;color:#9AA0A6">By continuing, you agree to Google's Terms of Service and Privacy Policy.</div>
+</div>`}
+
 function buildGSignupName(){return`<div class="gs">
 <div class="sb" style="background:#fff;color:#1A1A1A;width:100%"><span>9:41</span><span>▪▪▪ 🔋</span></div>
 <div style="font-size:26px;font-weight:800;color:#4285F4;margin-top:4px">G</div>
@@ -916,7 +1098,7 @@ function buildGInbox(){return`<div class="gi">
      ['#4285F4','S','SEDA Port Shepstone','Business registration docs','Please find your docs attached...','Mon',true],
      ['#D62B2B','I','Inkify Store','Your flyer order is ready','Hello, your 50 flyers are...','Sun',false],
      ['#F37021','V','Victor Jaca','Meeting at Msenti Hub','Confirming our meeting for 10am...','Sat',false]]
-  .map(([c,l,s,j,k,t,u])=>`<div class="gi-row${u?' unread':''}"><div class="gi-ico" style="background:${c}">${l}</div>
+  .map(([c,l,s,j,k,t,u])=>`<div class="gi-row${u?' unread':''}" data-label="${s}"><div class="gi-ico" style="background:${c}">${l}</div>
   <div class="gi-bd"><div class="gi-sender">${s}</div><div class="gi-subj">${j}</div><div class="gi-snip">${k}</div></div>
   <div class="gi-time">${t}</div></div>`).join('')}
 </div>
@@ -974,18 +1156,35 @@ function buildWAPhone(){return`<div class="wap">
 <button class="wap-next" data-label="Next" id="wap-next">Next</button>
 </div></div>`}
 
-function buildWAVerify(){return`<div class="wav">
+function buildWAVerify(){
+  // Hidden real input drives the visible digit boxes
+  function wavDigitHtml(){
+    return `<div class="wav-boxes" id="wav-boxes" onclick="document.getElementById('wav-hidden').focus()">
+  ${[...Array(6)].map((_,i)=>`<div class="wav-box" id="wav-b${i}"></div>`).join('')}
+</div>
+<input id="wav-hidden" type="tel" maxlength="6" inputmode="numeric"
+  data-label="SMS code"
+  style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none"
+  oninput="wavUpdate(this.value)"/>`;
+  }
+  return`<div class="wav">
 <div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
 <div class="wav-hd">Verifying your number</div>
-<div class="wav-body">
+<div class="wav-body" style="position:relative">
 <div class="wav-title">Enter the 6-digit code</div>
 <div class="wav-sub">WhatsApp sent an SMS to your number. Enter the code from that message.</div>
 <div class="wav-phone">+27 71 234 5678</div>
-<div class="wav-boxes" id="wav-boxes">
-  ${[...Array(6)].map((_,i)=>`<div class="wav-box" id="wav-b${i}">${i===0?'3':''}</div>`).join('')}
-</div>
+${wavDigitHtml()}
+<button class="wap-next" data-label="Verify" id="wav-verify" style="margin-top:16px;width:100%">Verify</button>
 <div class="wav-wait">Resend code in 00:57</div>
 </div></div>`}
+function wavUpdate(val){
+  [...Array(6)].forEach((_,i)=>{
+    const b=document.getElementById('wav-b'+i);
+    if(b) b.textContent = val[i]||'';
+  });
+  if(val.length===6) phoneActionDone('SMS code');
+}
 
 function buildWASetupName(){return`<div class="wasn">
 <div class="sb wa-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
@@ -1005,7 +1204,7 @@ ${[['#25D366','T','Thandi (me) ✓','Your account is set up!'],
    ['#0F9D58','V','Victor Jaca','See you at Msenti Hub!'],
    ['#4285F4','S','SEDA Port Shepstone','Your docs are ready'],
    ['#D62B2B','I','Inkify Store','Flyers are ready for collection']]
-.map(([c,l,n,m],i)=>`<div class="wcl-row"><div class="wcl-av" style="background:${c}">${l}</div>
+.map(([c,l,n,m],i)=>`<div class="wcl-row" data-label="${n}"><div class="wcl-av" style="background:${c}">${l}</div>
 <div class="wcl-info"><div class="wcl-name">${n}</div><div class="wcl-last">${m}</div></div>
 <div class="wcl-meta"><div class="wcl-time">${['9:41','9:30','Mon','Sun'][i]}</div>${i===0?'<div class="wcl-badge">1</div>':''}</div></div>`).join('')}
 <div class="wcl-fab" data-label="New chat">✏</div>
@@ -1158,6 +1357,7 @@ function renderScreen(idx){
   const step = D.steps[idx];
   if(!step){ showRefl(); return; }
   const type = step.screenType || 'generic';
+  PHONE_STATE.currentScreen = SCREEN_STATE_MAP[type] || 'other';
 
   // App UI fills the phone screen; #bs sits on top as an absolute bottom sheet
   document.getElementById('scr').innerHTML = `
@@ -1224,8 +1424,8 @@ function updateStepUI(idx){
   if(badge) badge.textContent = `Step ${idx+1} / ${total}`;
   if(hint)  hint.textContent  = s.screenName || '';
 
-  // Show teach text (new field) falling back to instruction (old field)
-  const teachText = s.teach || s.instruction || '';
+  // Context-aware instruction — adapts to actual phone state
+  const teachText = resolveStepInstruction(s);
   document.getElementById('ss-txt').innerHTML = teachText.replace(/\n/g,'<br>');
 
   // Clear feedback
@@ -1340,6 +1540,7 @@ function checkTapOpt(btn, value, idx){
   if(correct){
     opts.forEach(b => b.disabled = true);
     btn.classList.add('ex-correct');
+    flashCorrect();
     showFB(true, s.feedbackCorrect || 'Correct!');
     EX_ANSWERED = true;
     unlockNext();
@@ -1410,6 +1611,7 @@ function checkBlankInput(idx){
     input.classList.add('ex-correct');
     input.disabled = true;
     if(checkBtn) checkBtn.disabled = true;
+    flashCorrect();
     showFB(true, s.feedbackCorrect || 'Correct!');
     EX_ANSWERED = true;
     unlockNext();
@@ -1457,6 +1659,7 @@ function checkOrderEx(idx){
   const correct = JSON.stringify(EX_TILE_QUEUE) === JSON.stringify(s.correctOrder||[]);
   if(correct){
     document.querySelectorAll('#ex-pool .ex-tile').forEach(t => t.classList.add('ex-correct'));
+    flashCorrect();
     showFB(true, s.feedbackCorrect || 'Correct order!');
     EX_ANSWERED = true;
     unlockNext();
@@ -1502,6 +1705,7 @@ function tryMatchPairEx(idx){
     EX_SEL_MATCH.classList.replace('ex-selected','ex-matched');
     EX_PAIRS_DONE++;
     if(EX_PAIRS_DONE === (s.pairs||[]).length){
+      flashCorrect();
       showFB(true, s.feedbackCorrect || 'All matched!');
       EX_ANSWERED = true;
       unlockNext();
@@ -1538,6 +1742,7 @@ function tryMatchPairEx(idx){
 function confirmPhoneDone(idx){
   const btn = document.getElementById('ex-did-btn');
   if(btn){ btn.textContent = '✓ Done on phone!'; btn.classList.add('done'); btn.disabled = true; }
+  flashCorrect();
   const q = document.getElementById('ex-confirm-q');
   if(q) q.classList.add('show');
 }
@@ -1573,6 +1778,7 @@ function phoneActionDone(label){
 
   if(!s.exerciseType && !EX_ANSWERED){
     // No quiz — show success and unlock Next so the student can move on
+    flashCorrect();
     showFB(true, 'Done! Tap Next to continue.');
     unlockNext();
     snapBS(BS_SNAP_MEDIUM);
@@ -1581,49 +1787,96 @@ function phoneActionDone(label){
 
   if(!EX_ANSWERED){
     // Has a quiz — expand sheet so the student can see and answer it
+    flashCorrect();
     showFB(true, 'Done on phone! Now answer the question below.');
     snapBS(BS_SNAP_EXPANDED);
   }
 }
 
+// Word-level label matching — handles wording differences between LLM targets
+// and actual element labels.
 function labelMatches(elLabel, targetLabel){
-  if(!elLabel || !targetLabel) return false;
-  const el = elLabel.toLowerCase().trim();
-  const tg = targetLabel.toLowerCase().trim();
-  // Match if either contains the other's first 7 chars
-  return el.includes(tg.slice(0, 7)) || tg.includes(el.slice(0, 7));
+  if(!targetLabel) return false;
+  const clean = s => s.toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  const el = clean(elLabel), tg = clean(targetLabel);
+  if(!el || !tg) return false;
+  // Full containment
+  if(el === tg || el.includes(tg) || tg.includes(el)) return true;
+  // Shared significant words (ignoring filler words)
+  const stop = new Set(['the','and','for','your','this','that','then','from','with','into','how','what','you','tap','press','click','now','next']);
+  const sig = s => s.split(' ').filter(w => w.length > 2 && !stop.has(w));
+  const elW = sig(el), tgW = sig(tg);
+  return elW.length > 0 && tgW.length > 0 && elW.some(w => tgW.includes(w));
 }
 
 function setupPhoneInteractivity(){
   const shell = document.getElementById('shell-body');
   if(!shell) return;
 
-  // In-app back arrows always navigate to previous lesson step,
-  // unless the step's actual goal IS to tap Back.
+  const curStep = () => D && D.steps && D.steps[STEP];
+
+  // In-app back arrows navigate to previous step unless "back" IS the target action
   shell.querySelectorAll('[data-label="Back"]').forEach(el => {
     if(el.dataset.backBound) return;
     el.dataset.backBound = '1';
     el.addEventListener('click', function(){
-      const s = D && D.steps && D.steps[STEP];
-      const tgt = ((s && s.targetLabel) || '').toLowerCase();
-      if(!tgt.includes('back')) { prevStep(STEP); return; }
+      const tgt = ((curStep() && curStep().targetLabel) || '').toLowerCase();
+      if(!tgt.includes('back')) prevStep(STEP);
     });
   });
 
+  // Click detection on all labelled/interactive elements
   shell.querySelectorAll('button,input,textarea,select,[data-label]').forEach(el => {
     if(el.dataset.rplBound) return;
     el.dataset.rplBound = '1';
     el.addEventListener('click', function(ev){
       addRipple(this, ev);
-      const s = D && D.steps && D.steps[STEP];
+      const s = curStep();
       if(!s || EX_ANSWERED) return;
       const elLabel = (this.getAttribute('data-label') || this.textContent || '').trim();
-      const targetLabel = (s.targetLabel || '');
-      if(targetLabel && labelMatches(elLabel, targetLabel)){
-        phoneActionDone(elLabel);
-      }
+      const tgt = s.targetLabel || '';
+      if(tgt && labelMatches(elLabel, tgt)) phoneActionDone(elLabel);
     });
   });
+
+  // Typing detection: typing in a field that matches the target counts as interaction
+  shell.querySelectorAll('input,textarea').forEach(el => {
+    if(el.dataset.typeBound) return;
+    el.dataset.typeBound = '1';
+    el.addEventListener('input', function(){
+      const s = curStep();
+      if(!s || EX_ANSWERED || this.value.length < 2) return;
+      const elLabel = (this.getAttribute('data-label') || this.placeholder || '').trim();
+      const tgt = s.targetLabel || '';
+      // Trigger if: no targetLabel set, OR this field matches targetLabel
+      if(!tgt || labelMatches(elLabel, tgt)) phoneActionDone(elLabel);
+    });
+  });
+
+  // Select/dropdown detection
+  shell.querySelectorAll('select').forEach(el => {
+    if(el.dataset.selBound) return;
+    el.dataset.selBound = '1';
+    el.addEventListener('change', function(){
+      const s = curStep();
+      if(!s || EX_ANSWERED || !this.value) return;
+      const elLabel = (this.getAttribute('data-label') || '').trim();
+      const tgt = s.targetLabel || '';
+      if(!tgt || labelMatches(elLabel, tgt)) phoneActionDone(elLabel);
+    });
+  });
+
+  // Fallback: if this step has NO targetLabel, any tap on the phone (outside
+  // the teaching sheet) advances the step. Handles complex screens where the
+  // LLM can't specify an exact button label.
+  if(!shell.dataset.anyBound) {
+    shell.dataset.anyBound = '1';
+    shell.addEventListener('click', function(ev){
+      if(ev.target.closest('#bs')) return;  // ignore taps in the teaching sheet
+      const s = curStep();
+      if(s && !s.targetLabel && !EX_ANSWERED) phoneActionDone('(phone)');
+    });
+  }
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -1637,6 +1890,15 @@ function showFB(ok, text){
   if(!fb) return;
   fb.textContent = (ok ? '✓ ' : '✗ ') + (text||'');
   fb.className = 'ss-fb ' + (ok ? 'fb-ok' : 'fb-err');
+}
+
+function flashCorrect(){
+  const screen = document.querySelector('.screen');
+  if(!screen) return;
+  screen.classList.remove('ok-flash');
+  void screen.offsetWidth;
+  screen.classList.add('ok-flash');
+  setTimeout(()=>screen.classList.remove('ok-flash'), 420);
 }
 
 function shakeSheet(){

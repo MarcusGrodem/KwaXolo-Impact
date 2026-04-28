@@ -1,10 +1,30 @@
-# KwaXolo Impact Challenge — Complete Case Markdown
+# KwaXolo Impact Challenge — Project Context
+
+Last updated from repository scan: 2026-04-28.
+
+This file is the compact product/context reference for future agents. Original briefings and research live in `docs/briefings/` and `docs/research/`. The current working prototype lives in `test-site/`.
 
 ## Problem Statement
 How should KwaXolo Impact digitally transform nine schools in rural KwaZulu-Natal to maximise digital literacy and long-term economic opportunity?
 
 ## Platform Name
 **KwaXolo Learn**
+
+## Current Repository Status
+
+This repository contains both strategy materials and a working local agent prototype.
+
+- Prototype: `test-site/`
+- Run command: `npm start`
+- Local URL: `http://localhost:3000`
+- Main server: `test-site/server.js`
+- Main UI: `test-site/public/index.html`
+- Full content rules: `agent-guide/`
+- Saved generation examples: `agent-guide/examples/good/` and `agent-guide/examples/bad/`
+- Real app UI references: `Example sites/`
+- South African Android logo pack: `Logos/south_africa_top_500_app_logos/`
+
+The current prototype is a content-agent QA surface. It generates a teacher lesson plan and an interactive phone-style student task from a teacher's topic. It is not yet a full multi-role production platform with accounts, publishing, offline sync, or analytics.
 
 ## Deliverables
 ### 1. Strategy & Implementation Roadmap
@@ -86,13 +106,25 @@ How should KwaXolo Impact digitally transform nine schools in rural KwaZulu-Nata
 ---
 
 ## Strategic Focus
-- **Phase 6 (entrepreneurship)** — KwaXolo's direct responsibility
-- Phases 2–5 handled externally (Microsoft, Khan Academy, Google, SAP) — do not rebuild
-- Economic opportunity: **Chain A** (skills → formal employment over time) + **Chain B** (platform directly enables local micro-business creation now)
+- **Phase 6 (entrepreneurship)** remains the product focus for KwaXolo Learn.
+- Phase 1 basic digital literacy is a dependency and must be embedded into student tasks because many learners cannot yet use email, spreadsheets, app stores, or forms.
+- Phases 2–5 are expected to involve external partners (Microsoft, Khan Academy, Google, SAP) — do not rebuild those ecosystems unless explicitly asked.
+- Economic opportunity: **Chain A** (skills → formal employment over time) + **Chain B** (platform directly enables local micro-business creation now).
 
 ---
 
 ## AI Agent — Module Generation
+
+Current implementation note: `test-site/server.js` has evolved from a single Lovable-style module generator into a multi-step local agent prototype.
+
+Pipeline:
+1. Search or load cached UI context for the topic/app.
+2. Plan the full step sequence and difficulty.
+3. Generate teacher material and student material in parallel.
+4. Validate step count, local grounding, exercise fields, and screen types.
+5. Save raw logs and allow good/bad example capture.
+
+The current output is closer to a teacher lesson plan plus Duolingo-style student phone walkthrough than to a full bilingual module object. Full bilingual module/platform specs still live in the strategy docs and remain useful for the production product.
 
 ### Teacher flow
 1. Select category (6 categories, A–F)
@@ -140,8 +172,22 @@ How should KwaXolo Impact digitally transform nine schools in rural KwaZulu-Nata
 #### F: Custom Module
 - Teacher describes need in 1–3 sentences — last option, not first
 
-### Module structure (every module)
+### Module structure (production concept)
 Learning Objectives → Key Concepts → Local Example → Practical Exercise → Quiz (5 questions) → Take-Home Challenge → Local Resources → Next Module Suggestion
+
+### Current prototype output structure
+- Teacher title
+- Teacher objective
+- Board points
+- Teacher explanation
+- Discussion questions
+- Local example
+- Time guide
+- Student task title
+- Student task intro
+- App metadata
+- Numbered interactive steps with screen type, exercise type, feedback, and visible result
+- Reflection question
 
 ### Pedagogical model: Build–Practice–Present
 - **Build:** Theory + local example (10 min)
@@ -174,13 +220,27 @@ Evidence base: Educate! RCT across Uganda/Rwanda/Kenya — 105% income increase.
 
 ---
 
-## MVP Scope (Lovable)
-Must demonstrate:
+## MVP Scope
+
+Original Lovable MVP goal:
 1. Teacher login → template selection → context input → AI generation → edit → publish
 2. Student login → module library → lesson → quiz → progress
 3. Admin view → published modules → basic analytics
 
-Does NOT need for MVP (explain in slides):
+Current local prototype demonstrates:
+1. Teacher enters topic, learner struggles, time, and local context
+2. Agent searches/plans/generates/validates a lesson
+3. Teacher-facing plan renders in the browser
+4. Student-facing phone simulator renders step-by-step app tasks
+5. Reviewer can save generated output as a good or bad example
+6. App logos and app design references are cached for reuse
+
+Not implemented in the local prototype:
+- User accounts
+- Teacher edit/publish workflow
+- Student library
+- Persistent student progress
+- Admin dashboard
 - Offline caching / PWA
 - USB sync / sneakernet distribution
 - Multi-school deployment
@@ -206,6 +266,18 @@ Does NOT need for MVP (explain in slides):
 3. Msenti Hub has reliable enough internet for AI generation sessions
 4. Student count: using 7,041 (school table) — founder letter says ~6,000 (discrepancy flagged)
 5. Mlonde and Thobigunya schools show identical data in case table — likely data entry error
+
+## Implementation Constraints For Future Work
+
+- Keep the agent template-driven; do not turn it into open-ended student chat.
+- Keep teacher and student outputs separate.
+- Preserve teacher review/QA before publishing.
+- Treat isiZulu as a first-class language requirement, not a later translation layer.
+- Preserve offline-first assumptions even when the local prototype is online-only.
+- Prefer concrete app walkthroughs that start from first-time use.
+- Preserve good/bad example capture; these are important feedback data for prompt iteration.
+- Do not print secrets from `.env`.
+- Do not assume `src/`, `assets/`, or `content/` contain active application code yet; they are placeholders.
 
 ---
 

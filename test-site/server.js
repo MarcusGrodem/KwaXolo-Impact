@@ -164,41 +164,91 @@ function fetchBuffer(url, redirects) {
   });
 }
 
+// Use web search to find a Play Store icon URL for any app.
+// Returns a direct image URL string, or null.
+async function searchPlayStoreIconUrl(appName) {
+  const client = openaiClient();
+  if (!client) return null;
+  try {
+    const resp = await client.responses.create({
+      model: "gpt-4o-mini",
+      tools: [{ type: "web_search_preview" }],
+      input: `Find the Google Play Store page for the Android app called "${appName}". Return ONLY the direct URL of the app icon image (square logo). The URL is usually from play-lh.googleusercontent.com. Return just the URL, nothing else.`
+    });
+    const text = (resp.output_text || "").trim();
+    // Prefer play-lh CDN URLs (high-res Play Store icons)
+    const playMatch = text.match(/https:\/\/play-lh\.googleusercontent\.com\/[^\s"'<>)]+/);
+    if (playMatch) return playMatch[0].replace(/=s\d+/, "=s128");
+    // Fall back to any PNG/JPG URL
+    const anyMatch = text.match(/https?:\/\/[^\s"'<>)]+\.(png|jpg|jpeg|webp)/i);
+    return anyMatch ? anyMatch[0] : null;
+  } catch (e) {
+    console.warn(`  ⚠ Play Store icon search failed for "${appName}":`, e.message);
+    return null;
+  }
+}
+
 // Fetch the real logo for an app and save to public/logos/<slug>.png.
-// Tries local manifest first, then falls back to internet fetch.
-// Returns the public path ("/logos/<slug>.png") or null on failure.
+// Cascade: local manifest → Google favicon → Clearbit → web search → null.
 async function fetchAndSaveLogo(appName) {
   if (!appName) return null;
   const slug = slugify(appName);
   const dest = path.join(LOGOS_DIR, slug + ".png");
   if (fs.existsSync(dest)) return "/logos/" + slug + ".png";
 
-  // 1. Check local South Africa top-500 logo pack
+  // 1. Local South Africa top-500 logo pack
   const manifestFile = findLogoInManifest(appName);
   if (manifestFile) {
     const src = path.join(LOGOS_SOURCE_DIR, manifestFile);
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, dest);
-      console.log(`  → Logo (local): ${manifestFile} → public/logos/${slug}.png`);
+      console.log(`  → Logo (local):   ${manifestFile} → public/logos/${slug}.png`);
       return "/logos/" + slug + ".png";
     }
   }
 
-  // 2. Fall back to Google S2 favicon service
   const domain = LOGO_DOMAINS[appName];
-  if (!domain) return null;
 
-  try {
-    const url = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-    const buf = await fetchBuffer(url);
-    if (buf.length < 200) return null;  // 1×1 grey pixel = unknown domain
-    fs.writeFileSync(dest, buf);
-    console.log(`  → Logo (web):   public/logos/${slug}.png  (${buf.length} bytes)`);
-    return "/logos/" + slug + ".png";
-  } catch (e) {
-    console.warn(`  ⚠ Logo fetch failed for "${appName}":`, e.message);
-    return null;
+  // 2. Google S2 favicon service (fast, works for known domains)
+  if (domain) {
+    try {
+      const buf = await fetchBuffer(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`);
+      if (buf.length > 200) {
+        fs.writeFileSync(dest, buf);
+        console.log(`  → Logo (favicon): public/logos/${slug}.png  (${buf.length}b)`);
+        return "/logos/" + slug + ".png";
+      }
+    } catch (e) {}
   }
+
+  // 3. Clearbit logo API (good coverage for brand domains)
+  if (domain) {
+    try {
+      const buf = await fetchBuffer(`https://logo.clearbit.com/${domain}?size=128`);
+      if (buf.length > 500) {
+        fs.writeFileSync(dest, buf);
+        console.log(`  → Logo (clearbit): public/logos/${slug}.png  (${buf.length}b)`);
+        return "/logos/" + slug + ".png";
+      }
+    } catch (e) {}
+  }
+
+  // 4. Web search for Play Store icon (covers unknown apps not in LOGO_DOMAINS)
+  console.log(`  → Logo (searching): looking up Play Store icon for "${appName}"...`);
+  const iconUrl = await searchPlayStoreIconUrl(appName);
+  if (iconUrl) {
+    try {
+      const buf = await fetchBuffer(iconUrl);
+      if (buf.length > 500) {
+        fs.writeFileSync(dest, buf);
+        console.log(`  → Logo (web search): public/logos/${slug}.png  (${buf.length}b)`);
+        return "/logos/" + slug + ".png";
+      }
+    } catch (e) {}
+  }
+
+  console.log(`  → Logo: no source found for "${appName}"`);
+  return null;
 }
 
 function writeLog(reqId, data) {
@@ -399,6 +449,7 @@ VALID screenType VALUES (use EXACTLY one per step):
   android_home         → Android phone home screen with app icons grid (use for step 1 when student must open an app from the home screen)
   play_store_search    → Play Store search screen with results
   play_store_app       → App detail page: name, icon, Install/Open button, reviews
+  gmail_welcome        → Gmail first-launch welcome screen: "Create account" (blue) + "Sign in" buttons
   gmail_signup_name    → Google account creation: enter first name, last name
   gmail_signup_user    → Choose Gmail address
   gmail_signup_pass    → Create a strong password
@@ -423,7 +474,8 @@ VISUAL ACCURACY RULES:
 - Step 1 for any lesson that involves opening an app → MUST be android_home (student taps the app icon from the home screen)
 - Step 2 for install lessons → play_store_search (student lands in Play Store after opening it)
 - Step 3 for install lessons → play_store_app (student finds and opens the app listing)
-- Creating account → early steps MUST use signup screens, NOT the app home
+- Gmail first-launch welcome (choose Create account or Sign in) → gmail_welcome, NOT generic
+- Creating account → early steps MUST use: gmail_welcome → gmail_signup_name → gmail_signup_user → gmail_signup_pass
 - Steps must follow the EXACT ORDER a first-time user experiences them`;
 
 // ─── App design MD system ─────────────────────────────────────────────────────
@@ -621,14 +673,16 @@ Real app UI from web search:
 ${uiContext || "Use your knowledge of the real app UI."}
 
 STEP COUNT — calibrate to actual task difficulty:
-  Simple task (1–2 screens, 1 goal):     6–8 steps
-  Medium task (3–5 screens, setup flow):  9–12 steps
-  Complex task (6+ screens, multi-goal): 12–16 steps
+  Simple task (1–2 screens, 1 goal):     5–7 steps
+  Medium task (3–5 screens, setup flow):  7–9 steps
+  Complex task (6+ screens, multi-goal): 9–10 steps
+
+ABSOLUTE LIMIT: never return more than 10 steps. If the task has more details, combine closely related fields or confirmations into one clear step, but keep the final step as the real completed goal.
 
 Examples of difficulty:
   Simple  → "Send a WhatsApp message to an existing contact"          → ~7 steps
   Medium  → "Set up a WhatsApp Business profile"                      → ~10 steps
-  Complex → "Create a Gmail account from scratch and send first email" → ~14 steps
+  Complex → "Create a Gmail account from scratch and send first email" → 10 steps max
 
 RULES:
 - Start from the ABSOLUTE beginning of what the student must do:
@@ -638,8 +692,9 @@ RULES:
 - Every form field set = its own step (do not merge multiple fields into one)
 - Every confirmation / permission / SMS code screen = its own step
 - The FINAL step must show the student completing the main goal (not just setting up)
+- Maximum 10 steps total. This is non-negotiable.
 - Do NOT pad with trivial filler steps just to inflate the count
-- Do NOT compress two real screens into one step just to keep the count down
+- You MAY combine closely related micro-actions into one step to stay under 10 steps
 - Name the specific screen and button in each step description
 
 Return JSON:
@@ -656,7 +711,11 @@ Return JSON:
 
   if (response.usage) logTokens("plan", DEP_VALIDATOR, response.usage, ledger);
   const plan = JSON.parse(response.choices[0].message.content);
-  const minByDifficulty = { simple: 5, medium: 8, complex: 11 };
+  if (plan.fullStepOutline?.length > 10) {
+    console.warn(`  ⚠ Plan returned ${plan.fullStepOutline.length} steps — trimming to 10 max`);
+    plan.fullStepOutline = plan.fullStepOutline.slice(0, 10);
+  }
+  const minByDifficulty = { simple: 5, medium: 7, complex: 8 };
   const min = minByDifficulty[plan.difficulty] || 6;
   if (plan.fullStepOutline.length < min) {
     console.warn(`  ⚠ Plan has ${plan.fullStepOutline.length} steps for "${plan.difficulty}" task (min ${min})`);
@@ -728,7 +787,7 @@ async function generateTeacherMaterial(inputs, uiContext, plan, category, catRul
 
   const systemPrompt = `You are an entrepreneurship curriculum assistant for KwaXolo Impact.
 You generate the TEACHER-FACING half of a lesson for teachers in rural KwaZulu-Natal, South Africa.
-Output is read by the teacher to deliver class — title, objective, board points, explanation, discussion, local example, time guide.
+Output is read by the teacher to deliver class with chalk and a blackboard only.
 The student-facing task steps are generated separately. Do NOT generate steps here.
 
 ${commonContextBlock(category, catRules, examplesBlock)}
@@ -745,7 +804,10 @@ ${QUALITY_CHECK}
 
 Main objective for this lesson: ${plan.mainObjective}
 
-Real app UI from web search (for context only — do not include UI mechanics in teacher text):
+Student task plan the teacher must prepare students for:
+${plan.fullStepOutline.map((s, i) => `${i + 1}. ${s}`).join("\n")}
+
+Real app UI from web search (for context only — do not turn this into a projector demo):
 ${uiContext || "(no web search context)"}`;
 
   const userMsg = `Generate the TEACHER MATERIAL ONLY for: "${inputs.topic}"
@@ -758,7 +820,12 @@ Return ONLY valid JSON in this exact shape:
 
 {
   "teacherTitle": "Plain-language title, max 8 words, no jargon",
-  "teacherObjective": "After this lesson, you will be able to... [one concrete, checkable sentence]",
+  "teacherObjective": "By the end of this lesson, students can... [one concrete, checkable sentence]",
+  "teacherPrep": [
+    "One short thing to prepare before class",
+    "One short thing to write/check before class",
+    "One short grouping/material note"
+  ],
   "teacherBoardPoints": [
     "Point 1 — max 6 words",
     "Point 2 — max 6 words",
@@ -766,22 +833,88 @@ Return ONLY valid JSON in this exact shape:
     "Point 4 — max 6 words",
     "Point 5 — max 6 words"
   ],
-  "teacherExplanation": "Paragraph 1 — introduce the concept with context (2–4 sentences, Grade 8 language).\\n\\nParagraph 2 — explain how it works with a NAMED KZN reference (3–5 sentences). Name the specific person, place, or venture.\\n\\nParagraph 3 — connect to student life and preview the task they are about to do (2–3 sentences).",
+  "teacherBoardLayout": {
+    "title": "Exact title to write at top of board",
+    "leftColumn": [
+      "Key word: simple meaning",
+      "Key word: simple meaning"
+    ],
+    "rightColumn": [
+      "Simple class step 1",
+      "Simple class step 2",
+      "Simple class step 3"
+    ],
+    "bottomLine": "One reminder/question to keep on the board"
+  },
+  "teacherScript": [
+    {
+      "section": "Open",
+      "minutes": 5,
+      "say": "Short words the teacher can say directly. No projector. No computer demo.",
+      "do": "Physical classroom action: write, point, ask, pair students, or check books."
+    },
+    {
+      "section": "Explain",
+      "minutes": 10,
+      "say": "Simple explanation with a NAMED KZN reference.",
+      "do": "How to use the board and questions to teach it."
+    },
+    {
+      "section": "Practice",
+      "minutes": 15,
+      "say": "How to send students into the phone/PC task without demonstrating on a big screen.",
+      "do": "How to group students, rotate roles, and walk around to support."
+    },
+    {
+      "section": "Check",
+      "minutes": 5,
+      "say": "What to ask at the end to check understanding.",
+      "do": "What evidence to look for in notebooks, phones, or group answers."
+    }
+  ],
+  "teacherExplanation": "2 short paragraphs. Explain the idea in Grade 8 English, include one named KZN example, and connect clearly to the student task. This is fallback text for older renderers.",
+  "teacherVocabulary": [
+    {
+      "word": "One important word",
+      "simpleMeaning": "Simple meaning in plain English",
+      "isiZuluSupport": "isiZulu support word or empty string"
+    }
+  ],
   "teacherDiscussionQuestions": [
     "Open question 1 — connects to student life, cannot be yes/no?",
-    "Open question 2 — makes students think about real situations?",
-    "Open question 3 — connects to local economy or community?"
+    "Open question 2 — connects to the local example?",
+    "Open question 3 — prepares students for the student task?"
   ],
   "teacherLocalExample": "2–3 sentences. Name a specific person, place, or venture from KwaZulu-Natal. Directly relevant to this topic. Concrete and specific — not generic.",
+  "teacherDevicePlan": {
+    "ifEnoughDevices": "How to run the task if enough phones/PCs are available.",
+    "ifSharedDevices": "How groups should rotate roles when 4–6 students share one device.",
+    "ifNoInternet": "A chalk/blackboard or notebook fallback that still teaches the concept."
+  },
+  "teacherCommonMistakes": [
+    {
+      "mistake": "Likely student mistake or confusion",
+      "teacherResponse": "What the teacher should say or do to help"
+    }
+  ],
+  "teacherAssessment": [
+    "One visible result the teacher can check",
+    "One question students should answer",
+    "One notebook/board/group output to collect or hear"
+  ],
   "teacherTimeGuide": [
-    "5 min: write board points, students copy",
-    "15 min: teacher explains",
-    "10 min: class discussion",
-    "10 min: students do task on phones",
-    "5 min: recap — what is one thing you learned?"
-  ]
+    "5 min: opening and board",
+    "10 min: explanation",
+    "15 min: student task or no-internet fallback",
+    "5 min: check and wrap-up"
+  ],
+  "teacherWrapUpQuestion": "One final question students answer in one sentence.",
+  "teacherExtension": "Optional task for faster groups."
 }
 
+The teacher plan MUST be usable without a computer, projector, or big screen.
+The teacherScript must tell the teacher what to SAY and what to DO.
+The teacherDevicePlan.ifNoInternet must be a real no-device/no-internet classroom fallback, not "try again later".
 The teacherExplanation AND teacherLocalExample MUST each name a specific KZN entity from the local context list.`;
 
   const response = await client.chat.completions.create({
@@ -854,6 +987,7 @@ Class context: ${inputs.context || "none provided"}
 
 You must generate ALL ${plan.fullStepOutline.length} steps listed in the step plan above.
 Do not stop early. Do not merge steps. Every step must be fully filled out.
+Never generate more than 10 steps total.
 
 Return ONLY valid JSON in this exact shape:
 
@@ -946,15 +1080,21 @@ async function generateLesson(inputs, uiContext, plan, ledger) {
 // ─── Validation 1: enforce difficulty-appropriate minimum step count ──────────
 async function validateStepCount(lesson, topic, plan, ledger) {
   const count = (lesson.steps || []).length;
-  const minByDifficulty = { simple: 5, medium: 8, complex: 11 };
+  if (count > 10) {
+    lesson.steps = lesson.steps.slice(0, 10).map((s, i) => ({ ...s, number: i + 1 }));
+    console.warn(`  ⚠ Step count capped at 10 for "${topic}"`);
+    return lesson;
+  }
+  const minByDifficulty = { simple: 5, medium: 7, complex: 8 };
   const min = minByDifficulty[plan.difficulty] || 6;
+  const cappedMin = Math.min(min, 10);
 
-  if (count >= min) {
-    console.log(`  → Step count OK: ${count} steps (min ${min} for ${plan.difficulty || "?"} task)`);
+  if (count >= cappedMin) {
+    console.log(`  → Step count OK: ${count} steps (target ${cappedMin}–10 for ${plan.difficulty || "?"} task)`);
     return lesson;
   }
 
-  console.log(`  ⚠ Only ${count} steps — requesting missing steps to reach ${min}`);
+  console.log(`  ⚠ Only ${count} steps — requesting missing steps to reach ${cappedMin}`);
   const client = azClient(DEP_STUDENT);
 
   const existing = lesson.steps.map(s =>
@@ -967,13 +1107,14 @@ async function validateStepCount(lesson, topic, plan, ledger) {
     max_completion_tokens: 6000,
     messages: [{
       role: "user",
-      content: `A lesson about "${topic}" only has ${count} steps. It needs at least ${min} for this difficulty level.
+      content: `A lesson about "${topic}" only has ${count} steps. It needs at least ${cappedMin} and at most 10 steps.
 Main objective: ${plan.mainObjective}
 
 Existing steps:
 ${existing}
 
-Generate the MISSING steps to reach at least ${min} total AND complete the main objective.
+Generate the MISSING steps to reach at least ${cappedMin} total AND complete the main objective.
+Do not exceed 10 total steps.
 Continue naturally from the last existing step.
 Use the same step schema. Vary the exerciseTypes.
 
@@ -987,9 +1128,10 @@ Return JSON: { "additionalSteps": [ ...step objects with number, screenType, scr
   const extra = JSON.parse(response.choices[0].message.content);
   if (extra.additionalSteps?.length > 0) {
     const offset = lesson.steps.length;
+    const slots = Math.max(0, 10 - offset);
     lesson.steps = [
       ...lesson.steps,
-      ...extra.additionalSteps.map((s, i) => ({ ...s, number: offset + i + 1 }))
+      ...extra.additionalSteps.slice(0, slots).map((s, i) => ({ ...s, number: offset + i + 1 }))
     ];
     console.log(`  → Added ${extra.additionalSteps.length} steps — now ${lesson.steps.length} total`);
   }
@@ -1069,6 +1211,23 @@ async function validateScreenTypes(lesson, topic, ledger) {
     }
   }
 
+  // Hard-coded content corrections: fix steps where screenType doesn't match the teach text.
+  lesson.steps.forEach(s => {
+    const t = (s.teach || "").toLowerCase();
+    const app = (lesson.appName || "").toLowerCase();
+    // Gmail welcome screen: teach mentions "create account" or "welcome" and shows welcome/sign-in choice
+    if (app.includes("gmail") && s.screenType === "generic" &&
+        (t.includes("create account") || t.includes("welcome to gmail") || t.includes("sign in") && t.includes("create"))) {
+      s.screenType = "gmail_welcome";
+      console.log(`  → Step ${s.number} auto-corrected to gmail_welcome`);
+    }
+    // Play Store app page: teach mentions "install" button but screenType is generic
+    if (s.screenType === "generic" && (t.includes("install button") || t.includes("tap install"))) {
+      s.screenType = "play_store_app";
+      console.log(`  → Step ${s.number} auto-corrected to play_store_app`);
+    }
+  });
+
   const allSteps = lesson.steps.map(s =>
     `Step ${s.number}: screenType="${s.screenType}", teach: "${(s.teach||"").slice(0,90)}"`
   ).join("\n");
@@ -1081,7 +1240,8 @@ Check that each screenType matches what would actually be visible at that step. 
 - Step 1 for any lesson → MUST be android_home (student opens app from home screen)
 - Step 2 for install lessons → play_store_search
 - Step 3 for install lessons → play_store_app (app listing with Install button)
-- Creating account → signup screens (gmail_signup_name, gmail_signup_user, etc.) NOT app home
+- Gmail first-launch welcome (shows "Create account" + "Sign in" buttons) → gmail_welcome NOT generic
+- Creating account → gmail_welcome → gmail_signup_name → gmail_signup_user → gmail_signup_pass (in that order) NOT generic
 - The screen shown must match EXACTLY what the teach text describes
 
 ${SCREEN_TYPES}
@@ -1123,43 +1283,106 @@ function buildTeacherHTML(lesson, time) {
     teacherTitle = "Lesson Plan", teacherObjective = "",
     teacherBoardPoints = [], teacherExplanation = "",
     teacherDiscussionQuestions = [], teacherLocalExample = "",
-    teacherTimeGuide = []
+    teacherTimeGuide = [], teacherPrep = [], teacherBoardLayout = null,
+    teacherScript = [], teacherVocabulary = [], teacherDevicePlan = null,
+    teacherCommonMistakes = [], teacherAssessment = [],
+    teacherWrapUpQuestion = "", teacherExtension = "", taskTitle = ""
   } = lesson;
 
-  const boardItems       = teacherBoardPoints.map(p => `<li>${esc(p)}</li>`).join("");
+  const renderList = (items, cls = "tp-list") => {
+    const clean = Array.isArray(items) ? items.filter(Boolean) : [];
+    if (!clean.length) return "";
+    return `<ul class="${cls}">${clean.map(p => `<li>${esc(p)}</li>`).join("")}</ul>`;
+  };
+
+  const renderSection = (num, title, body, extraClass = "") => {
+    if (!body) return "";
+    return `<div class="tp-sec ${extraClass}">
+    <h2 class="tp-h2"><span class="tp-num">${num}</span>${esc(title)}</h2>
+    ${body}
+  </div>`;
+  };
+
+  const boardLeft = teacherBoardLayout?.leftColumn?.length ? teacherBoardLayout.leftColumn : teacherBoardPoints;
+  const boardRight = teacherBoardLayout?.rightColumn?.length
+    ? teacherBoardLayout.rightColumn
+    : ["Explain the idea", "Students practise", "Groups share one answer"];
+  const boardBottom = teacherBoardLayout?.bottomLine || teacherWrapUpQuestion || "What can you show at the end?";
+  const boardItems = teacherBoardPoints.map(p => `<li>${esc(p)}</li>`).join("");
   const explanationParas = teacherExplanation.split(/\n\n+/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join("");
-  const questions        = teacherDiscussionQuestions.map((q, i) => `<li><span class="tp-qn">${i+1}</span><span>${esc(q)}</span></li>`).join("");
-  const timeItems        = teacherTimeGuide.map(t => {
+  const questions = teacherDiscussionQuestions.map((q, i) => `<li><span class="tp-qn">${i+1}</span><span>${esc(q)}</span></li>`).join("");
+  const timeItems = teacherTimeGuide.map(t => {
     const m = t.match(/^([^:]+):\s*(.+)$/);
     return m
       ? `<div class="tp-ti"><span class="tp-td">${esc(m[1])}</span><span class="tp-ta">${esc(m[2])}</span></div>`
       : `<div class="tp-ti"><span class="tp-ta">${esc(t)}</span></div>`;
   }).join("");
+  const prepHTML = renderList(teacherPrep);
+  const vocabHTML = Array.isArray(teacherVocabulary) && teacherVocabulary.length ? `<div class="tp-vocab">
+    ${teacherVocabulary.map(v => `<div class="tp-vrow">
+      <div class="tp-vword">${esc(v.word)}</div>
+      <div class="tp-vmean">${esc(v.simpleMeaning)}</div>
+      ${v.isiZuluSupport ? `<div class="tp-vzu">${esc(v.isiZuluSupport)}</div>` : ""}
+    </div>`).join("")}
+  </div>` : "";
+  const scriptHTML = Array.isArray(teacherScript) && teacherScript.length ? `<div class="tp-script">
+    ${teacherScript.map(s => `<div class="tp-step">
+      <div class="tp-step-h">
+        <span class="tp-step-name">${esc(s.section || "Teach")}</span>
+        <span class="tp-step-min">${esc(s.minutes || "")}${s.minutes ? " min" : ""}</span>
+      </div>
+      <div class="tp-say"><strong>Say:</strong> ${esc(s.say)}</div>
+      <div class="tp-do"><strong>Do:</strong> ${esc(s.do)}</div>
+    </div>`).join("")}
+  </div>` : explanationParas;
+  const deviceHTML = teacherDevicePlan ? `<div class="tp-device-grid">
+    <div><span>Enough devices</span>${esc(teacherDevicePlan.ifEnoughDevices || "")}</div>
+    <div><span>Shared devices</span>${esc(teacherDevicePlan.ifSharedDevices || "")}</div>
+    <div><span>No internet</span>${esc(teacherDevicePlan.ifNoInternet || "")}</div>
+  </div>` : "";
+  const mistakesHTML = Array.isArray(teacherCommonMistakes) && teacherCommonMistakes.length ? `<div class="tp-mistakes">
+    ${teacherCommonMistakes.map(m => `<div class="tp-mistake">
+      <div class="tp-m-label">Student may...</div>
+      <div>${esc(m.mistake)}</div>
+      <div class="tp-m-label">Teacher response</div>
+      <div>${esc(m.teacherResponse)}</div>
+    </div>`).join("")}
+  </div>` : "";
+  const assessmentHTML = renderList(teacherAssessment);
 
   return `<div class="tp">
   <div class="tp-hd">
-    <div class="tp-obj-lbl">Learning Objective</div>
+    <div class="tp-obj-lbl">Chalk-and-board lesson plan</div>
     <h1 class="tp-title">${esc(teacherTitle)}</h1>
     <p class="tp-obj">${esc(teacherObjective)}</p>
+    ${taskTitle ? `<p class="tp-linked">Student task: ${esc(taskTitle)}</p>` : ""}
   </div>
+  ${renderSection(1, "Before Class", prepHTML)}
   <div class="tp-board">
-    <div class="tp-board-ttl">✏ Write on the Board</div>
-    <div class="tp-board-sub">Write these before class starts — students copy them down</div>
-    <ul class="tp-bl">${boardItems}</ul>
+    <div class="tp-board-ttl">Blackboard Plan</div>
+    <div class="tp-board-sub">Use this instead of a projector. Students copy the key words and steps.</div>
+    <div class="tp-board-title">${esc(teacherBoardLayout?.title || teacherTitle)}</div>
+    <div class="tp-board-grid">
+      <div>
+        <div class="tp-board-col">Key words</div>
+        ${renderList(boardLeft, "tp-bl")}
+      </div>
+      <div>
+        <div class="tp-board-col">Class steps</div>
+        ${renderList(boardRight, "tp-bl")}
+      </div>
+    </div>
+    <div class="tp-board-bottom">${esc(boardBottom)}</div>
   </div>
-  <div class="tp-sec">
-    <h2 class="tp-h2"><span class="tp-num">2</span>Explain to Students</h2>
-    <div class="tp-script-note">Read this aloud — then explain in your own words</div>
-    <div class="tp-expl">${explanationParas}</div>
-  </div>
-  <div class="tp-sec">
-    <h2 class="tp-h2"><span class="tp-num">3</span>Discussion Questions</h2>
-    <ol class="tp-qs">${questions}</ol>
-  </div>
-  <div class="tp-sec">
-    <h2 class="tp-h2"><span class="tp-num">4</span>Local Example</h2>
-    <div class="tp-local">${esc(teacherLocalExample)}</div>
-  </div>
+  ${renderSection(2, "Teach It Directly", `<div class="tp-script-note">No computer or big screen needed. Read, adapt, and use the board.</div>${scriptHTML}`)}
+  ${renderSection(3, "Key Words", vocabHTML)}
+  ${renderSection(4, "Local Example", `<div class="tp-local">${esc(teacherLocalExample)}</div>`)}
+  ${renderSection(5, "Discussion Questions", `<ol class="tp-qs">${questions}</ol>`)}
+  ${renderSection(6, "Device And No-Internet Plan", deviceHTML)}
+  ${renderSection(7, "Common Mistakes", mistakesHTML)}
+  ${renderSection(8, "Check Understanding", assessmentHTML)}
+  ${teacherWrapUpQuestion ? renderSection(9, "Wrap Up", `<div class="tp-local">${esc(teacherWrapUpQuestion)}</div>`) : ""}
+  ${teacherExtension ? renderSection(10, "Fast Groups", `<div class="tp-note">${esc(teacherExtension)}</div>`) : ""}
   <div class="tp-tg">
     <div class="tp-tg-ttl">Time Guide — ${esc(time || "30 minutes")}</div>
     ${timeItems}
