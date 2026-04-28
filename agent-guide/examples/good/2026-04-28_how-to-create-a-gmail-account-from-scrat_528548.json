@@ -1,0 +1,426 @@
+{
+  "reqId": "1777399528548",
+  "topic": "How to create a Gmail account from scratch",
+  "category": "D",
+  "generatedAt": "2026-04-28T18:06:46.568Z",
+  "stepCount": 15,
+  "localGrounding": true,
+  "inputs": {
+    "topic": "How to create a Gmail account from scratch",
+    "struggles": "",
+    "time": "30 minutes",
+    "context": ""
+  },
+  "lesson": {
+    "teacherTitle": "Create a Gmail Account",
+    "teacherObjective": "After this lesson, you will be able to create a new Gmail account on an Android phone and open the inbox.",
+    "teacherBoardPoints": [
+      "Email is formal messaging",
+      "Use your real name",
+      "Choose a clear address",
+      "Set a strong password",
+      "Check your inbox"
+    ],
+    "teacherExplanation": "Today we are learning how to create an email <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span>. Email is a formal way to send messages to schools, businesses, and government offices. Many jobs and forms now ask for an email address. If you do not have one, you can be left behind.\n\nThink of Gmail as a free mail box on your phone. You open the Play Store, find Gmail, and install it if needed. Then you open the app and choose to create an account. You type your real name, not a nickname, because a <span class=\"hover-word\" data-zu=\"umuntu oyingcweti\">professional</span> name looks serious and safe. You then choose an email address that is easy to read. Next, you set a password that is strong and hard to guess. After that, you answer a few simple questions and accept the terms. When the setup is finished, your inbox opens and you can see your new messages.\n\nIn our area, Inkify uses email when they send quotes and <span class=\"hover-word\" data-zu=\"i-invoice\">invoice</span>s to customers. WhatsApp is still useful for quick messages, but email gives a formal record. When you use both tools well, you are ready for school, work, and small business use. Today you will practise creating your own Gmail account step by step.",
+    "teacherDiscussionQuestions": [
+      "What kind of message would you send by email instead of WhatsApp?",
+      "Why is it better to use your real name in an email address?",
+      "How could a free email help a young person in a business like Inkify or a school application?"
+    ],
+    "teacherLocalExample": "Inkify, run by Samke Jaca and Ntokozo Gwacela, uses email to send quotes and invoices to customers. This helps them keep a formal record of what was agreed. They still use WhatsApp for quick replies, but email gives a neat written record.",
+    "teacherTimeGuide": [
+      "5 min: write board points, students copy",
+      "12 min: teacher explains",
+      "8 min: class discussion",
+      "5 min: students start task on phones",
+      "5 min: recap — what is one thing you learned?"
+    ],
+    "appName": "Gmail",
+    "appColor": "#EA4335",
+    "appTextColor": "#fff",
+    "taskTitle": "How to Create a Gmail Account",
+    "taskIntro": "You will have a new Gmail <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> with a clean, <span class=\"hover-word\" data-zu=\"umuntu oyingcweti\">professional</span> email address and an open inbox.",
+    "taskTime": "10–15 minutes",
+    "taskReflection": "You now have a working Gmail account. Write one real situation in the next few months where you will use this email address for school, work, or a <span class=\"hover-word\" data-zu=\"umthengi\">customer</span>, and explain what kind of message you will send.",
+    "steps": [
+      {
+        "number": 1,
+        "screenType": "play_store_search",
+        "screenName": "Google Play Store",
+        "teach": "Start on your phone home screen or app list. Open the Google Play Store so you can find Gmail and install it. If you do not see it on the first screen, swipe up to open all apps.",
+        "exerciseType": "do_and_confirm",
+        "question": "What app do you open first to find Gmail?",
+        "options": [
+          "Camera",
+          "Google Play Store",
+          "Gallery",
+          "Contacts"
+        ],
+        "correctAnswer": "Google Play Store",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Open the Google Play Store on your phone now.",
+        "visibleResult": "You should see the Play Store home screen with a search bar near the top.",
+        "feedbackCorrect": "Good — the Google Play Store is the right place to find the Gmail app.",
+        "feedbackWrong": "Go back to your home screen or app list and look for the Play Store triangle icon.",
+        "tip": "If your phone asks you to sign in first, complete that screen and then return to this task."
+      },
+      {
+        "number": 2,
+        "screenType": "play_store_search",
+        "screenName": "Play Store search",
+        "teach": "At the top of the Play Store, you will see a search bar. You will tap it and type Gmail so the store can find the correct app. Check your spelling before you continue.",
+        "exerciseType": "do_and_confirm",
+        "question": "What word did you type in the search bar?",
+        "options": [
+          "Google",
+          "Email",
+          "Gmail",
+          "Chrome"
+        ],
+        "correctAnswer": "Gmail",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Tap the search bar at the top of the Play Store and type Gmail.",
+        "visibleResult": "You should see search results related to Gmail on your screen.",
+        "feedbackCorrect": "Correct — typing Gmail brings up the app you need.",
+        "feedbackWrong": "Look at the top search bar in the Play Store and check the exact word you entered.",
+        "tip": "Do not type 'G mail' with a space."
+      },
+      {
+        "number": 3,
+        "screenType": "gmail_signup_name",
+        "screenName": "Gmail app page",
+        "teach": "The search results show different apps. Tap the Gmail result to open its app detail page and check that it is the real Gmail app. This helps you avoid opening the wrong app.",
+        "exerciseType": "tap_correct",
+        "question": "Which app result should you tap to open the correct app page?",
+        "options": [
+          "Gmail",
+          "Google Maps",
+          "Google Drive",
+          "YouTube"
+        ],
+        "correctAnswer": "Gmail",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Yes — Gmail is the correct app result to open.",
+        "feedbackWrong": "Look at the app names in the search results and choose the one called Gmail.",
+        "tip": "Check the app name carefully before you tap."
+      },
+      {
+        "number": 4,
+        "screenType": "gmail_signup_name",
+        "screenName": "Gmail",
+        "teach": "On the Gmail app page, you will see a button that downloads the app to your phone. Tap Install and wait for it to finish. If your phone is slow, give it a little time before trying again.",
+        "exerciseType": "do_and_confirm",
+        "question": "Which button starts the download of Gmail?",
+        "options": [
+          "Share",
+          "Install",
+          "Delete",
+          "Back"
+        ],
+        "correctAnswer": "Install",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Tap Install on the Gmail app page and wait for the app to download and install.",
+        "visibleResult": "You should see the button change while the app downloads. After it finishes, the button changes to Open.",
+        "feedbackCorrect": "Right — Install is the button that puts Gmail on your phone.",
+        "feedbackWrong": "Look at the main button on the Gmail app page, under the app name and icon.",
+        "tip": "If you already see Open, Gmail is already installed and you can move to the next step."
+      },
+      {
+        "number": 5,
+        "screenType": "gmail_signup_user",
+        "screenName": "Gmail",
+        "teach": "When the install finishes, the button changes from Install to Open. Tap Open to launch Gmail for the first time. This takes you out of the Play Store and into the Gmail app.",
+        "exerciseType": "do_and_confirm",
+        "question": "What button appears after Gmail finishes installing?",
+        "options": [
+          "Next",
+          "Done",
+          "Open",
+          "Send"
+        ],
+        "correctAnswer": "Open",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Tap Open on the Gmail app page to launch Gmail.",
+        "visibleResult": "You should see the Gmail app open on a welcome screen.",
+        "feedbackCorrect": "Correct — Open launches Gmail after the install is complete.",
+        "feedbackWrong": "Stay on the Gmail app page and wait until the download finishes, then check the main button again.",
+        "tip": "Do not close the Play Store before the install is complete."
+      },
+      {
+        "number": 6,
+        "screenType": "generic",
+        "screenName": "Welcome to Gmail",
+        "teach": "The first Gmail screen usually says Welcome to Gmail. This is where you start making your new <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span>. Look for the button that lets you begin the setup.",
+        "exerciseType": "fill_blank",
+        "question": "On the Welcome to Gmail screen, what button do you tap to begin a new account?",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [
+          "create account",
+          "create acoount",
+          "create an account"
+        ],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Good — Create account is the button that starts a new Gmail account.",
+        "feedbackWrong": "Look near the bottom of the Welcome to Gmail screen for the button that starts setup.",
+        "tip": "Do not tap Sign in if you do not already have a Google account."
+      },
+      {
+        "number": 7,
+        "screenType": "generic",
+        "screenName": "Choose an account type",
+        "teach": "Gmail now asks what kind of account you want to create. For this lesson, choose the option for your own personal use. This is the correct path for a first Gmail account.",
+        "exerciseType": "tap_correct",
+        "question": "Which option should you tap on the account type screen?",
+        "options": [
+          "For myself",
+          "To manage my business",
+          "For my child",
+          "Skip"
+        ],
+        "correctAnswer": "For myself",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Yes — For myself is the correct option for your own new Gmail account.",
+        "feedbackWrong": "Look at the list of choices and pick the option that is for your own use.",
+        "tip": "You can still use this email for school, work, or business messages later."
+      },
+      {
+        "number": 8,
+        "screenType": "gmail_signup_name",
+        "screenName": "What's your name?",
+        "teach": "You will now type your first name and last name. Use your real name, not a nickname, because a clean name looks more <span class=\"hover-word\" data-zu=\"umuntu oyingcweti\">professional</span> to a school, employer, or <span class=\"hover-word\" data-zu=\"umthengi\">customer</span>. Then tap Next.",
+        "exerciseType": "do_and_confirm",
+        "question": "After typing your first name and last name, which button do you tap?",
+        "options": [
+          "Back",
+          "Next",
+          "Verify",
+          "Search"
+        ],
+        "correctAnswer": "Next",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Type your First name and Last name into the two boxes, then tap Next.",
+        "visibleResult": "You should move to the next screen after your names are entered.",
+        "feedbackCorrect": "Correct — Next takes you forward after entering your real name.",
+        "feedbackWrong": "Look below the name fields for the button that moves you to the next screen.",
+        "tip": "Do not use a nickname like 'coolboy' or 'queen123' in your name fields."
+      },
+      {
+        "number": 9,
+        "screenType": "generic",
+        "screenName": "Basic information",
+        "teach": "Google asks for your date of birth and gender on the next screen. Fill in each field carefully, then tap Next. If the screen uses drop-down boxes, tap each box to choose the right details.",
+        "exerciseType": "match_pairs",
+        "question": "Match each field to what you enter there:",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [
+          {
+            "term": "Month",
+            "match": "Part of your date of birth"
+          },
+          {
+            "term": "Day",
+            "match": "Number of the day you were born"
+          },
+          {
+            "term": "Year",
+            "match": "The year you were born"
+          },
+          {
+            "term": "Gender",
+            "match": "The option that describes you"
+          }
+        ],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Well done — you know what each field on the basic information screen means.",
+        "feedbackWrong": "Check each field name on the screen and think about what information belongs there.",
+        "tip": "Read the month, day, and year boxes carefully so you do not swap them."
+      },
+      {
+        "number": 10,
+        "screenType": "gmail_signup_user",
+        "screenName": "Choose your Gmail address",
+        "teach": "Now you choose your Gmail address, also called your username. Try a clean version of your real name first, like your name and surname. If the name is taken, Gmail shows suggestions you can choose from.",
+        "exerciseType": "do_and_confirm",
+        "question": "If the Gmail address you want is already taken, what should you do next?",
+        "options": [
+          "Delete Gmail",
+          "Choose one of the suggestions or try another name",
+          "Tap Back and stop",
+          "Use only symbols"
+        ],
+        "correctAnswer": "Choose one of the suggestions or try another name",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Type a username for your new Gmail address, check the suggestions if needed, and tap Next.",
+        "visibleResult": "You should move forward if the username is available. If not, Gmail shows suggestions or asks you to try another one.",
+        "feedbackCorrect": "Yes — if a username is taken, Gmail helps you with suggestions or lets you try another one.",
+        "feedbackWrong": "Look on the username screen for suggested addresses under the name you typed.",
+        "tip": "Avoid unprofessional names like hotboy99 or princessqueen if you want to use this email for jobs or customers."
+      },
+      {
+        "number": 11,
+        "screenType": "gmail_signup_pass",
+        "screenName": "Create a strong password",
+        "teach": "Your password protects your new <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span>. Type a strong password, then type the same password again in Confirm. Use at least eight characters and include letters and numbers if possible.",
+        "exerciseType": "fill_blank",
+        "question": "The second box on this screen asks you to type your password again. What is that box called?",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [
+          "confirm",
+          "confirm password"
+        ],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Correct — Confirm is where you type the same password again.",
+        "feedbackWrong": "Look at the label above the second password box on the screen.",
+        "tip": "Write your password somewhere safe because you will need it again later."
+      },
+      {
+        "number": 12,
+        "screenType": "generic",
+        "screenName": "Add phone number?",
+        "teach": "Some phones now show a screen asking for your phone number. This helps with security and can help you get back into your <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> later. If you see this screen, type your number and tap Next.",
+        "exerciseType": "do_and_confirm",
+        "question": "Why does Gmail ask for your phone number on this screen?",
+        "options": [
+          "To make your account safer and help with recovery",
+          "To send airtime",
+          "To show adverts only",
+          "To change your phone wallpaper"
+        ],
+        "correctAnswer": "To make your account safer and help with recovery",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "If Gmail asks for your phone number, type it and tap Next.",
+        "visibleResult": "You should move to a screen for SMS verification, or continue if your phone skips this step.",
+        "feedbackCorrect": "Good — the phone number step helps protect your account and recover it later.",
+        "feedbackWrong": "Read the small text on the phone number screen about security and recovery.",
+        "tip": "If this screen does not appear on your phone, move to the next step."
+      },
+      {
+        "number": 13,
+        "screenType": "generic",
+        "screenName": "Verify phone number",
+        "teach": "If Gmail sends an SMS code, you must type that code on the verification screen. This proves that the phone number belongs to you. Enter the numbers carefully, then tap Verify.",
+        "exerciseType": "arrange_steps",
+        "question": "Arrange these actions in the correct order for phone verification:",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [],
+        "tiles": [
+          "Tap Verify",
+          "Receive the SMS code",
+          "Type your phone number",
+          "Enter the code"
+        ],
+        "correctOrder": [
+          "Type your phone number",
+          "Receive the SMS code",
+          "Enter the code",
+          "Tap Verify"
+        ],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Exactly — that is the correct order for verifying your phone number.",
+        "feedbackWrong": "Think about what must happen before you can type the code.",
+        "tip": "If the SMS does not arrive, wait a short time and check your signal."
+      },
+      {
+        "number": 14,
+        "screenType": "generic",
+        "screenName": "Privacy and Terms",
+        "teach": "Before your <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> is created, Gmail shows Privacy and Terms. Scroll if needed, then tap the button that accepts the terms. This is the final permission step before setup finishes.",
+        "exerciseType": "tap_correct",
+        "question": "Which button accepts the Privacy and Terms and lets setup continue?",
+        "options": [
+          "Cancel",
+          "I Agree",
+          "Back",
+          "Skip"
+        ],
+        "correctAnswer": "I Agree",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Yes — I Agree accepts the Privacy and Terms and continues setup.",
+        "feedbackWrong": "Look near the bottom of the Privacy and Terms screen for the button that accepts the terms.",
+        "tip": "You may need to scroll down before the button is easy to see."
+      },
+      {
+        "number": 15,
+        "screenType": "gmail_inbox",
+        "screenName": "Inbox",
+        "teach": "Gmail now finishes the setup and opens your inbox. This means your new Gmail <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> has been created. You can now receive messages like Inkify does when sending quotes and <span class=\"hover-word\" data-zu=\"i-invoice\">invoice</span>s to <span class=\"hover-word\" data-zu=\"umthengi\">customer</span>s.",
+        "exerciseType": "do_and_confirm",
+        "question": "What screen shows that your Gmail account is ready to use?",
+        "options": [
+          "Inbox",
+          "Camera",
+          "Calculator",
+          "Phone dial pad"
+        ],
+        "correctAnswer": "Inbox",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Wait for Gmail to finish setup and check that the inbox opens.",
+        "visibleResult": "You should see the Gmail inbox screen with your new account ready to use.",
+        "feedbackCorrect": "Correct — the inbox screen shows that your Gmail account is created and open.",
+        "feedbackWrong": "Wait a moment for Gmail to finish loading, then look for the screen that lists your emails.",
+        "tip": "If Gmail stays blank, close the app and open it again."
+      }
+    ],
+    "teacherPlanHTML": "<div class=\"tp\">\n  <div class=\"tp-hd\">\n    <div class=\"tp-obj-lbl\">Learning Objective</div>\n    <h1 class=\"tp-title\">Create a Gmail Account</h1>\n    <p class=\"tp-obj\">After this lesson, you will be able to create a new Gmail account on an Android phone and open the inbox.</p>\n  </div>\n  <div class=\"tp-board\">\n    <div class=\"tp-board-ttl\">✏ Write on the Board</div>\n    <div class=\"tp-board-sub\">Write these before class starts — students copy them down</div>\n    <ul class=\"tp-bl\"><li>Email is formal messaging</li><li>Use your real name</li><li>Choose a clear address</li><li>Set a strong password</li><li>Check your inbox</li></ul>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">2</span>Explain to Students</h2>\n    <div class=\"tp-script-note\">Read this aloud — then explain in your own words</div>\n    <div class=\"tp-expl\"><p>Today we are learning how to create an email &lt;span class=&quot;hover-word&quot; data-zu=&quot;i-akhawunti&quot;&gt;account&lt;/span&gt;. Email is a formal way to send messages to schools, businesses, and government offices. Many jobs and forms now ask for an email address. If you do not have one, you can be left behind.</p><p>Think of Gmail as a free mail box on your phone. You open the Play Store, find Gmail, and install it if needed. Then you open the app and choose to create an account. You type your real name, not a nickname, because a &lt;span class=&quot;hover-word&quot; data-zu=&quot;umuntu oyingcweti&quot;&gt;professional&lt;/span&gt; name looks serious and safe. You then choose an email address that is easy to read. Next, you set a password that is strong and hard to guess. After that, you answer a few simple questions and accept the terms. When the setup is finished, your inbox opens and you can see your new messages.</p><p>In our area, Inkify uses email when they send quotes and &lt;span class=&quot;hover-word&quot; data-zu=&quot;i-invoice&quot;&gt;invoice&lt;/span&gt;s to customers. WhatsApp is still useful for quick messages, but email gives a formal record. When you use both tools well, you are ready for school, work, and small business use. Today you will practise creating your own Gmail account step by step.</p></div>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">3</span>Discussion Questions</h2>\n    <ol class=\"tp-qs\"><li><span class=\"tp-qn\">1</span><span>What kind of message would you send by email instead of WhatsApp?</span></li><li><span class=\"tp-qn\">2</span><span>Why is it better to use your real name in an email address?</span></li><li><span class=\"tp-qn\">3</span><span>How could a free email help a young person in a business like Inkify or a school application?</span></li></ol>\n  </div>\n  <div class=\"tp-sec\">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">4</span>Local Example</h2>\n    <div class=\"tp-local\">Inkify, run by Samke Jaca and Ntokozo Gwacela, uses email to send quotes and invoices to customers. This helps them keep a formal record of what was agreed. They still use WhatsApp for quick replies, but email gives a neat written record.</div>\n  </div>\n  <div class=\"tp-tg\">\n    <div class=\"tp-tg-ttl\">Time Guide — 30 minutes</div>\n    <div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">write board points, students copy</span></div><div class=\"tp-ti\"><span class=\"tp-td\">12 min</span><span class=\"tp-ta\">teacher explains</span></div><div class=\"tp-ti\"><span class=\"tp-td\">8 min</span><span class=\"tp-ta\">class discussion</span></div><div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">students start task on phones</span></div><div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">recap — what is one thing you learned?</span></div>\n  </div>\n  <button class=\"tp-print no-print\" onclick=\"window.print()\">Print Lesson Plan</button>\n</div>"
+  },
+  "savedAt": "2026-04-28T18:11:08.847Z",
+  "rating": "good",
+  "improvementNote": "The steps are good and interactive. It should recognise if you made the step or not."
+}

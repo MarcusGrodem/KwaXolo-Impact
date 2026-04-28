@@ -3,6 +3,8 @@ const express = require("express");
 const { OpenAI, AzureOpenAI } = require("openai");
 const path    = require("path");
 const fs      = require("fs");
+const https   = require("https");
+const http    = require("http");
 
 // ─── Azure AI Foundry clients ─────────────────────────────────────────────────
 // Two deployments: gpt-5.4 for student material (high quality, expensive),
@@ -33,6 +35,28 @@ function openaiClient() {
   return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 }
 
+// ─── Token pricing & logging ──────────────────────────────────────────────────
+// Prices in USD per 1 million tokens (update when Azure rates change).
+const MODEL_PRICING = {
+  "gpt-5.4":      { input: 3.75, output: 15.00 },
+  "gpt-5.4-mini": { input: 0.15, output:  0.60 },
+  "gpt-4o-mini":  { input: 0.15, output:  0.60 },
+};
+
+function logTokens(phase, model, usage, ledger) {
+  const inp  = usage.prompt_tokens   ?? usage.input_tokens   ?? 0;
+  const out  = usage.completion_tokens ?? usage.output_tokens ?? 0;
+  const tot  = usage.total_tokens    ?? (inp + out);
+  const p    = MODEL_PRICING[model]  || { input: 0, output: 0 };
+  const cost = (inp * p.input + out * p.output) / 1_000_000;
+  console.log(
+    `  [tokens] ${phase.padEnd(20)} ${model.padEnd(16)} in:${String(inp).padStart(6)}  out:${String(out).padStart(6)}  tot:${String(tot).padStart(7)}  $${cost.toFixed(5)}`
+  );
+  const entry = { phase, model, inputTokens: inp, outputTokens: out, totalTokens: tot, estimatedCostUSD: +cost.toFixed(6) };
+  if (ledger) ledger.push(entry);
+  return entry;
+}
+
 // ─── Log directories ──────────────────────────────────────────────────────────
 // Raw logs: temporary, high volume, gitignored
 const LOGS_DIR = path.join(__dirname, "logs", "raw");
@@ -42,7 +66,140 @@ const GOOD_DIR     = path.join(EXAMPLES_DIR, "good");
 const BAD_DIR      = path.join(EXAMPLES_DIR, "bad");
 // Web search cache: keyed by topic slug, persists across server restarts
 const SEARCH_CACHE_DIR = path.join(__dirname, "cache", "web-search");
-[LOGS_DIR, GOOD_DIR, BAD_DIR, SEARCH_CACHE_DIR].forEach(d => fs.mkdirSync(d, { recursive: true }));
+// App design MDs: one subfolder per app, reused across lessons
+const APP_DESIGN_DIR = path.join(__dirname, "../Example sites/Markdown");
+// Real app logos: PNG files cached, served statically
+const LOGOS_DIR        = path.join(__dirname, "public", "logos");
+// Local South Africa top-500 logo pack
+const LOGOS_SOURCE_DIR = path.join(__dirname, "../Logos/south_africa_top_500_app_logos/logos");
+const LOGOS_MANIFEST   = path.join(__dirname, "../Logos/south_africa_top_500_app_logos/manifest.csv");
+[LOGS_DIR, GOOD_DIR, BAD_DIR, SEARCH_CACHE_DIR, LOGOS_DIR].forEach(d => fs.mkdirSync(d, { recursive: true }));
+
+// ─── Logo manifest index ──────────────────────────────────────────────────────
+// Build a lowercase-title → filename map from the local manifest CSV at startup.
+const LOGO_MANIFEST_OVERRIDES = {
+  "whatsapp":         "006_WhatsApp_Messenger.png",  // avoid matching WhatsApp Business
+  "mtn mobile money": "185_MTN_MoMo_SA.png",
+  "mtn momo":         "185_MTN_MoMo_SA.png",
+};
+
+const LOGO_MANIFEST_INDEX = (() => {
+  try {
+    const lines = fs.readFileSync(LOGOS_MANIFEST, "utf8").trim().split("\n");
+    const idx = {};
+    for (const line of lines.slice(1)) {  // skip header
+      const cols = line.match(/"([^"]*)"/g)?.map(s => s.slice(1, -1));
+      if (cols && cols[1] && cols[7]) idx[cols[1].toLowerCase()] = cols[7];
+    }
+    console.log(`✓ Logo manifest: ${Object.keys(idx).length} local logos indexed`);
+    return idx;
+  } catch (e) {
+    console.warn("⚠ Logo manifest not loaded:", e.message);
+    return {};
+  }
+})();
+
+// Fuzzy-match an app name to a local logo filename.
+// Priority: override → exact → title-starts-with-query → query-primary-equals-title-primary
+function findLogoInManifest(appName) {
+  const q = appName.toLowerCase().trim();
+  if (LOGO_MANIFEST_OVERRIDES[q]) return LOGO_MANIFEST_OVERRIDES[q];
+  if (LOGO_MANIFEST_INDEX[q]) return LOGO_MANIFEST_INDEX[q];
+
+  // Title starts with query (e.g. "canva" → "canva: ai photo & video editor")
+  // Pick shortest matching title to avoid preferring "lite" variants
+  const startsWith = Object.entries(LOGO_MANIFEST_INDEX)
+    .filter(([t]) => t.startsWith(q))
+    .sort((a, b) => a[0].length - b[0].length);
+  if (startsWith.length) return startsWith[0][1];
+
+  // Primary name before punctuation must match exactly
+  const primary = q.split(/[:\-,]/)[0].trim();
+  const primaryMatch = Object.entries(LOGO_MANIFEST_INDEX)
+    .filter(([t]) => t.split(/[:\-,]/)[0].trim() === primary)
+    .sort((a, b) => a[0].length - b[0].length);
+  if (primaryMatch.length) return primaryMatch[0][1];
+
+  return null;
+}
+
+// ─── Logo domain map ──────────────────────────────────────────────────────────
+// Maps the canonical app name to the domain used to fetch its real icon.
+// Google's favicon service (sz=128) returns the same icon shown on Android.
+const LOGO_DOMAINS = {
+  "Gmail":          "mail.google.com",
+  "WhatsApp":       "whatsapp.com",
+  "WhatsApp Business": "business.whatsapp.com",
+  "Facebook":       "facebook.com",
+  "Google Sheets":  "sheets.google.com",
+  "Google Maps":    "maps.google.com",
+  "Google Drive":   "drive.google.com",
+  "Canva":          "canva.com",
+  "MTN Mobile Money": "mtn.com",
+  "Capitec":        "capitec.co.za",
+  "Play Store":     "play.google.com",
+  "YouTube":        "youtube.com",
+  "Instagram":      "instagram.com",
+  "TikTok":         "tiktok.com",
+  "LinkedIn":       "linkedin.com",
+};
+
+// Fetch a URL and follow redirects, returning the raw Buffer.
+function fetchBuffer(url, redirects) {
+  redirects = redirects === undefined ? 5 : redirects;
+  return new Promise((resolve, reject) => {
+    if (redirects < 0) { reject(new Error("Too many redirects")); return; }
+    const lib = url.startsWith("https") ? https : http;
+    lib.get(url, { headers: { "User-Agent": "Mozilla/5.0 KwaXoloBot/1.0" } }, res => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        resolve(fetchBuffer(res.headers.location, redirects - 1));
+        return;
+      }
+      if (res.statusCode !== 200) { reject(new Error(`HTTP ${res.statusCode}`)); return; }
+      const chunks = [];
+      res.on("data", c => chunks.push(c));
+      res.on("end", () => resolve(Buffer.concat(chunks)));
+      res.on("error", reject);
+    }).on("error", reject);
+  });
+}
+
+// Fetch the real logo for an app and save to public/logos/<slug>.png.
+// Tries local manifest first, then falls back to internet fetch.
+// Returns the public path ("/logos/<slug>.png") or null on failure.
+async function fetchAndSaveLogo(appName) {
+  if (!appName) return null;
+  const slug = slugify(appName);
+  const dest = path.join(LOGOS_DIR, slug + ".png");
+  if (fs.existsSync(dest)) return "/logos/" + slug + ".png";
+
+  // 1. Check local South Africa top-500 logo pack
+  const manifestFile = findLogoInManifest(appName);
+  if (manifestFile) {
+    const src = path.join(LOGOS_SOURCE_DIR, manifestFile);
+    if (fs.existsSync(src)) {
+      fs.copyFileSync(src, dest);
+      console.log(`  → Logo (local): ${manifestFile} → public/logos/${slug}.png`);
+      return "/logos/" + slug + ".png";
+    }
+  }
+
+  // 2. Fall back to Google S2 favicon service
+  const domain = LOGO_DOMAINS[appName];
+  if (!domain) return null;
+
+  try {
+    const url = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+    const buf = await fetchBuffer(url);
+    if (buf.length < 200) return null;  // 1×1 grey pixel = unknown domain
+    fs.writeFileSync(dest, buf);
+    console.log(`  → Logo (web):   public/logos/${slug}.png  (${buf.length} bytes)`);
+    return "/logos/" + slug + ".png";
+  } catch (e) {
+    console.warn(`  ⚠ Logo fetch failed for "${appName}":`, e.message);
+    return null;
+  }
+}
 
 function writeLog(reqId, data) {
   const file = path.join(LOGS_DIR, `${reqId}.json`);
@@ -239,7 +396,8 @@ function hasLocalGrounding(text) {
 // ─── Screen types ─────────────────────────────────────────────────────────────
 const SCREEN_TYPES = `
 VALID screenType VALUES (use EXACTLY one per step):
-  play_store_search    → Play Store home with search bar
+  android_home         → Android phone home screen with app icons grid (use for step 1 when student must open an app from the home screen)
+  play_store_search    → Play Store search screen with results
   play_store_app       → App detail page: name, icon, Install/Open button, reviews
   gmail_signup_name    → Google account creation: enter first name, last name
   gmail_signup_user    → Choose Gmail address
@@ -262,9 +420,117 @@ VALID screenType VALUES (use EXACTLY one per step):
   generic              → Any app not listed — branded header + key UI elements
 
 VISUAL ACCURACY RULES:
-- Installing an app → step 1 MUST be play_store_app or play_store_search
+- Step 1 for any lesson that involves opening an app → MUST be android_home (student taps the app icon from the home screen)
+- Step 2 for install lessons → play_store_search (student lands in Play Store after opening it)
+- Step 3 for install lessons → play_store_app (student finds and opens the app listing)
 - Creating account → early steps MUST use signup screens, NOT the app home
 - Steps must follow the EXACT ORDER a first-time user experiences them`;
+
+// ─── App design MD system ─────────────────────────────────────────────────────
+// Keyword → canonical app name mapping. Add more apps here as content grows.
+const APP_NAME_KEYWORDS = [
+  { name: "Gmail",         keywords: ["gmail", "google mail", "google account", "email account", "google email"] },
+  { name: "WhatsApp",      keywords: ["whatsapp", "whatsapp business"] },
+  { name: "Facebook",      keywords: ["facebook", "fb page", "facebook page", "facebook marketplace"] },
+  { name: "Google Sheets", keywords: ["google sheets", "spreadsheet", "excel"] },
+  { name: "Canva",         keywords: ["canva", "flyer design", "poster design", "banner design"] },
+  { name: "Google Maps",   keywords: ["google maps", "maps", "directions", "navigate", "route"] },
+];
+
+function detectAppName(topic) {
+  const lower = topic.toLowerCase();
+  for (const entry of APP_NAME_KEYWORDS) {
+    if (entry.keywords.some(kw => lower.includes(kw))) return entry.name;
+  }
+  return null;
+}
+
+// Fuzzy-match folder name (case-insensitive substring), read first .md, cap at 3000 chars
+function loadAppDesignMD(appName) {
+  if (!appName) return "";
+  try {
+    const entries = fs.readdirSync(APP_DESIGN_DIR);
+    const folder  = entries.find(e =>
+      e.toLowerCase() === appName.toLowerCase() ||
+      appName.toLowerCase().includes(e.toLowerCase()) ||
+      e.toLowerCase().includes(appName.toLowerCase())
+    );
+    if (!folder) return "";
+    const folderPath = path.join(APP_DESIGN_DIR, folder);
+    if (!fs.statSync(folderPath).isDirectory()) return "";
+    const mds = fs.readdirSync(folderPath).filter(f => f.endsWith(".md"));
+    if (mds.length === 0) return "";
+    const content = fs.readFileSync(path.join(folderPath, mds[0]), "utf8");
+    const capped = content.length > 3000 ? content.slice(0, 3000) + "\n...(truncated)" : content;
+    console.log(`  → App design MD loaded: ${folder}/${mds[0]} (${capped.length} chars)`);
+    return capped;
+  } catch { return ""; }
+}
+
+// After generating a lesson for an unknown app, ask the LLM to write a concise
+// phone-focused design spec and save it so future lessons reuse it.
+async function generateAndSaveAppDesignMD(lesson, appName, uiContext) {
+  if (!appName) return;
+  // Skip if folder already exists (design MD was already loaded)
+  try {
+    const entries = fs.readdirSync(APP_DESIGN_DIR);
+    const exists  = entries.find(e => e.toLowerCase() === appName.toLowerCase());
+    if (exists) return;
+  } catch { return; }
+
+  const client = azClient(DEP_TEACHER);
+  try {
+    const stepSummary = (lesson.steps || [])
+      .map(s => `[${s.screenType}] ${s.screenName}`)
+      .join(", ");
+
+    const prompt = `You are documenting the Android mobile UI of "${appName}" for a curriculum tool used in rural KwaZulu-Natal schools.
+Students are 13–18 years old with no prior experience. Create a concise phone-focused design reference.
+
+Lesson steps just generated:
+${stepSummary}
+
+Web UI research (if available):
+${uiContext || "Use your knowledge of the app."}
+
+Write a design spec markdown with these sections:
+# ${appName} — Phone UI Design Reference
+
+## Overview
+(2–3 sentences: what the app does, Android version focus)
+
+## Brand Colours
+- Primary: #hex
+- Background: #hex
+- Text: #hex
+
+## Key Screens
+For each screen: **Screen Name** — purpose + 3–5 key UI elements with exact button/label text
+
+## First-Time User Flow
+Ordered list of screens from fresh install to first successful action
+
+## Common UI Patterns
+Bullet list of recurring elements (nav bar, FAB, bottom tabs, etc.) with exact labels
+
+Keep under 600 words. Focus on EXACT SCREEN NAMES and BUTTON LABELS as they appear in the app.`;
+
+    const response = await client.chat.completions.create({
+      model: DEP_TEACHER,
+      max_completion_tokens: 2000,
+      messages: [{ role: "user", content: prompt }]
+    });
+
+    const mdContent = response.choices[0].message.content;
+    const folderPath = path.join(APP_DESIGN_DIR, appName);
+    fs.mkdirSync(folderPath, { recursive: true });
+    const filename = `${appName.toLowerCase().replace(/\s+/g, "_")}_phone_design.md`;
+    fs.writeFileSync(path.join(folderPath, filename), mdContent);
+    console.log(`  → New app design MD saved: Example sites/Markdown/${appName}/${filename}`);
+  } catch (e) {
+    console.warn(`  ⚠ Failed to generate app design MD for ${appName}:`, e.message);
+  }
+}
 
 // ─── Web search cache helpers ─────────────────────────────────────────────────
 // Cache TTL: re-scrape if the cached result is older than this many days.
@@ -299,7 +565,7 @@ function writeSearchCache(topic, result) {
 // Stays on OpenAI — Azure Foundry has no drop-in web_search_preview equivalent.
 // Results are cached to disk and reused for CACHE_TTL_DAYS (default 30 days).
 // After that the cache is considered stale and a fresh scrape runs automatically.
-async function searchUIContext(topic) {
+async function searchUIContext(topic, ledger) {
   const cached = readSearchCache(topic);
   if (cached) {
     console.log(`  → Web search cache HIT (${cached.ageDays}d old, TTL ${CACHE_TTL_DAYS}d): "${topic}"`);
@@ -326,6 +592,7 @@ Be very specific about button labels — use the exact text as it appears in the
 Under 500 words total.`
     });
     const result = response.output_text;
+    if (response.usage) logTokens("web_search", "gpt-4o-mini", response.usage, ledger);
     writeSearchCache(topic, result);
     console.log(`  → Web search complete — cached: cache/web-search/${slugify(topic)}.json`);
     return result;
@@ -335,8 +602,8 @@ Under 500 words total.`
   }
 }
 
-// ─── Phase 2: plan a thorough 8–12 step outline ──────────────────────────────
-async function planSteps(topic, uiContext) {
+// ─── Phase 2: plan steps calibrated to task difficulty ───────────────────────
+async function planSteps(topic, uiContext, ledger) {
   const client = azClient(DEP_VALIDATOR);
 
   const response = await client.chat.completions.create({
@@ -345,7 +612,7 @@ async function planSteps(topic, uiContext) {
     max_completion_tokens: 3500,
     messages: [{
       role: "user",
-      content: `Create a thorough step plan for teaching a complete beginner: "${topic}"
+      content: `Create a step plan for teaching a complete beginner: "${topic}"
 
 Student: 13–18 years old, rural KwaZulu-Natal, South Africa. Basic Android phone.
 Has NEVER used this app or done this task before. Treat every screen as completely new.
@@ -353,38 +620,48 @@ Has NEVER used this app or done this task before. Treat every screen as complete
 Real app UI from web search:
 ${uiContext || "Use your knowledge of the real app UI."}
 
-RULES FOR THE STEP PLAN:
-- MINIMUM 8 steps. Aim for 10–12 steps. 12 is better than 8 for difficult tasks.
-- Start from the ABSOLUTE beginning:
-    → If the app needs installing: Step 1 = Open Play Store
-    → If the app needs an account: include EVERY signup screen as its own step
-- Every screen the user sees = its own step
-- Every form that needs filling = its own step (or grouped if on the same screen)
-- Every verification step (SMS code, agree button, confirm screen) = its own step
-- The FINAL step must show the student COMPLETING the main goal, not just setting up:
-    → "Send email" task: last step = tap Send, see sent confirmation
-    → "Create listing" task: last step = listing published, visible to others
-    → "Set up profile" task: last step = profile saved, visible to others
-- Do NOT merge steps to hit a lower number — more steps = more thorough
+STEP COUNT — calibrate to actual task difficulty:
+  Simple task (1–2 screens, 1 goal):     6–8 steps
+  Medium task (3–5 screens, setup flow):  9–12 steps
+  Complex task (6+ screens, multi-goal): 12–16 steps
+
+Examples of difficulty:
+  Simple  → "Send a WhatsApp message to an existing contact"          → ~7 steps
+  Medium  → "Set up a WhatsApp Business profile"                      → ~10 steps
+  Complex → "Create a Gmail account from scratch and send first email" → ~14 steps
+
+RULES:
+- Start from the ABSOLUTE beginning of what the student must do:
+    → App not installed: Step 1 = Open Play Store → find app → tap Install
+    → New account needed: include EVERY signup screen as its own step
+- Every distinct screen the user sees = its own step
+- Every form field set = its own step (do not merge multiple fields into one)
+- Every confirmation / permission / SMS code screen = its own step
+- The FINAL step must show the student completing the main goal (not just setting up)
+- Do NOT pad with trivial filler steps just to inflate the count
+- Do NOT compress two real screens into one step just to keep the count down
 - Name the specific screen and button in each step description
 
 Return JSON:
 {
+  "difficulty": "simple | medium | complex",
   "mainObjective": "One sentence — what the student will have DONE by the final step",
   "fullStepOutline": [
     "Step 1: [screen name] — [exact action and button]",
-    "Step 2: [screen name] — [exact action and button]",
-    ...minimum 8, aim for 10–12...
+    "Step 2: [screen name] — [exact action and button]"
   ]
 }`
     }]
   });
 
+  if (response.usage) logTokens("plan", DEP_VALIDATOR, response.usage, ledger);
   const plan = JSON.parse(response.choices[0].message.content);
-  if (plan.fullStepOutline.length < 8) {
-    console.warn(`  ⚠ Plan only has ${plan.fullStepOutline.length} steps — will enforce 8 minimum`);
+  const minByDifficulty = { simple: 5, medium: 8, complex: 11 };
+  const min = minByDifficulty[plan.difficulty] || 6;
+  if (plan.fullStepOutline.length < min) {
+    console.warn(`  ⚠ Plan has ${plan.fullStepOutline.length} steps for "${plan.difficulty}" task (min ${min})`);
   }
-  console.log(`  → Plan: "${plan.mainObjective}" — ${plan.fullStepOutline.length} steps`);
+  console.log(`  → Plan [${plan.difficulty}]: "${plan.mainObjective}" — ${plan.fullStepOutline.length} steps`);
   return plan;
 }
 
@@ -446,7 +723,7 @@ ${NEVER_DO}`;
 }
 
 // ─── Phase 3a: generate teacher material (gpt-5.4-mini) ───────────────────────
-async function generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock) {
+async function generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, ledger) {
   const client = azClient(DEP_TEACHER);
 
   const systemPrompt = `You are an entrepreneurship curriculum assistant for KwaXolo Impact.
@@ -517,11 +794,12 @@ The teacherExplanation AND teacherLocalExample MUST each name a specific KZN ent
     ]
   });
 
+  if (response.usage) logTokens("teacher", DEP_TEACHER, response.usage, ledger);
   return JSON.parse(response.choices[0].message.content);
 }
 
 // ─── Phase 3b: generate student task material (gpt-5.4) ───────────────────────
-async function generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock) {
+async function generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, appDesignMD, ledger) {
   const client = azClient(DEP_STUDENT);
 
   const systemPrompt = `You are an entrepreneurship curriculum assistant for KwaXolo Impact.
@@ -549,7 +827,11 @@ ${INTERACTION_PAT}
 PHONE SCREEN TYPES
 ═══════════════════════════════════════════
 ${SCREEN_TYPES}
-
+${appDesignMD ? `
+═══════════════════════════════════════════
+APP UI DESIGN REFERENCE — use for accurate screen names, colours, and button labels
+═══════════════════════════════════════════
+${appDesignMD}` : ""}
 ═══════════════════════════════════════════
 QUALITY CHECKLIST (run silently before returning)
 ═══════════════════════════════════════════
@@ -628,35 +910,51 @@ Use arrange_steps at least once per task if the topic involves a sequence.`;
     ]
   });
 
+  if (response.usage) logTokens("student", DEP_STUDENT, response.usage, ledger);
   return JSON.parse(response.choices[0].message.content);
 }
 
 // ─── Phase 3: orchestrate teacher + student in parallel and merge ────────────
-async function generateLesson(inputs, uiContext, plan) {
-  const category    = detectCategory(inputs.topic);
-  const catRules    = CAT[category] || CAT["F"];
+async function generateLesson(inputs, uiContext, plan, ledger) {
+  const category      = detectCategory(inputs.topic);
+  const catRules      = CAT[category] || CAT["F"];
   const examplesBlock = loadExamples();
+  const appName       = detectAppName(inputs.topic);
+  const appDesignMD   = loadAppDesignMD(appName);
 
   console.log(`  → Detected category: ${category}`);
+  console.log(`  → App name detected: ${appName || "(none)"}`);
   console.log(`  → Teacher: ${DEP_TEACHER}  |  Student: ${DEP_STUDENT}`);
 
   const [teacherPart, studentPart] = await Promise.all([
-    generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock),
-    generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock)
+    generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, ledger),
+    generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, appDesignMD, ledger)
   ]);
 
-  return { ...teacherPart, ...studentPart };
+  const lesson = { ...teacherPart, ...studentPart };
+
+  // Non-blocking: generate design MD and fetch logo for new apps
+  if (appName && !appDesignMD) {
+    generateAndSaveAppDesignMD(lesson, appName, uiContext).catch(() => {});
+  }
+  // Always try logo (re-uses cached file if already downloaded)
+  if (appName) fetchAndSaveLogo(appName).catch(() => {});
+
+  return lesson;
 }
 
-// ─── Validation 1: enforce minimum 8 steps ───────────────────────────────────
-async function validateStepCount(lesson, topic, plan) {
+// ─── Validation 1: enforce difficulty-appropriate minimum step count ──────────
+async function validateStepCount(lesson, topic, plan, ledger) {
   const count = (lesson.steps || []).length;
-  if (count >= 8) {
-    console.log(`  → Step count OK: ${count} steps`);
+  const minByDifficulty = { simple: 5, medium: 8, complex: 11 };
+  const min = minByDifficulty[plan.difficulty] || 6;
+
+  if (count >= min) {
+    console.log(`  → Step count OK: ${count} steps (min ${min} for ${plan.difficulty || "?"} task)`);
     return lesson;
   }
 
-  console.log(`  ⚠ Only ${count} steps — requesting missing steps to reach 8`);
+  console.log(`  ⚠ Only ${count} steps — requesting missing steps to reach ${min}`);
   const client = azClient(DEP_STUDENT);
 
   const existing = lesson.steps.map(s =>
@@ -666,16 +964,16 @@ async function validateStepCount(lesson, topic, plan) {
   const response = await client.chat.completions.create({
     model: DEP_STUDENT,
     response_format: { type: "json_object" },
-    max_completion_tokens: 4000,
+    max_completion_tokens: 6000,
     messages: [{
       role: "user",
-      content: `A lesson about "${topic}" only has ${count} steps. It needs at least 8.
+      content: `A lesson about "${topic}" only has ${count} steps. It needs at least ${min} for this difficulty level.
 Main objective: ${plan.mainObjective}
 
 Existing steps:
 ${existing}
 
-Generate the MISSING steps to reach at least 8 total AND complete the main objective.
+Generate the MISSING steps to reach at least ${min} total AND complete the main objective.
 Continue naturally from the last existing step.
 Use the same step schema. Vary the exerciseTypes.
 
@@ -685,6 +983,7 @@ Return JSON: { "additionalSteps": [ ...step objects with number, screenType, scr
     }]
   });
 
+  if (response.usage) logTokens("validate_count", DEP_STUDENT, response.usage, ledger);
   const extra = JSON.parse(response.choices[0].message.content);
   if (extra.additionalSteps?.length > 0) {
     const offset = lesson.steps.length;
@@ -713,7 +1012,7 @@ function validateLocalGrounding(lesson) {
 }
 
 // ─── Validation 3: exercise fields complete and varied ───────────────────────
-async function validateExercises(lesson) {
+async function validateExercises(lesson, ledger) {
   const client = azClient(DEP_VALIDATOR);
 
   const summary = lesson.steps.map(s =>
@@ -744,6 +1043,7 @@ Return JSON: { "valid": false, "issues": ["Step 2: ..."] } listing real issues o
     messages: [{ role: "user", content: prompt }]
   });
 
+  if (response.usage) logTokens("validate_exercises", DEP_VALIDATOR, response.usage, ledger);
   const check = JSON.parse(response.choices[0].message.content);
   if (!check.valid && check.issues) {
     console.warn("  ⚠ Exercise issues:", check.issues.join(" | "));
@@ -754,37 +1054,57 @@ Return JSON: { "valid": false, "issues": ["Step 2: ..."] } listing real issues o
 }
 
 // ─── Validation 4: screen types match steps ──────────────────────────────────
-async function validateScreenTypes(lesson, topic) {
+async function validateScreenTypes(lesson, topic, ledger) {
   const client = azClient(DEP_VALIDATOR);
 
-  const preview = lesson.steps.slice(0, 5).map(s =>
-    `Step ${s.number}: screenType="${s.screenType}", teach: "${(s.teach||"").slice(0,80)}"`
+  // Hard-coded rule: step 1 must always be android_home for any lesson
+  // that starts with opening an app (i.e., almost every lesson).
+  // Apply this before the LLM validation to catch the most common mistake.
+  if (lesson.steps[0] && lesson.steps[0].screenType !== "android_home") {
+    const firstTeach = (lesson.steps[0].teach || "").toLowerCase();
+    const impliesHomeScreen = ["home screen", "open", "find", "tap", "play store", "app"].some(kw => firstTeach.includes(kw));
+    if (impliesHomeScreen) {
+      lesson.steps[0].screenType = "android_home";
+      console.log("  → Step 1 auto-corrected to android_home");
+    }
+  }
+
+  const allSteps = lesson.steps.map(s =>
+    `Step ${s.number}: screenType="${s.screenType}", teach: "${(s.teach||"").slice(0,90)}"`
   ).join("\n");
 
   const prompt = `Lesson about "${topic}", app: ${lesson.appName}.
-First steps:
-${preview}
+ALL steps:
+${allSteps}
 
-Does each screenType match what would actually be visible at that step?
-- Installing app → must be play_store_app or play_store_search
-- Creating account → must use signup screens, not app home
+Check that each screenType matches what would actually be visible at that step. Apply these rules:
+- Step 1 for any lesson → MUST be android_home (student opens app from home screen)
+- Step 2 for install lessons → play_store_search
+- Step 3 for install lessons → play_store_app (app listing with Install button)
+- Creating account → signup screens (gmail_signup_name, gmail_signup_user, etc.) NOT app home
+- The screen shown must match EXACTLY what the teach text describes
 
 ${SCREEN_TYPES}
 
 Return JSON: { "correct": true } if all screenTypes are correct.
-Return JSON: { "correct": false, "steps": [full corrected steps array — fix screenType only, all other fields identical] } if mismatches exist.`;
+Return JSON: { "correct": false, "corrections": [{ "step": 1, "screenType": "android_home" }, ...] }
+List ONLY the step numbers that need fixing and their corrected screenType. Do NOT return the full steps array.`;
 
   const response = await client.chat.completions.create({
     model: DEP_VALIDATOR,
     response_format: { type: "json_object" },
-    max_completion_tokens: 3500,
+    max_completion_tokens: 1200,
     messages: [{ role: "user", content: prompt }]
   });
 
+  if (response.usage) logTokens("validate_screens", DEP_VALIDATOR, response.usage, ledger);
   const check = JSON.parse(response.choices[0].message.content);
-  if (!check.correct && check.steps?.length > 0) {
-    console.log("  → Screen type validation corrected mismatches");
-    lesson.steps = check.steps;
+  if (!check.correct && check.corrections?.length > 0) {
+    check.corrections.forEach(({ step, screenType }) => {
+      const s = lesson.steps.find(ls => ls.number === step);
+      if (s && screenType) s.screenType = screenType;
+    });
+    console.log(`  → Screen type validation corrected ${check.corrections.length} step(s)`);
   } else {
     console.log("  → Screen type validation passed");
   }
@@ -868,31 +1188,38 @@ app.post("/generate", async (req, res) => {
   if (!AZ_ENDPOINT || !AZ_KEY) return res.status(500).json({ error: "AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_API_KEY must be set in .env" });
 
   try {
-    progress(reqId, 5,  `Searching: "${topic}"...`);
-    const uiContext = await searchUIContext(topic);
+    const ledger = [];   // token usage records for this request
 
-    progress(reqId, 18, "Planning 8–12 steps...");
-    const plan = await planSteps(topic, uiContext);
+    progress(reqId, 5,  `Searching: "${topic}"...`);
+    const uiContext = await searchUIContext(topic, ledger);
+
+    progress(reqId, 18, "Planning steps...");
+    const plan = await planSteps(topic, uiContext, ledger);
 
     const category = detectCategory(topic);
-    progress(reqId, 32, `Generating (category ${category}, ${plan.fullStepOutline.length} steps)...`);
-    let lesson = await generateLesson({ topic, struggles, time, context }, uiContext, plan);
+    progress(reqId, 32, `Generating (${plan.difficulty || "medium"}, ${plan.fullStepOutline.length} steps)...`);
+    let lesson = await generateLesson({ topic, struggles, time, context }, uiContext, plan, ledger);
 
     progress(reqId, 65, "Checking step count...");
-    lesson = await validateStepCount(lesson, topic, plan);
+    lesson = await validateStepCount(lesson, topic, plan, ledger);
 
     progress(reqId, 74, "Checking local grounding...");
     lesson = validateLocalGrounding(lesson);
 
     progress(reqId, 82, "Checking exercise fields...");
-    lesson = await validateExercises(lesson);
+    lesson = await validateExercises(lesson, ledger);
 
     progress(reqId, 91, "Checking screen types...");
-    lesson = await validateScreenTypes(lesson, topic);
+    lesson = await validateScreenTypes(lesson, topic, ledger);
 
     lesson.teacherPlanHTML = buildTeacherHTML(lesson, time);
 
     const grounded = hasLocalGrounding((lesson.teacherExplanation||"") + (lesson.teacherLocalExample||""));
+
+    // Token summary
+    const totalTokens = ledger.reduce((s, e) => s + e.totalTokens, 0);
+    const totalCost   = ledger.reduce((s, e) => s + e.estimatedCostUSD, 0);
+    console.log(`  [tokens] ${"TOTAL".padEnd(20)} ${"".padEnd(16)} ${"".padStart(6+2+6)}  tot:${String(totalTokens).padStart(7)}  $${totalCost.toFixed(5)}`);
     console.log(`  ✓ Done — ${lesson.steps.length} steps, category ${category}, local grounding: ${grounded}`);
 
     // Write full log
@@ -904,6 +1231,7 @@ app.post("/generate", async (req, res) => {
       stepCount: lesson.steps.length,
       localGrounding: grounded,
       inputs: { topic, struggles, time, context },
+      tokens: { ledger, totalTokens, totalCostUSD: +totalCost.toFixed(6) },
       lesson
     });
     console.log(`  → Log written: logs/raw/${reqId}.json`);
@@ -966,4 +1294,30 @@ app.post("/save-bad/:reqId", (req, res) => {
   res.json({ ok: true, file: `agent-guide/examples/bad/${filename}` });
 });
 
-app.listen(3000, () => console.log("KwaXolo → http://localhost:3000"));
+// ─── Logo API — list cached logos + on-demand fetch ──────────────────────────
+app.get("/api/logos", (req, res) => {
+  try {
+    const files = fs.readdirSync(LOGOS_DIR).filter(f => f.endsWith(".png"));
+    const map = {};
+    files.forEach(f => { map[f.replace(".png", "")] = "/logos/" + f; });
+    res.json(map);
+  } catch { res.json({}); }
+});
+
+// Fetch a logo on demand (e.g. GET /api/fetch-logo?app=Canva)
+app.get("/api/fetch-logo", async (req, res) => {
+  const appName = (req.query.app || "").trim();
+  if (!appName) return res.status(400).json({ error: "Missing app param" });
+  try {
+    const logoPath = await fetchAndSaveLogo(appName);
+    res.json({ path: logoPath });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.listen(3000, () => {
+  console.log("KwaXolo → http://localhost:3000");
+  // Pre-fetch all known logos in the background so they're ready for the first lesson
+  Object.keys(LOGO_DOMAINS).forEach(name => fetchAndSaveLogo(name).catch(() => {}));
+});

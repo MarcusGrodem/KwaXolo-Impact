@@ -50,7 +50,7 @@
     /* Results */
     .res{display:none}
     .res.on{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
-    .tc{background:#fff;border-radius:10px;padding:20px;border-top:4px solid #1B5EA7;max-height:88vh;overflow-y:auto}
+    .tc{background:#fff;border-radius:10px;padding:20px;border-top:4px solid #1B5EA7;max-height:90vh;overflow-y:auto}
     .clbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:11px;color:#1B5EA7}
     .tcont{font-size:13px;line-height:1.7}
     /* ════ TEACHER PLAN ════ */
@@ -91,8 +91,9 @@
       .tp-tg{background:#222!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
       .tp-local{background:#e8f5ea!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
     }
-    /* Phone */
+    /* Phone column */
     .pw{display:flex;flex-direction:column;gap:7px}
+    #phone-col{display:flex;flex-direction:column;align-items:center;width:100%;max-width:464px}
     .plbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#2D8B3E}
     .ex-btns{display:none;gap:7px}
     .ex-btns.visible{display:flex}
@@ -119,12 +120,27 @@
     .good-submit:hover{background:#226b2f}
     .good-cancel{background:none;border:none;color:#888;font-size:12px;cursor:pointer}
     .ex-status{font-size:11px;font-weight:600;padding:4px 0;display:none}
-    .phone{background:#111;border-radius:44px;padding:11px;box-shadow:0 18px 56px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.07);max-width:365px;position:relative}
-    .notch{height:24px;display:flex;align-items:center;justify-content:center}
+    .phone{background:#111;border-radius:44px;padding:13px 13px 17px;box-shadow:0 18px 56px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.07);width:100%;max-width:438px;position:relative;overflow:hidden}
+    .notch{height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .notchp{width:68px;height:5px;background:#2a2a2a;border-radius:3px}
-    .screen{border-radius:30px;overflow:hidden;min-height:560px;display:flex;flex-direction:column;background:#fff;position:relative}
+    .screen{border-radius:24px;overflow:hidden;display:flex;flex-direction:column;background:#fff;height:624px;position:relative}
     /* Arrow overlay */
-    .aov{position:absolute;top:11px;left:11px;right:11px;bottom:11px;border-radius:30px;pointer-events:none;z-index:50;overflow:hidden}
+    .aov{position:absolute;top:11px;left:11px;right:11px;bottom:14px;border-radius:24px;pointer-events:none;z-index:50;overflow:hidden}
+
+    /* ════ BOTTOM SHEET — inside the phone screen ════ */
+    #bs{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -3px 18px rgba(0,0,0,.18);display:flex;flex-direction:column;overflow:hidden;transition:height .3s cubic-bezier(.4,0,.2,1);z-index:20;touch-action:none}
+    .bs-handle-area{height:24px;display:flex;align-items:center;justify-content:center;cursor:ns-resize;background:#F9F6F2;border-top:1px solid #eee;flex-shrink:0;user-select:none}
+    .bs-handle-bar{width:32px;height:4px;background:#ccc;border-radius:2px}
+    .bs-peek-row{display:flex;align-items:center;padding:0 11px;height:34px;gap:7px;background:#F9F6F2;border-bottom:1px solid #eee;flex-shrink:0}
+    .bs-step-badge{font-size:10px;font-weight:800;color:#F37021;white-space:nowrap}
+    .bs-peek-hint{font-size:10px;color:#888;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .bs-toggle{background:none;border:none;font-size:12px;cursor:pointer;color:#bbb;padding:2px 5px;line-height:1;transition:transform .25s;border-radius:4px}
+    .bs-toggle:hover{color:#F37021}
+    .bs-toggle.up{transform:rotate(180deg)}
+    #bs-body{overflow-y:auto;padding:8px 12px 14px;flex:1;overscroll-behavior:contain}
+    .bs-nav-row{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+    .bs-nav-row .btn-back{width:auto;margin:0;flex-shrink:0;padding:8px 12px;font-size:12px}
+    .bs-nav-row .btn-back.hidden{display:none}
 
     /* ─── TAP ARROW ─── */
     .arr{position:absolute;background:#F37021;color:#fff;font-size:11px;font-weight:800;padding:5px 9px 5px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;box-shadow:0 2px 10px rgba(243,112,33,.6);animation:abounce .85s infinite alternate ease-in-out;max-width:130px;text-align:center;line-height:1.3;z-index:51}
@@ -149,9 +165,20 @@
     .ps{background:#fff;display:flex;flex-direction:column;flex:1}
     .ps-sb{background:#fff;color:#1A1A1A}
     .ps-top{background:#fff;padding:5px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #eee;flex-shrink:0}
-    .ps-back{font-size:18px;color:#444}
+    .ps-back{font-size:18px;color:#444;cursor:pointer;padding:4px 8px;border-radius:50%;transition:background .15s}
+    .ps-back:hover{background:#f1f3f4}
+    /* Android home screen */
+    .ah{height:100%;display:flex;flex-direction:column;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 55%,#0f3460 100%)}
+    .ah-sb{background:transparent!important;color:#fff!important}
+    .ah-grid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:16px 10px;align-content:start}
+    .ah-app{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+    .ah-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 8px rgba(0,0,0,.5);overflow:hidden}
+    .ah-lbl{font-size:9px;color:#fff;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.9);max-width:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ah-dock{height:58px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border-radius:18px;margin:0 10px 8px;display:flex;align-items:center;justify-content:space-around}
     .ps-search{flex:1;background:#f1f3f4;border-radius:20px;padding:5px 11px;font-size:12px;color:#555;display:flex;align-items:center;gap:5px}
-    .ps-mic{font-size:14px;color:#888}
+    .ps-search-inp{flex:1;background:#f1f3f4;border-radius:20px;padding:6px 12px;font-size:12px;color:#1A1A1A;border:none;outline:none;font-family:inherit}
+    .ps-search-inp:focus{background:#e8eaed}
+    .ps-mic{font-size:14px;color:#888;cursor:pointer}
     .ps-body{flex:1;overflow-y:auto;padding:10px}
     .ps-app-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
     .ps-icon{width:56px;height:56px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.2)}
@@ -399,8 +426,8 @@
     table.st td input{border:none;outline:none;width:100%;font-size:11px;font-family:inherit;background:transparent}
     table.st tr.tot td{background:#E8F5E9;font-weight:700;color:#0F9D58}
 
-    /* ════ STEP SHEET ════ */
-    .ss{background:#fff;border-top:1px solid #eee;padding:11px 13px 13px;flex-shrink:0;overflow-y:auto;max-height:52vh}
+    /* ════ STEP SHEET (now lives inside #bs-body) ════ */
+    .ss{background:#fff;padding:0}
     .ss-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
     .ss-bar{flex:1;height:4px;background:oklch(0.93 0.015 42);border-radius:2px;overflow:hidden}
     .ss-fill{height:100%;background:oklch(0.62 0.19 42);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
@@ -477,6 +504,17 @@
     .done-task{margin-top:13px;background:rgba(255,255,255,.15);border-radius:9px;padding:8px 13px;font-size:12px;color:#fff;font-weight:600}
     .btn-ag{margin-top:16px;background:#fff;color:#2D8B3E;border:none;padding:9px 20px;font-size:13px;font-weight:700;border-radius:9px;cursor:pointer}
 
+    /* Tap ripple — shown on every phone element click */
+    @keyframes rippleEx{from{transform:scale(0);opacity:.65}to{transform:scale(4);opacity:0}}
+    .tap-rpl{position:absolute;width:38px;height:38px;background:rgba(243,112,33,.4);border-radius:50%;pointer-events:none;z-index:200;transform:scale(0);animation:rippleEx .45s ease-out forwards;margin-left:-19px;margin-top:-19px}
+
+    /* do_and_confirm — "I did it" phase */
+    .ex-did-btn{width:100%;background:#1B5EA7;color:#fff;border:none;padding:10px;font-size:13px;font-weight:700;border-radius:8px;cursor:pointer;margin-bottom:8px;transition:background .15s}
+    .ex-did-btn:hover{background:#154d8a}
+    .ex-did-btn.done{background:#2D8B3E;cursor:default}
+    .ex-confirm-q{display:none;margin-top:4px}
+    .ex-confirm-q.show{display:block}
+
     /* Confetti */
     .cfwrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
     .cp{position:absolute;animation:fall linear forwards}
@@ -552,10 +590,12 @@
         </div>
       </div>
       <div class="ex-status" id="ex-status"></div>
-      <div class="phone" id="phoneFrame">
-        <div class="notch"><div class="notchp"></div></div>
-        <div class="screen" id="scr"></div>
-        <div class="aov" id="aov"></div>
+      <div id="phone-col">
+        <div class="phone" id="phoneFrame">
+          <div class="notch"><div class="notchp"></div></div>
+          <div class="screen" id="scr"></div>
+          <div class="aov" id="aov"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -568,9 +608,78 @@ function st(t){document.getElementById('topicInput').value=t;document.getElement
 // ── State ────────────────────────────────────────────────────────────────────
 let D=null, STEP=0, LAST_REQ_ID=null;
 
+// ── Bottom Sheet (inside phone screen) ───────────────────────────────────────
+// Snap heights are fractions of the 520px phone screen height.
+var BS_SNAP_COLLAPSED = 58;   // handle (24) + peek row (34) — app almost fully visible
+var BS_SNAP_MEDIUM    = 260;  // teach text + exercise header visible
+var BS_SNAP_EXPANDED  = 510;  // full content, scrollable inside; ~114px of app still peeking
+var BS_CURRENT = BS_SNAP_MEDIUM;
+
+function snapBS(h){
+  const bs = document.getElementById('bs');
+  if(!bs) return;
+  BS_CURRENT = h;
+  bs.style.height = h + 'px';
+  const tog = document.getElementById('bs-toggle');
+  if(tog){
+    const collapsed = h <= BS_SNAP_COLLAPSED + 5;
+    tog.textContent = collapsed ? '▲' : '▼';
+    tog.className   = 'bs-toggle' + (collapsed ? '' : ' up');
+  }
+}
+
+function toggleBS(){
+  snapBS(BS_CURRENT <= BS_SNAP_COLLAPSED + 5 ? BS_SNAP_MEDIUM : BS_SNAP_COLLAPSED);
+}
+
+function initBSdrag(){
+  const handle = document.getElementById('bs-handle');
+  // Fresh element every render — bind each time (no global guard needed)
+  if(!handle || handle._bsBound) return;
+  handle._bsBound = true;
+  let startY, startH, dragging = false;
+
+  function onStart(e){
+    startY   = e.touches ? e.touches[0].clientY : e.clientY;
+    startH   = document.getElementById('bs').offsetHeight;
+    dragging = true;
+    document.getElementById('bs').style.transition = 'none';
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onEnd);
+    document.addEventListener('touchmove', onMove, {passive:false});
+    document.addEventListener('touchend',  onEnd);
+  }
+
+  function onMove(e){
+    if(!dragging) return;
+    e.preventDefault();
+    const y  = e.touches ? e.touches[0].clientY : e.clientY;
+    const h  = Math.max(BS_SNAP_COLLAPSED, Math.min(BS_SNAP_EXPANDED, startH - (y - startY)));
+    document.getElementById('bs').style.height = h + 'px';
+    BS_CURRENT = h;
+  }
+
+  function onEnd(){
+    dragging = false;
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup',   onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend',  onEnd);
+    const h  = BS_CURRENT;
+    const t1 = (BS_SNAP_COLLAPSED + BS_SNAP_MEDIUM)   / 2;
+    const t2 = (BS_SNAP_MEDIUM    + BS_SNAP_EXPANDED)  / 2;
+    document.getElementById('bs').style.transition = 'height .3s cubic-bezier(.4,0,.2,1)';
+    snapBS(h < t1 ? BS_SNAP_COLLAPSED : h < t2 ? BS_SNAP_MEDIUM : BS_SNAP_EXPANDED);
+  }
+
+  handle.addEventListener('mousedown',  onStart);
+  handle.addEventListener('touchstart', onStart, {passive:false});
+}
+
 // ── Screen builders (one per screenType) ────────────────────────────────────
 function screens(type, step){
   const fn = {
+    android_home:      buildAndroidHome,
     play_store_search: buildPSSearch,
     play_store_app:    buildPSApp,
     gmail_signup_name: buildGSignupName,
@@ -595,21 +704,156 @@ function screens(type, step){
   return fn ? fn(step) : buildGeneric(step);
 }
 
+// ── Logo helper — uses cached real logo, falls back to emoji ─────────────────
+var LOGO_CACHE = {};   // slug → true/false (loaded at startup via /api/logos)
+
+fetch('/api/logos').then(r=>r.json()).then(m=>{ LOGO_CACHE = m; }).catch(()=>{});
+
+function slugify(n){
+  return (n||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+}
+
+// Returns an <img> tag for the real logo, or the fallback emoji string.
+// size = px (the img will be square). css = extra inline style string.
+function appLogo(name, size, css){
+  const sl = slugify(name);
+  const fallback = {
+    'Gmail':'<span style="font-size:'+(size*.6)+'px">📧</span>',
+    'WhatsApp':'<span style="font-size:'+(size*.6)+'px">💬</span>',
+    'Facebook':'<span style="font-size:'+(size*.6)+'px">👤</span>',
+    'Canva':'<span style="font-size:'+(size*.6)+'px">🎨</span>',
+    'Google Maps':'<span style="font-size:'+(size*.6)+'px">🗺️</span>',
+    'Google Sheets':'<span style="font-size:'+(size*.6)+'px">📊</span>',
+    'YouTube':'<span style="font-size:'+(size*.6)+'px">▶️</span>',
+    'Instagram':'<span style="font-size:'+(size*.6)+'px">📸</span>',
+    'TikTok':'<span style="font-size:'+(size*.6)+'px">🎵</span>',
+    'MTN Mobile Money':'<span style="font-size:'+(size*.6)+'px">💸</span>',
+    'Capitec':'<span style="font-size:'+(size*.6)+'px">🏦</span>',
+    'LinkedIn':'<span style="font-size:'+(size*.6)+'px">💼</span>',
+  }[name] || '<span style="font-size:'+(size*.6)+'px">📱</span>';
+  return `<img src="/logos/${sl}.png" width="${size}" height="${size}"
+    style="object-fit:contain;${css||''}"
+    alt="${name}"
+    onerror="this.outerHTML='${fallback.replace(/'/g,'&apos;')}'">`
+}
+
+// ── ANDROID HOME SCREEN ──────────────────────────────────────────────────────
+function buildAndroidHome(){
+  const grid=[
+    {n:'Phone',        ic:'📞', bg:'#34A853'},
+    {n:'Messages',     ic:'💬', bg:'#4285F4'},
+    {n:'Chrome',       ic:'🌐', bg:'#EA4335'},
+    {n:'Camera',       ic:'📷', bg:'#222'},
+    {n:'Gmail',        ic:'',   bg:'#EA4335'},
+    {n:'YouTube',      ic:'',   bg:'#FF0000'},
+    {n:'Google Maps',  ic:'',   bg:'#4285F4'},
+    {n:'WhatsApp',     ic:'',   bg:'#25D366'},
+    {n:'Settings',     ic:'⚙️', bg:'#607D8B'},
+    {n:'Calculator',   ic:'🔢', bg:'#FF6F00'},
+    {n:'Play Store',   ic:'',   bg:'#01875F'},
+    {n:'Facebook',     ic:'',   bg:'#1877F2'},
+  ];
+  return`<div class="ah">
+<div class="sb ah-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="ah-grid">
+  ${grid.map(a=>`<div class="ah-app" data-label="${a.n}">
+    <div class="ah-icon" style="background:${a.bg}">
+      ${a.ic ? `<span>${a.ic}</span>` : appLogo(a.n,40,'border-radius:8px')}
+    </div>
+    <div class="ah-lbl">${a.n}</div>
+  </div>`).join('')}
+</div>
+<div class="ah-dock">
+  <div class="ah-app" data-label="Phone"><div class="ah-icon" style="background:#34A853;width:40px;height:40px">📞</div></div>
+  <div class="ah-app" data-label="All apps" style="gap:0"><div style="display:grid;grid-template-columns:repeat(3,8px);gap:3px;padding:12px">${Array(9).fill('<div style="width:8px;height:8px;background:rgba(255,255,255,.8);border-radius:50%"></div>').join('')}</div></div>
+  <div class="ah-app" data-label="Messages"><div class="ah-icon" style="background:#4285F4;width:40px;height:40px">💬</div></div>
+</div>
+</div>`;
+}
+
 // ── PLAY STORE ───────────────────────────────────────────────────────────────
-function buildPSSearch(){return`<div class="ps"><div class="sb ps-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
-<div class="ps-top"><div class="ps-back">←</div><div class="ps-search">🔍 Search for apps & games</div><div class="ps-mic">🎤</div></div>
-<div class="ps-body"><div style="font-size:12px;font-weight:700;margin-bottom:8px">Suggested for you</div>
-<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">
-${['Gmail','WhatsApp','Facebook','Canva','Google Maps'].map((a,i)=>`<div style="text-align:center;flex-shrink:0"><div style="width:52px;height:52px;border-radius:13px;background:${['#EA4335','#25D366','#1877F2','#7D2AE7','#4285F4'][i]};display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:4px">${['📧','💬','👤','🎨','🗺'][i]}</div><div style="font-size:10px">${a}</div></div>`).join('')}
-</div></div></div>`}
+function buildPSSearch(){
+  const apps=[
+    {n:'Gmail',      bg:'#EA4335'},
+    {n:'WhatsApp',   bg:'#25D366'},
+    {n:'Facebook',   bg:'#1877F2'},
+    {n:'Canva',      bg:'#7D2AE7'},
+    {n:'Google Maps',bg:'#4285F4'},
+  ];
+  return`<div class="ps">
+<div class="sb ps-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
+<div class="ps-top">
+  <div class="ps-back" data-label="Back">←</div>
+  <input class="ps-search-inp" id="ps-search-inp" data-label="Search for apps & games" placeholder="🔍  Search for apps &amp; games" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" oninput="psSearchType(this.value)"/>
+  <div class="ps-mic" data-label="Voice search">🎤</div>
+</div>
+<div class="ps-body" id="ps-body-area">
+  <div style="font-size:12px;font-weight:700;margin-bottom:8px">Suggested for you</div>
+  <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">
+    ${apps.map(a=>`<div style="text-align:center;flex-shrink:0;cursor:pointer" data-label="${a.n}" onclick="psSearchType('${a.n}')">
+      <div style="width:56px;height:56px;border-radius:13px;background:${a.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:4px">${appLogo(a.n,52)}</div>
+      <div style="font-size:10px">${a.n}</div>
+    </div>`).join('')}
+  </div>
+</div></div>`}
+
+// App catalogue for search results
+var PS_APPS=[
+  {n:'Gmail',             bg:'#EA4335',dev:'Google LLC',           cat:'Productivity'},
+  {n:'WhatsApp',          bg:'#25D366',dev:'WhatsApp LLC',         cat:'Communication'},
+  {n:'WhatsApp Business', bg:'#25D366',dev:'WhatsApp LLC',         cat:'Business'},
+  {n:'Facebook',          bg:'#1877F2',dev:'Meta Platforms',       cat:'Social'},
+  {n:'Canva',             bg:'#7D2AE7',dev:'Canva Pty Ltd',        cat:'Design'},
+  {n:'Google Maps',       bg:'#4285F4',dev:'Google LLC',           cat:'Navigation'},
+  {n:'Google Sheets',     bg:'#0F9D58',dev:'Google LLC',           cat:'Productivity'},
+  {n:'YouTube',           bg:'#FF0000',dev:'Google LLC',           cat:'Entertainment'},
+  {n:'Instagram',         bg:'#E1306C',dev:'Meta Platforms',       cat:'Social'},
+  {n:'TikTok',            bg:'#010101',dev:'TikTok Pte. Ltd.',     cat:'Entertainment'},
+  {n:'Capitec Bank',      bg:'#003B5C',dev:'Capitec Bank',         cat:'Finance'},
+  {n:'MTN Mobile Money',  bg:'#FFCB00',dev:'MTN South Africa',     cat:'Finance'},
+  {n:'Spotify',           bg:'#1DB954',dev:'Spotify AB',           cat:'Music'},
+  {n:'Bolt',              bg:'#34D058',dev:'Bolt Technology OÜ',   cat:'Transport'},
+  {n:'Uber',              bg:'#000000',dev:'Uber Technologies',     cat:'Transport'},
+  {n:'Takealot',          bg:'#0079BF',dev:'Takealot.com',         cat:'Shopping'},
+];
+
+function psSearchType(val){
+  const inp = document.getElementById('ps-search-inp');
+  if(inp && val && inp.value !== val) inp.value = val;
+  const area = document.getElementById('ps-body-area');
+  if(!area || !val) return;
+  const v = val.toLowerCase();
+  const hits = PS_APPS.filter(a=>a.n.toLowerCase().includes(v));
+  if(!hits.length) return;
+  area.innerHTML = `<div style="font-size:11px;color:#888;margin-bottom:7px">Results for "${val}"</div>`
+    + hits.map(a=>`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f0f0f0;cursor:pointer" data-label="${a.n}" onclick="psOpenApp('${a.n}')">
+        <div style="width:44px;height:44px;border-radius:11px;background:${a.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${appLogo(a.n,42)}</div>
+        <div><div style="font-size:13px;font-weight:600">${a.n}</div><div style="font-size:10px;color:#888">${a.dev} · ${a.cat}</div></div>
+        <div style="margin-left:auto;background:#1A73E8;color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">Install</div>
+      </div>`).join('');
+}
+
+function psOpenApp(name){
+  // Transition the shell to the app detail page (play_store_app)
+  const sb = document.getElementById('shell-body');
+  if(sb) sb.innerHTML = buildShellHTML('play_store_app', STEP);
+  setTimeout(()=>setupPhoneInteractivity(), 100);
+  // Signal that the student found the app — update teaching panel
+  phoneActionDone(name + ' app');
+}
+
+function psInstallDone(){
+  // Student tapped Install — signal completion
+  phoneActionDone('Install');
+}
 
 function buildPSApp(s){
-  const app=D.appName||'App', color=D.appColor||'#4285F4', icon={'Gmail':'📧','WhatsApp':'💬','WhatsApp Business':'💼','Facebook':'👤','Google Sheets':'📊','Canva':'🎨','MTN Mobile Money':'💸','Google Maps':'🗺'}[app]||'📱';
+  const app=D.appName||'App', color=D.appColor||'#4285F4';
   return`<div class="ps"><div class="sb ps-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
 <div class="ps-top"><div class="ps-back" data-label="Back">←</div><div class="ps-search">🔍 ${app}</div></div>
 <div class="ps-body">
 <div class="ps-app-header">
-  <div class="ps-icon" style="background:${color}">${icon}</div>
+  <div class="ps-icon" style="background:${color};overflow:hidden;padding:4px">${appLogo(app,48,'border-radius:9px')}</div>
   <div class="ps-app-info"><div class="ps-app-name">${app}</div><div class="ps-app-dev">Google LLC</div><div class="ps-app-cat">Productivity · Free</div></div>
 </div>
 <div class="ps-stats">
@@ -617,7 +861,7 @@ function buildPSApp(s){
   <div class="ps-stat"><div class="ps-stat-v">1B+</div><div class="ps-stat-l">Downloads</div></div>
   <div class="ps-stat"><div class="ps-stat-v">Free</div><div class="ps-stat-l">Price</div></div>
 </div>
-<button class="ps-install" id="ps-install" data-label="Install">Install</button>
+<button class="ps-install" id="ps-install" data-label="Install" onclick="psInstallDone()">Install</button>
 <div class="ps-screenshots">
   ${[1,2,3].map(()=>`<div class="ps-ss" style="background:linear-gradient(135deg,${color}44,${color}22)"></div>`).join('')}
 </div>
@@ -696,21 +940,22 @@ Thandi"></textarea></div>
 <button class="gc-send" id="gc-send" data-label="Send" onclick="gcSend()">Send ▶</button></div>
 </div>`}
 
-function gcOpen(){document.getElementById('scr').innerHTML=buildShellHTML('gmail_compose')}
-function gcClose(){document.getElementById('scr').innerHTML=buildShellHTML('gmail_inbox')}
+function gcOpen(){document.getElementById('shell-body').innerHTML=buildShellHTML('gmail_compose',STEP)}
+function gcClose(){document.getElementById('shell-body').innerHTML=buildShellHTML('gmail_inbox',STEP)}
 function gcSend(){
-  document.getElementById('scr').innerHTML=`<div style="background:#fff;display:flex;flex-direction:column;flex:1;align-items:center;justify-content:center;padding:20px;text-align:center">
+  const shell = document.getElementById('shell-body');
+  if(shell) shell.innerHTML=`<div style="background:#fff;display:flex;flex-direction:column;flex:1;align-items:center;justify-content:center;padding:20px;text-align:center">
   <div style="font-size:40px;margin-bottom:12px">📤</div>
   <div style="font-size:16px;font-weight:700;margin-bottom:6px">Message sent!</div>
   <div style="font-size:12px;color:#888">Your email has been delivered.</div>
   </div>`;
-  setTimeout(()=>renderScreen(STEP),1500);
+  phoneActionDone('Send');
 }
 
 // ── WHATSAPP ─────────────────────────────────────────────────────────────────
 function buildWAWelcome(){return`<div class="waw">
 <div class="sb wa-sb" style="width:100%"><span>9:41</span><span>▪▪▪ 🔋</span></div>
-<div class="waw-logo">💬</div>
+<div class="waw-logo">${appLogo('WhatsApp',64,'border-radius:50%')}</div>
 <div class="waw-name">WhatsApp</div>
 <div class="waw-sub">Simple. Reliable. Private. WhatsApp makes messaging and calling free.</div>
 <button class="waw-btn" data-label="Agree and Continue" id="wa-agree">Agree and Continue</button>
@@ -856,7 +1101,7 @@ function buildFBListingForm(){return`<div class="fbcl">
 // ── SHEETS ───────────────────────────────────────────────────────────────────
 function buildSheetsBlank(){return`<div class="shs">
 <div class="sb sh-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
-<div class="shs-hd"><span style="font-size:18px">📊</span><span class="shs-fn">My Business Tracker</span><div style="display:flex;gap:8px;color:#fff;opacity:.9">⋮</div></div>
+<div class="shs-hd"><span>${appLogo('Google Sheets',20,'vertical-align:middle')}</span><span class="shs-fn">My Business Tracker</span><div style="display:flex;gap:8px;color:#fff;opacity:.9">⋮</div></div>
 <div class="shs-tb"><span>B</span><span><i>I</i></span><span>U</span><span>$</span><span>%</span></div>
 <div class="shs-fb"><div class="shs-ref" id="shs-ref">A1</div><input class="shs-fi" id="shs-fi" placeholder=""/></div>
 <div class="shs-grid"><table class="st">
@@ -867,7 +1112,7 @@ ${[1,2,3,4,5,6].map(r=>`<tr><td>${r}</td>${['A','B','C','D'].map(c=>`<td id="s-$
 
 function buildSheetsData(){return`<div class="shs">
 <div class="sb sh-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
-<div class="shs-hd"><span style="font-size:18px">📊</span><span class="shs-fn">My Business Tracker</span><div style="display:flex;gap:8px;color:#fff;opacity:.9">⋮</div></div>
+<div class="shs-hd"><span>${appLogo('Google Sheets',20,'vertical-align:middle')}</span><span class="shs-fn">My Business Tracker</span><div style="display:flex;gap:8px;color:#fff;opacity:.9">⋮</div></div>
 <div class="shs-tb"><span>B</span><span><i>I</i></span><span>U</span><span>$</span><span>%</span></div>
 <div class="shs-fb"><div class="shs-ref" id="shs-ref">A1</div><input class="shs-fi" id="shs-fi" placeholder=""/></div>
 <div class="shs-grid"><table class="st">
@@ -904,8 +1149,8 @@ function buildGeneric(step){
 </div></div>`}
 
 // ── Render screen (called on every step) ─────────────────────────────────────
-function buildShellHTML(type){
-  const step = D.steps[STEP];
+function buildShellHTML(type, idx){
+  const step = D.steps[idx !== undefined ? idx : STEP];
   return screens(type, step);
 }
 
@@ -913,32 +1158,43 @@ function renderScreen(idx){
   const step = D.steps[idx];
   if(!step){ showRefl(); return; }
   const type = step.screenType || 'generic';
-  const el = document.getElementById('scr');
-  // Build: shell content + step sheet
-  el.innerHTML = `
-    <div style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden">
-      <div style="flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column" id="shell-body">${buildShellHTML(type)}</div>
-      <div class="ss">
+
+  // App UI fills the phone screen; #bs sits on top as an absolute bottom sheet
+  document.getElementById('scr').innerHTML = `
+    <div id="shell-body" style="position:absolute;top:0;left:0;right:0;bottom:0;display:flex;flex-direction:column">${buildShellHTML(type, idx)}</div>
+    <div id="bs" style="height:${BS_SNAP_MEDIUM}px">
+      <div class="bs-handle-area" id="bs-handle"><div class="bs-handle-bar"></div></div>
+      <div class="bs-peek-row">
+        <span class="bs-step-badge" id="bs-step-badge"></span>
+        <span class="bs-peek-hint" id="bs-peek-hint"></span>
+        <button class="bs-toggle" id="bs-toggle" onclick="toggleBS()">▼</button>
+      </div>
+      <div id="bs-body">
+        <div class="bs-nav-row">
+          <button class="btn-back hidden" id="ss-back">← Back</button>
+          <button class="btn-n" id="ss-btn" style="flex:1"></button>
+        </div>
         <div class="ss-top"><div class="ss-bar"><div class="ss-fill" id="ss-fill"></div></div><div class="ss-lbl" id="ss-lbl"></div></div>
         <div class="ss-scr" id="ss-scr"></div>
         <div class="ss-txt" id="ss-txt"></div>
-        <div class="ss-ex" id="ss-ex"></div>
         <div class="ss-fb" id="ss-fb"></div>
+        <div class="ss-ex" id="ss-ex"></div>
         <div class="ss-tip" id="ss-tip"></div>
-        <button class="btn-back hidden" id="ss-back">← Go back</button>
-        <button class="btn-n" id="ss-btn"></button>
       </div>
     </div>`;
+
   updateStepUI(idx);
+  setTimeout(() => { setupPhoneInteractivity(); initBSdrag(); }, 220);
 }
 
 // ── Exercise state ────────────────────────────────────────────────────────────
-var EX_ANSWERED   = false; // tracks whether current step is answered
-var EX_TILE_QUEUE = [];    // for arrange_steps
-var EX_SEL_TERM   = null;  // for match_pairs
-var EX_SEL_MATCH  = null;
-var EX_PAIRS_DONE = 0;
-var EX_BLANK_TRIES = 0;    // wrong attempts on fill_blank
+var EX_ANSWERED    = false; // tracks whether current step is answered
+var EX_TILE_QUEUE  = [];    // for arrange_steps
+var EX_SEL_TERM    = null;  // for match_pairs
+var EX_SEL_MATCH   = null;
+var EX_PAIRS_DONE  = 0;
+var EX_BLANK_TRIES = 0;     // wrong attempts on fill_blank (kept for compatibility)
+var EX_WRONG_COUNT = 0;     // unified wrong-attempt counter (all types, resets per step)
 
 function updateStepUI(idx){
   STEP = idx;
@@ -948,6 +1204,7 @@ function updateStepUI(idx){
   EX_SEL_MATCH   = null;
   EX_PAIRS_DONE  = 0;
   EX_BLANK_TRIES = 0;
+  EX_WRONG_COUNT = 0;
 
   const steps = D.steps, total = steps.length;
   const s = steps[idx];
@@ -960,6 +1217,12 @@ function updateStepUI(idx){
   document.getElementById('ss-fill').style.width = pct+'%';
   document.getElementById('ss-lbl').textContent = `Step ${idx+1} of ${total}`;
   document.getElementById('ss-scr').textContent = s.screenName || '';
+
+  // Update peek row
+  const badge = document.getElementById('bs-step-badge');
+  const hint  = document.getElementById('bs-peek-hint');
+  if(badge) badge.textContent = `Step ${idx+1} / ${total}`;
+  if(hint)  hint.textContent  = s.screenName || '';
 
   // Show teach text (new field) falling back to instruction (old field)
   const teachText = s.teach || s.instruction || '';
@@ -1005,20 +1268,32 @@ function renderExercise(s, idx){
   if(!s.exerciseType){ el.innerHTML=''; return; }
 
   const q = s.question || '';
-  let html = `<div class="ss-q">${escH(q)}</div>`;
+  // For do_and_confirm the question lives inside the confirm panel (phase 2), not here
+  let html = s.exerciseType === 'do_and_confirm' ? '' : `<div class="ss-q">${escH(q)}</div>`;
 
   switch(s.exerciseType){
     case 'tap_correct':
-    case 'do_and_confirm':
-      if(s.exerciseType === 'do_and_confirm' && s.instruction){
-        html += `<div class="ex-do-box">${escH(s.instruction)}</div>`;
-        if(s.visibleResult) html += `<div class="ex-visible">✓ ${escH(s.visibleResult)}</div>`;
-      }
       html += '<div class="ex-opts">';
       (s.options||[]).forEach(opt => {
         html += `<button class="ex-opt" onclick="checkTapOpt(this,'${escQ(opt)}',${idx})">${escH(opt)}</button>`;
       });
       html += '</div>';
+      break;
+
+    case 'do_and_confirm':
+      // Phase 1: instruction + phone prompt. Phase 2 (after "I did it"): confirm question.
+      if(s.instruction){
+        html += `<div class="ex-do-box">${escH(s.instruction)}</div>`;
+        if(s.visibleResult) html += `<div class="ex-visible">Look for: ${escH(s.visibleResult)}</div>`;
+      }
+      html += `<button class="ex-did-btn" id="ex-did-btn" onclick="confirmPhoneDone(${idx})">✓ I did it on my phone — show me the question</button>`;
+      html += `<div class="ex-confirm-q" id="ex-confirm-q">`;
+      html += `<div class="ss-q" style="margin-bottom:7px">${escH(s.question||'')}</div>`;
+      html += '<div class="ex-opts">';
+      (s.options||[]).forEach(opt => {
+        html += `<button class="ex-opt" onclick="checkTapOpt(this,'${escQ(opt)}',${idx})">${escH(opt)}</button>`;
+      });
+      html += '</div></div>';
       break;
 
     case 'fill_blank':
@@ -1061,17 +1336,33 @@ function checkTapOpt(btn, value, idx){
   if(EX_ANSWERED) return;
   const s = D.steps[idx];
   const correct = value.toLowerCase().trim() === (s.correctAnswer||'').toLowerCase().trim();
-  btn.closest('.ex-opts').querySelectorAll('.ex-opt').forEach(b=>b.disabled=true);
+  const opts = btn.closest('.ex-opts').querySelectorAll('.ex-opt');
   if(correct){
+    opts.forEach(b => b.disabled = true);
     btn.classList.add('ex-correct');
     showFB(true, s.feedbackCorrect || 'Correct!');
     EX_ANSWERED = true;
     unlockNext();
   } else {
+    EX_WRONG_COUNT++;
     btn.classList.add('ex-wrong');
     shakeSheet();
-    showFB(false, s.feedbackWrong || 'Not quite — try again.');
-    setTimeout(()=>{ btn.classList.remove('ex-wrong'); btn.disabled=false; }, 1000);
+    if(EX_WRONG_COUNT >= 3){
+      opts.forEach(b => {
+        b.disabled = true;
+        if(b.textContent.trim().toLowerCase() === (s.correctAnswer||'').toLowerCase().trim())
+          b.classList.add('ex-correct');
+        else
+          b.classList.remove('ex-wrong');
+      });
+      showFB(false, 'The answer is: "' + (s.correctAnswer||'') + '". Read it carefully, then tap Next.');
+      EX_ANSWERED = true;
+      unlockNext();
+    } else {
+      const left = 3 - EX_WRONG_COUNT;
+      showFB(false, (s.feedbackWrong || 'Not quite — try again.') + ' (' + left + (left===1?' try':' tries') + ' left)');
+      setTimeout(() => { btn.classList.remove('ex-wrong'); btn.disabled = false; }, 900);
+    }
   }
 }
 
@@ -1165,13 +1456,24 @@ function checkOrderEx(idx){
   const s = D.steps[idx];
   const correct = JSON.stringify(EX_TILE_QUEUE) === JSON.stringify(s.correctOrder||[]);
   if(correct){
-    document.querySelectorAll('#ex-pool .ex-tile').forEach(t=>t.classList.add('ex-correct'));
+    document.querySelectorAll('#ex-pool .ex-tile').forEach(t => t.classList.add('ex-correct'));
     showFB(true, s.feedbackCorrect || 'Correct order!');
     EX_ANSWERED = true;
     unlockNext();
   } else {
+    EX_WRONG_COUNT++;
     shakeSheet();
-    showFB(false, s.feedbackWrong || 'Not quite — check the order and try again.');
+    if(EX_WRONG_COUNT >= 3){
+      const q = document.getElementById('ex-queue');
+      if(q) q.innerHTML = (s.correctOrder||[]).map(t => `<div class="ex-tile ex-correct">${escH(t)}</div>`).join('');
+      document.querySelectorAll('#ex-pool .ex-tile').forEach(t => { t.style.opacity = '0.3'; t.style.pointerEvents = 'none'; });
+      showFB(false, 'The correct order is shown above. Read it, then tap Next.');
+      EX_ANSWERED = true;
+      unlockNext();
+    } else {
+      const left = 3 - EX_WRONG_COUNT;
+      showFB(false, (s.feedbackWrong || 'Not quite — check the order and try again.') + ' (' + left + (left===1?' try':' tries') + ' left)');
+    }
   }
 }
 
@@ -1194,7 +1496,7 @@ function tryMatchPairEx(idx){
   const s = D.steps[idx];
   const tVal = EX_SEL_TERM.dataset.val;
   const mVal = EX_SEL_MATCH.dataset.val;
-  const valid = (s.pairs||[]).some(p=>p.term===tVal && p.match===mVal);
+  const valid = (s.pairs||[]).some(p => p.term === tVal && p.match === mVal);
   if(valid){
     EX_SEL_TERM.classList.replace('ex-selected','ex-matched');
     EX_SEL_MATCH.classList.replace('ex-selected','ex-matched');
@@ -1205,15 +1507,123 @@ function tryMatchPairEx(idx){
       unlockNext();
     }
   } else {
+    EX_WRONG_COUNT++;
     EX_SEL_TERM.classList.add('ex-wrong');
     EX_SEL_MATCH.classList.add('ex-wrong');
     shakeSheet();
-    setTimeout(()=>{
-      EX_SEL_TERM.classList.remove('ex-wrong','ex-selected');
-      EX_SEL_MATCH.classList.remove('ex-wrong','ex-selected');
-    }, 750);
+    if(EX_WRONG_COUNT >= 3){
+      // Reveal all remaining unmatched pairs
+      document.querySelectorAll('.ex-pair-item:not(.ex-matched)').forEach(el => {
+        el.classList.remove('ex-selected','ex-wrong');
+        el.classList.add('ex-matched');
+        el.style.opacity = '0.75';
+      });
+      showFB(false, 'The correct pairs are now shown. Study them, then tap Next.');
+      EX_ANSWERED = true;
+      unlockNext();
+    } else {
+      const left = 3 - EX_WRONG_COUNT;
+      showFB(false, "Those don't match — try again. (" + left + (left===1?' try':' tries') + ' left)');
+      const t = EX_SEL_TERM, m = EX_SEL_MATCH;
+      setTimeout(() => {
+        t.classList.remove('ex-wrong','ex-selected');
+        m.classList.remove('ex-wrong','ex-selected');
+      }, 750);
+    }
   }
   EX_SEL_TERM = null; EX_SEL_MATCH = null;
+}
+
+// ── do_and_confirm: phone action confirmed — reveal question ──────────────────
+function confirmPhoneDone(idx){
+  const btn = document.getElementById('ex-did-btn');
+  if(btn){ btn.textContent = '✓ Done on phone!'; btn.classList.add('done'); btn.disabled = true; }
+  const q = document.getElementById('ex-confirm-q');
+  if(q) q.classList.add('show');
+}
+
+// ── Phone interactivity ───────────────────────────────────────────────────────
+function addRipple(el, e){
+  const rect = el.getBoundingClientRect();
+  const rpl  = document.createElement('span');
+  rpl.className = 'tap-rpl';
+  rpl.style.left = (e.clientX - rect.left) + 'px';
+  rpl.style.top  = (e.clientY - rect.top)  + 'px';
+  el.style.position = 'relative';
+  el.style.overflow  = 'hidden';
+  el.appendChild(rpl);
+  rpl.addEventListener('animationend', () => rpl.remove());
+}
+
+// ── Phone action detection ────────────────────────────────────────────────────
+// Called whenever the student completes a real interaction on the simulated phone.
+// Expands the bottom sheet and advances the teaching panel state accordingly.
+function phoneActionDone(label){
+  const s = D && D.steps && D.steps[STEP];
+  if(!s) return;
+
+  if(s.exerciseType === 'do_and_confirm' && !EX_ANSWERED){
+    const didBtn = document.getElementById('ex-did-btn');
+    if(didBtn && !didBtn.disabled){
+      confirmPhoneDone(STEP);
+      snapBS(BS_SNAP_MEDIUM);
+    }
+    return;
+  }
+
+  if(!s.exerciseType && !EX_ANSWERED){
+    // No quiz — show success and unlock Next so the student can move on
+    showFB(true, 'Done! Tap Next to continue.');
+    unlockNext();
+    snapBS(BS_SNAP_MEDIUM);
+    return;
+  }
+
+  if(!EX_ANSWERED){
+    // Has a quiz — expand sheet so the student can see and answer it
+    showFB(true, 'Done on phone! Now answer the question below.');
+    snapBS(BS_SNAP_EXPANDED);
+  }
+}
+
+function labelMatches(elLabel, targetLabel){
+  if(!elLabel || !targetLabel) return false;
+  const el = elLabel.toLowerCase().trim();
+  const tg = targetLabel.toLowerCase().trim();
+  // Match if either contains the other's first 7 chars
+  return el.includes(tg.slice(0, 7)) || tg.includes(el.slice(0, 7));
+}
+
+function setupPhoneInteractivity(){
+  const shell = document.getElementById('shell-body');
+  if(!shell) return;
+
+  // In-app back arrows always navigate to previous lesson step,
+  // unless the step's actual goal IS to tap Back.
+  shell.querySelectorAll('[data-label="Back"]').forEach(el => {
+    if(el.dataset.backBound) return;
+    el.dataset.backBound = '1';
+    el.addEventListener('click', function(){
+      const s = D && D.steps && D.steps[STEP];
+      const tgt = ((s && s.targetLabel) || '').toLowerCase();
+      if(!tgt.includes('back')) { prevStep(STEP); return; }
+    });
+  });
+
+  shell.querySelectorAll('button,input,textarea,select,[data-label]').forEach(el => {
+    if(el.dataset.rplBound) return;
+    el.dataset.rplBound = '1';
+    el.addEventListener('click', function(ev){
+      addRipple(this, ev);
+      const s = D && D.steps && D.steps[STEP];
+      if(!s || EX_ANSWERED) return;
+      const elLabel = (this.getAttribute('data-label') || this.textContent || '').trim();
+      const targetLabel = (s.targetLabel || '');
+      if(targetLabel && labelMatches(elLabel, targetLabel)){
+        phoneActionDone(elLabel);
+      }
+    });
+  });
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -1230,7 +1640,7 @@ function showFB(ok, text){
 }
 
 function shakeSheet(){
-  const ss = document.querySelector('.ss');
+  const ss = document.getElementById('bs-body') || document.querySelector('.ss');
   if(!ss) return;
   ss.classList.remove('ss-shake');
   void ss.offsetWidth;
@@ -1337,6 +1747,7 @@ function waSend(){
   const m=document.createElement('div');m.className='wm s';
   m.innerHTML=inp.value+'<div class="wmt">Now <span class="wtk">✓</span></div>';
   chat.appendChild(m);inp.value='';chat.scrollTop=9999;
+  phoneActionDone('Send');
 }
 
 // ── Reflection ───────────────────────────────────────────────────────────────
@@ -1350,7 +1761,9 @@ function showRefl(){
       <textarea class="rfl-ta" id="rfl-ans" placeholder="Write your answer here..."></textarea>
       <button class="btn-sub" onclick="complete()">Submit Answer ✓</button>
     </div>
-  </div>`;}
+  </div>`;
+  // Bottom sheet is part of #scr; reflection replaces it entirely
+}
 
 function complete(){
   const a=document.getElementById('rfl-ans')?.value.trim();
@@ -1435,7 +1848,7 @@ async function generate(){
     const exStatus=document.getElementById('ex-status');
     exStatus.style.display='none'; exStatus.textContent='';
 
-    if(D.steps&&D.steps.length>0) renderScreen(0);
+    if(D.steps&&D.steps.length>0){ renderScreen(0); }
     else document.getElementById('scr').innerHTML=`<div style="padding:16px;font-size:13px;color:#888">No steps returned</div>`;
     res.classList.add('on');
   }catch(e){err.textContent='Error: '+e.message;err.classList.add('on');console.error(e)}
