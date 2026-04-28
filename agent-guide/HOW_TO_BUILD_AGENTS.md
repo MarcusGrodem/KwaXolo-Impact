@@ -2,16 +2,18 @@
 
 A practical implementation guide adapted from the [LangChain agent-building framework](https://www.langchain.com/blog/how-to-build-an-agent), applied to the KwaXolo Learn content generation agent.
 
-**Current tech stack (as of 2026-04-23):**
-- **Generation:** OpenAI GPT-4o (`gpt-4o`) — JSON structured output, 7–8 steps per lesson
-- **Web search:** Google Gemini 2.0 Flash — Google Search grounding to understand real app UI before generating
-- **Validation:** OpenAI GPT-4o-mini — checks that visual `screenType` per step matches the instruction text
+**Current tech stack (as of 2026-04-28):**
+- **Generation:** Azure OpenAI deployments — `AZURE_DEPLOYMENT_STUDENT` for student tasks and `AZURE_DEPLOYMENT_TEACHER` for teacher plans
+- **Web search:** OpenAI `web_search_preview`, cached under `test-site/cache/web-search/`, to understand real app UI before generating
+- **Validation:** Azure OpenAI validator deployment — checks step count, exercise fields, local grounding, and visual `screenType`
 - **Working prototype:** `test-site/` — local Express server, run with `npm start`
 
-**3-phase pipeline:**
-1. Gemini searches the real app's UI (button labels, screen names)
-2. GPT-4o generates structured JSON lesson with `screenType` per step
-3. GPT-4o-mini validates that step 1 screenType matches the task (e.g. "create Gmail account" must start at `play_store_app`, not `gmail_inbox`)
+**Current pipeline:**
+1. Search or load cached app/task UI context
+2. Plan difficulty and a 10-13 step sequence, with a hard cap of 13 steps
+3. Generate teacher material and student material in parallel
+4. Validate step count, local grounding, exercise fields, and screen types
+5. Render the teacher plan, phone simulator, logs, and good/bad example capture
 
 ---
 
@@ -46,11 +48,10 @@ The agent is invisible to students. It runs when a teacher clicks "Generate Less
 **Core principle from LangChain:** *"Pick something you could teach a smart intern."*
 That is this agent — a well-briefed curriculum intern who knows rural KwaZulu-Natal, writes at Grade 8 English level, and never uses jargon.
 
-**Why Gemini 2.1 Flash:**
-- Free on the Google AI free tier (1,500 requests/day, 15 RPM)
-- Built-in Google Search grounding — perfect for the weekly local news scraping
-- Fast response times suitable for teacher-facing generation
-- No billing setup needed for MVP and demo
+**Why Azure/OpenAI now:**
+- Student, teacher, and validator deployments can be tuned separately.
+- Web search is cached so repeated lesson generation is faster and cheaper.
+- The prototype can still run locally with `npm start` while preserving raw logs and example capture.
 
 ---
 
@@ -134,13 +135,13 @@ TASK TITLE / WHAT YOU WILL DO / STEPS / THINK ABOUT THIS / TIME
 
 ## 5. Step 3 — Build the MVP prompt
 
-### Architecture: single-shot for MVP
+### Architecture: staged local prototype
 
-For MVP, the agent is a **single API call** — not a reasoning loop.
+The current prototype is a **staged generation pipeline** — not an open-ended reasoning loop.
 
-- Free: one call per lesson on the free tier
-- Fast: no intermediate steps to wait for
-- Easy to debug: one input → one output
+- Search/planning, teacher generation, student generation, and validation are separate phases
+- Each phase logs token usage for cost review
+- Easy to debug: one teacher request creates one raw lesson log
 
 ### Installation
 
@@ -226,12 +227,12 @@ function parseResponse(rawText: string): {
 
 LangChain is explicit: **test with hand-fed data before connecting real APIs or UI.**
 
-1. Open [Google AI Studio](https://aistudio.google.com) — free, no signup beyond a Google account
-2. Create a new prompt, paste the system prompt from `01-system-prompt/system-prompt.md`
-3. Type a user message for topic D1 (Email)
-4. Compare output to `02-teacher-material/example-lesson-plan.md`
-5. Adjust system prompt until output matches reference quality
-6. Only then wire it to the form
+1. Run the local prototype with `npm start`
+2. Generate a lesson for topic D1 (Email) from the browser form
+3. Compare teacher output to `02-teacher-material/example-lesson-plan.md`
+4. Compare student output to the saved good examples in `agent-guide/examples/good/`
+5. Adjust the server prompts or guide files until output matches reference quality
+6. Run `node --check test-site/server.js` before shipping prompt or orchestration changes
 
 ---
 
@@ -242,20 +243,20 @@ LangChain is explicit: **test with hand-fed data before connecting real APIs or 
 ```
 Teacher form (4 inputs)
         ↓
-buildUserMessage() — structures inputs into prompt
+searchUIContext() — loads cached UI research or uses OpenAI web_search_preview
         ↓
-Gemini 2.1 Flash (system prompt + weekly news context + user message)
+planSteps() — plans difficulty and 10-13 steps, hard-capped at 13
         ↓
-Raw text response (with OUTPUT 1 and OUTPUT 2 markers)
+generateTeacherMaterial() + generateStudentMaterial() in parallel
         ↓
-parseResponse() — splits into { teacherPlan, studentTask }
+validateStepCount(), validateLocalGrounding(), validateExercises(), validateScreenTypes()
         ↓
-hasLocalGrounding() — quality validation check
+buildTeacherHTML() and return combined lesson JSON
         ↓
     ┌──────────────────┬───────────────────────┐
     ↓                  ↓                       ↓
-Supabase          Teacher HTML render     Student HTML render
-(lessons table)   (teacher dashboard)    (pushed to students)
+Raw logs        Teacher HTML render     Student phone simulator
+JSON files      (printable plan)        (browser QA surface)
 ```
 
 ### Supabase schema
@@ -392,7 +393,7 @@ function qualityCheck(teacherPlan: string, studentTask: string): {
 await supabase.from("agent_logs").insert({
   lesson_id: lesson.id,
   teacher_id: teacher.id,
-  model: "gemini-2.1-flash",
+  model: "azure-openai-student",
   latency_ms: endTime - startTime,
   local_grounding_pass: hasLocalGrounding(parsedOutput.teacherPlan),
   created_at: new Date().toISOString()
@@ -409,7 +410,7 @@ LangChain: *"Treat deployment as the start of iteration, not the end of developm
 
 - **Week 1:** Ship Category D only (Practical Digital Skills). Most testable — verify step-by-step instructions yourself on a phone. Get 3 teachers to use it.
 - **Week 2–3:** Open Category A and C based on teacher feedback.
-- **Month 2:** Open all categories. If the free tier rate limit becomes an issue, upgrade to the paid Gemini API.
+- **Month 2:** Open all categories. If rate limits become an issue, queue generation jobs and tune Azure deployment capacity.
 
 ### Teacher feedback signal
 
@@ -431,7 +432,7 @@ Log the diff between generated content and published content. After 20 lessons, 
 
 The agent generates more relevant content when it knows what is happening locally. A weekly scraping job fetches KZN business news and injects it into the system instruction alongside the static system prompt.
 
-**Key advantage of Gemini here:** Google Search grounding is a built-in tool on Gemini models. No external scraping infrastructure needed — Gemini searches Google directly and returns grounded results.
+Current prototype note: app/task UI research is handled by OpenAI `web_search_preview` in `test-site/server.js` and cached under `test-site/cache/web-search/`. A future weekly local-news job can use the same cache-first pattern or a separate scheduled fetcher.
 
 ### What to fetch
 
@@ -443,15 +444,11 @@ The agent generates more relevant content when it knows what is happening locall
 | Youth entrepreneurship SA | `youth entrepreneurship "South Africa" 2026` |
 | MTN MoMo / Capitec | `"MTN Mobile Money" OR "Capitec" "small business" South Africa 2026` |
 
-### The scraping agent (Gemini + Google Search grounding)
+### Optional scraping agent
 
 ```typescript
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-
 const LOCAL_NEWS_PROMPT = `
-Search Google for recent news (last 7 days) on these topics:
+Search for recent news (last 7 days) on these topics:
 1. Small business news in KwaZulu-Natal, South Africa
 2. Local economy or business news in Port Shepstone or the Ugu district
 3. SEDA (Small Enterprise Development Agency) South Africa updates
@@ -471,13 +468,12 @@ Do not include stories about national politics, crime, or sports.
 `;
 
 async function scrapeLocalNews(): Promise<string> {
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.1-flash",
-    tools: [{ googleSearch: {} }]   // Built-in Google Search grounding — free
+  const response = await searchClient.responses.create({
+    model: process.env.SEARCH_MODEL,
+    input: LOCAL_NEWS_PROMPT,
+    tools: [{ type: "web_search_preview" }]
   });
-
-  const result = await model.generateContent(LOCAL_NEWS_PROMPT);
-  return result.response.text();
+  return response.output_text;
 }
 ```
 
@@ -521,17 +517,11 @@ The news is appended to the system instruction. The static system prompt comes f
 ```typescript
 const localNews = await getLocalNewsContext();
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.1-flash",
-  systemInstruction:
-    SYSTEM_PROMPT +
-    (localNews ? "\n\n" + localNews : "")
+const rawText = await generateLessonWithContext(formInputs, {
+  localNews,
   // If local news context is present and a relevant story exists for this lesson topic,
   // reference it in the LOCAL EXAMPLE section.
 });
-
-const result = await model.generateContent(buildUserMessage(formInputs));
-const rawText = result.response.text();
 ```
 
 ### Scheduling the scrape
@@ -567,13 +557,13 @@ SELECT cron.schedule(
 
 ---
 
-## 10. Gemini tool use reference
+## 10. Optional Tool Use Reference
 
 ### Built-in tools (no extra setup)
 
 | Tool | How to enable | KwaXolo use case |
 |---|---|---|
-| Google Search grounding | `tools: [{ googleSearch: {} }]` | Weekly local news scraping |
+| Web/search grounding | Provider-specific search tool | Weekly local news scraping |
 | Code execution | `tools: [{ codeExecution: {} }]` | Not needed for MVP |
 
 ### Custom function calling
@@ -581,8 +571,8 @@ SELECT cron.schedule(
 For future features (e.g. fetching live SEDA registration steps, checking local weather for agricultural modules):
 
 ```typescript
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.1-flash",
+const model = client.getModel({
+  model: process.env.TOOL_USE_MODEL,
   tools: [{
     functionDeclarations: [{
       name: "get_local_price",
@@ -608,30 +598,30 @@ The model will request the function when it needs it; your code executes the fun
 
 ## 11. Free tier limits and cost control
 
-### Gemini 2.1 Flash free tier (as of April 2026)
+### Current local prototype controls
 
 | Limit | Value | Impact for KwaXolo |
 |---|---|---|
-| Requests per minute | 15 RPM | Fine — teachers generate lessons one at a time |
-| Requests per day | 1,500 RPD | Supports up to 1,500 lesson generations per day |
-| Tokens per minute | 1,000,000 TPM | Well within limits for this use case |
-| Cost | Free | No billing setup needed for MVP |
+| Web search cache | `SEARCH_CACHE_TTL_DAYS`, default 30 | Avoids repeated searches for the same app/task |
+| Student steps | Target 10-13, hard cap 13 | Keeps walkthroughs complete without becoming too long |
+| Generation split | Teacher, student, validator deployments | Lets cost/quality be tuned per phase |
+| Raw logs | `test-site/logs/raw/` | Supports review and prompt iteration |
 
-At 10 teachers each generating 5 lessons/day = 50 requests/day — far below the 1,500 RPD limit.
+At 10 teachers each generating 5 lessons/day, the main cost drivers are the student/teacher generation calls and any uncached web searches.
 
 ### When to upgrade
 
-If teacher usage exceeds 1,500 lessons/day, move to the paid Gemini API. At that point the product is working and paying for itself. Gemini 2.1 Flash paid pricing is very low — far cheaper than GPT-4 class models.
+If teacher usage grows, tune the Azure deployments separately: keep teacher material and validators on cheaper deployments, reserve the stronger student deployment for phone-step accuracy, and increase cache reuse for common app tasks.
 
 ### Rate limit handling
 
-The free tier is 15 RPM. If two teachers generate simultaneously, queue requests rather than firing in parallel:
+If multiple teachers generate simultaneously, queue full lesson jobs rather than firing every phase for every teacher at once:
 
 ```typescript
-// Simple request queue for free tier
+// Simple request queue for generation jobs
 const requestQueue: Array<() => Promise<any>> = [];
 let activeRequests = 0;
-const MAX_CONCURRENT = 3;  // Stay safely under 15 RPM
+const MAX_CONCURRENT = 3;
 
 async function queuedGenerate(fn: () => Promise<any>): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -656,13 +646,13 @@ function processQueue() {
 
 ## 12. Error handling
 
-### Common Gemini API errors
+### Common Generation API Errors
 
 | Error | Cause | What to do |
 |---|---|---|
 | 429 RESOURCE_EXHAUSTED | Rate limit hit | Retry with exponential backoff |
 | 400 INVALID_ARGUMENT | Bad request or blocked content | Log and show teacher a polite message |
-| 500 INTERNAL | Google server error | Retry up to 3 times |
+| 500 INTERNAL | Provider server error | Retry up to 3 times |
 | Empty response text | Safety filter blocked output | Regenerate with softer framing |
 
 ### Retry with exponential backoff
@@ -700,7 +690,7 @@ const rawText = await callWithRetry(() => generateLesson(formInputs, localNews))
 const rawText = result.response.text();
 
 if (!rawText || rawText.trim().length < 100) {
-  throw new Error("Gemini returned an empty or very short response — retry or rephrase");
+  throw new Error("Model returned an empty or very short response — retry or rephrase");
 }
 ```
 
@@ -776,18 +766,16 @@ The LLM must return one of these exact `screenType` values per step. The fronten
 
 ---
 
-## 12. Free tier limits and cost control
+## 12. Cost Control
 
 | API | Model | Usage | Cost |
 |---|---|---|---|
-| Google AI | Gemini 2.0 Flash | Search phase (1 call/lesson) | Free |
-| OpenAI | GPT-4o | Generation phase (1 call/lesson) | ~$0.04/lesson |
-| OpenAI | GPT-4o-mini | Validation phase (1 call/lesson) | ~$0.002/lesson |
-| **Total** | | | **~$0.042/lesson** |
+| OpenAI | `web_search_preview` model | UI research, cached by topic/app | Variable |
+| Azure OpenAI | Student deployment | Student phone task generation | Variable |
+| Azure OpenAI | Teacher deployment | Teacher lesson plan generation | Variable |
+| Azure OpenAI | Validator deployment | Step count, exercise, and screen checks | Variable |
 
-At 50 lessons/day for the demo: ~$2/day. Well within budget for the April 29 pitch.
-
-Gemini 2.0 Flash free tier: 1,500 requests/day, 15 RPM. More than enough for the search phase.
+Use the token ledger printed by `test-site/server.js` as the source of truth for actual per-lesson cost.
 
 ---
 
@@ -810,7 +798,7 @@ Gemini 2.0 Flash free tier: 1,500 requests/day, 15 RPM. More than enough for the
 - [ ] Move system prompt from `test-site/server.js` to `01-system-prompt/system-prompt.md` (they should be in sync)
 - [ ] Add Supabase schema from Section 6
 - [ ] Add `agent_logs` table for cost tracking
-- [ ] Implement weekly Gemini news scraping (Section 9)
+- [ ] Implement weekly local-news refresh (Section 9)
 - [ ] Add teacher 👍/👎 feedback on published lessons
 - [ ] Ship Category D first, expand based on feedback
 

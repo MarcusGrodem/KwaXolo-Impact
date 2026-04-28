@@ -673,14 +673,14 @@ Real app UI from web search:
 ${uiContext || "Use your knowledge of the real app UI."}
 
 STEP COUNT — calibrate to actual task difficulty:
-  Simple task (1–2 screens, 1 goal):      8–10 steps
+  Simple task (1–2 screens, 1 goal):     10–11 steps
   Medium task (3–5 screens, setup flow): 10–12 steps
   Complex task (6+ screens, multi-goal): 12–13 steps
 
 ABSOLUTE LIMIT: never return more than 13 steps. Aim for 10–13 steps. If the task has more details, combine closely related fields or confirmations into one clear step, but keep the final step as the real completed goal.
 
 Examples of difficulty:
-  Simple  → "Send a WhatsApp message to an existing contact"          → ~7 steps
+  Simple  → "Send a WhatsApp message to an existing contact"          → ~10 steps
   Medium  → "Set up a WhatsApp Business profile"                      → ~10 steps
   Complex → "Create a Gmail account from scratch and send first email" → 13 steps max
 
@@ -715,8 +715,8 @@ Return JSON:
     console.warn(`  ⚠ Plan returned ${plan.fullStepOutline.length} steps — trimming to 13 max`);
     plan.fullStepOutline = plan.fullStepOutline.slice(0, 13);
   }
-  const minByDifficulty = { simple: 8, medium: 10, complex: 12 };
-  const min = minByDifficulty[plan.difficulty] || 6;
+  const minByDifficulty = { simple: 10, medium: 10, complex: 12 };
+  const min = minByDifficulty[plan.difficulty] || 10;
   if (plan.fullStepOutline.length < min) {
     console.warn(`  ⚠ Plan has ${plan.fullStepOutline.length} steps for "${plan.difficulty}" task (min ${min})`);
   }
@@ -1088,8 +1088,8 @@ async function validateStepCount(lesson, topic, plan, ledger) {
     console.warn(`  ⚠ Step count capped at 13 for "${topic}"`);
     return lesson;
   }
-  const minByDifficulty = { simple: 8, medium: 10, complex: 12 };
-  const min = minByDifficulty[plan.difficulty] || 6;
+  const minByDifficulty = { simple: 10, medium: 10, complex: 12 };
+  const min = minByDifficulty[plan.difficulty] || 10;
   const cappedMin = Math.min(min, 13);
 
   if (count >= cappedMin) {

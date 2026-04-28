@@ -29,15 +29,17 @@ The agent does not interact with students. It is invisible infrastructure. Stude
 A working local prototype lives at `test-site/`. Run `npm start` from the project root, then open http://localhost:3000.
 
 **Tech stack:**
-- Generation: OpenAI GPT-4o (JSON mode, structured output)
-- Web search: OpenAI GPT-4o-mini with web_search_preview tool (searches real app UI before generating)
-- Validation: GPT-4o-mini (checks visual screenType matches instructions)
+- Generation: Azure OpenAI deployments for student tasks and teacher plans
+- Web search: OpenAI `web_search_preview`, cached under `test-site/cache/web-search/`
+- Validation: Azure OpenAI validator deployment for step count, grounding, exercise fields, and screen types
 - Frontend: Vanilla HTML/JS with 20 per-step phone screen builders
 
-**3-phase pipeline per lesson:**
-1. Gemini searches the real app → gets button names, screen names
-2. GPT-4o generates lesson JSON with `screenType` per step
-3. GPT-4o-mini validates step 1 screenType matches task type
+**Pipeline per lesson:**
+1. Search or load cached UI context for the requested app task
+2. Plan a 10-13 step sequence, with a hard cap of 13 steps
+3. Generate teacher material and student material in parallel
+4. Validate step count, local grounding, exercise fields, and screen types
+5. Render the teacher plan, phone simulator, raw log, and good/bad example capture
 
 **Key implementation guide:** `HOW_TO_BUILD_AGENTS.md`
 

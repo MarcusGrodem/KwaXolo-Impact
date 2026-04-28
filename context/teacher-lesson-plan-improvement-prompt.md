@@ -63,23 +63,69 @@ Current JSON shape:
 ```json
 {
   "teacherTitle": "Plain-language title, max 8 words, no jargon",
-  "teacherObjective": "After this lesson, you will be able to...",
+  "teacherObjective": "By the end of this lesson, students can...",
+  "teacherPrep": [
+    "One short thing to prepare before class",
+    "One short thing to write/check before class",
+    "One short grouping/material note"
+  ],
   "teacherBoardPoints": [
     "Point 1",
     "Point 2",
-    "Point 3"
+    "Point 3",
+    "Point 4",
+    "Point 5"
   ],
-  "teacherExplanation": "Three paragraph explanation",
+  "teacherBoardLayout": {
+    "title": "Exact board title",
+    "leftColumn": ["Key word: simple meaning"],
+    "rightColumn": ["Simple class step 1"],
+    "bottomLine": "One reminder/question"
+  },
+  "teacherScript": [
+    {
+      "section": "Open",
+      "minutes": 5,
+      "say": "Short words the teacher can say directly.",
+      "do": "Physical classroom action."
+    }
+  ],
+  "teacherExplanation": "Short fallback explanation for older renderers",
+  "teacherVocabulary": [
+    {
+      "word": "important word",
+      "simpleMeaning": "simple meaning",
+      "isiZuluSupport": ""
+    }
+  ],
   "teacherDiscussionQuestions": [
     "Open question 1?",
     "Open question 2?",
     "Open question 3?"
   ],
   "teacherLocalExample": "Named KZN example",
+  "teacherDevicePlan": {
+    "ifEnoughDevices": "How to run the task",
+    "ifSharedDevices": "How groups rotate roles",
+    "ifNoInternet": "Blackboard or notebook fallback"
+  },
+  "teacherCommonMistakes": [
+    {
+      "mistake": "Likely student mistake",
+      "teacherResponse": "How the teacher should help"
+    }
+  ],
+  "teacherAssessment": [
+    "One visible result to check",
+    "One question students answer",
+    "One output to collect or hear"
+  ],
   "teacherTimeGuide": [
     "5 min: write board points",
     "15 min: teacher explains"
-  ]
+  ],
+  "teacherWrapUpQuestion": "One final question",
+  "teacherExtension": "Optional task for faster groups"
 }
 ```
 
@@ -301,7 +347,7 @@ Current behavior:
 - Good/bad outputs can be saved into agent-guide/examples/.
 
 Problem:
-The teacher lesson plan is currently too basic. It has title, objective, board points, explanation, discussion questions, local example, and time guide. Improve it into a practical classroom plan that better supports teachers with limited digital confidence and limited classroom technology.
+The teacher lesson plan must stay practical enough for teachers with limited digital confidence and limited classroom technology. Preserve the richer schema and renderer instead of regressing to the older basic shape with only title, objective, board points, explanation, discussion questions, local example, and time guide.
 
 Target teacher:
 - Rural KwaZulu-Natal secondary school teacher.

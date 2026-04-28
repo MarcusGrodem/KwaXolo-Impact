@@ -1018,6 +1018,18 @@ function psOpenApp(name){
   phoneActionDone(name + ' app');
 }
 
+function psInstallButtonClick(ev){
+  if(ev) ev.stopPropagation();
+  const btn = document.getElementById('ps-install');
+  if(!btn || btn.disabled) return;
+  const action = (btn.dataset.label || btn.textContent || '').trim();
+  if(labelMatches(action, 'Open')){
+    phoneActionDone('Open');
+    return;
+  }
+  psInstallDone();
+}
+
 function psInstallDone(){
   const btn = document.getElementById('ps-install');
   const box = document.getElementById('ps-dl');
@@ -1043,6 +1055,7 @@ function psInstallDone(){
       if(pct === 100){
         btn.textContent = 'Open';
         btn.dataset.label = 'Open';
+        btn.disabled = false;
         phoneActionDone('Install');
       }
     }, 260 * (i + 1));
@@ -1051,6 +1064,12 @@ function psInstallDone(){
 
 function buildPSApp(s){
   const app=D.appName||'App', color=D.appColor||'#4285F4';
+  const currentTarget = expectedPhoneTarget(s || (D.steps && D.steps[STEP]) || {});
+  const buttonLabel = labelMatches(currentTarget, 'Open')
+    ? 'Open'
+    : labelMatches(currentTarget, 'Install')
+      ? 'Install'
+      : appIsInstalled(app) ? 'Open' : 'Install';
   return`<div class="ps"><div class="sb ps-sb"><span>9:41</span><span>▪▪▪ 🔋</span></div>
 <div class="ps-top"><div class="ps-back" data-label="Back">←</div><div class="ps-search">🔍 ${app}</div></div>
 <div class="ps-body">
@@ -1063,7 +1082,7 @@ function buildPSApp(s){
   <div class="ps-stat"><div class="ps-stat-v">1B+</div><div class="ps-stat-l">Downloads</div></div>
   <div class="ps-stat"><div class="ps-stat-v">Free</div><div class="ps-stat-l">Price</div></div>
 </div>
-<button class="ps-install" id="ps-install" data-label="Install" onclick="psInstallDone()">Install</button>
+<button class="ps-install" id="ps-install" data-label="${buttonLabel}" onclick="psInstallButtonClick(event)">${buttonLabel}</button>
 <div class="ps-dl" id="ps-dl">
   <div class="ps-dl-row"><span id="ps-dl-label">Downloading...</span><span>This is a practice download</span></div>
   <div class="ps-dl-track"><div class="ps-dl-fill" id="ps-dl-fill"></div></div>
@@ -1926,6 +1945,7 @@ function setupPhoneInteractivity(){
     el.dataset.rplBound = '1';
     el.addEventListener('click', function(ev){
       addRipple(this, ev);
+      if(this.id === 'ps-install') return;
       const s = curStep();
       if(!s || EX_ANSWERED) return;
       const elLabel = (this.getAttribute('data-label') || this.textContent || '').trim();
