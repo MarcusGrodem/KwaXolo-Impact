@@ -346,22 +346,10 @@ Return JSON:
   return plan;
 }
 
-// ─── Phase 3: generate the full lesson ───────────────────────────────────────
-async function generateLesson(inputs, uiContext, plan) {
-  const client      = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const category    = detectCategory(inputs.topic);
-  const catRules    = CAT[category] || CAT["F"];
-  const examplesBlock = loadExamples(); // fresh read every call
-
-  console.log(`  → Detected category: ${category}`);
-
-  const systemPrompt = `You are an entrepreneurship curriculum assistant for KwaXolo Impact.
-Your job is to generate COMPLETE, PRODUCTION-READY lesson content for teachers and students in rural KwaZulu-Natal, South Africa.
-Not a summary. Not an outline. A full lesson that can be delivered and completed with zero extra help.
-
-═══════════════════════════════════════════
+// ─── Shared prompt blocks for both teacher + student calls ───────────────────
+function commonContextBlock(category, catRules, examplesBlock) {
+  return `═══════════════════════════════════════════
 REFERENCE EXAMPLES — MATCH THIS QUALITY
-Study these carefully. Every lesson you generate must reach this standard.
 ═══════════════════════════════════════════
 
 REFERENCE TEACHER LESSON PLAN:
@@ -387,35 +375,14 @@ ISIZULU HOVER WORD RULES
 ${HOVER_RULES}
 
 ═══════════════════════════════════════════
-TEACHER LESSON PLAN STRUCTURE
-═══════════════════════════════════════════
-${LESSON_STRUCT}
-
-═══════════════════════════════════════════
-STUDENT TASK STRUCTURE
-═══════════════════════════════════════════
-${TASK_STRUCTURE}
-
-═══════════════════════════════════════════
-EXERCISE TYPES (Duolingo-style active learning)
-═══════════════════════════════════════════
-${EXERCISE_SPEC}
-
-═══════════════════════════════════════════
-INTERACTION PATTERNS AND FAIL-RECOVERY
-═══════════════════════════════════════════
-${INTERACTION_PAT}
-
-═══════════════════════════════════════════
-CATEGORY-SPECIFIC RULES FOR THIS TOPIC (Category ${category})
-These are mandatory rules for this exact topic. Follow every hard rule listed.
+CATEGORY-SPECIFIC RULES (Category ${category})
 ═══════════════════════════════════════════
 ${catRules}
 
 ═══════════════════════════════════════════
 LOCAL CONTEXT — always use named references
 ═══════════════════════════════════════════
-You MUST reference at least one of these by name in the teacher explanation AND in teacherLocalExample:
+You MUST reference at least one of these by name where local grounding applies:
 - Msenti Entrepreneurship Hub — Victor Jaca (CEO). Business registration, mentorship, IT support.
 - SEDA Port Shepstone — free government business registration and compliance guidance
 - Dolly Dlezi — accountant at Msenti Hub. Bookkeeping and financial setup for local businesses.
@@ -429,41 +396,44 @@ You MUST reference at least one of these by name in the teacher explanation AND 
 - WhatsApp — the PRIMARY business communication tool. Always encourage it. Never dismiss it.
 
 Generic examples like "a local business owner" or "a young entrepreneur" are REJECTED.
-Name a specific person, business, or place from the list above.
-
-═══════════════════════════════════════════
-PHONE SCREEN TYPES
-═══════════════════════════════════════════
-${SCREEN_TYPES}
 
 ═══════════════════════════════════════════
 WHAT THE AGENT MUST NEVER DO
 ═══════════════════════════════════════════
-${NEVER_DO}
+${NEVER_DO}`;
+}
+
+// ─── Phase 3a: generate teacher material (gpt-5.4-mini) ───────────────────────
+async function generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock) {
+  const client = azClient(DEP_TEACHER);
+
+  const systemPrompt = `You are an entrepreneurship curriculum assistant for KwaXolo Impact.
+You generate the TEACHER-FACING half of a lesson for teachers in rural KwaZulu-Natal, South Africa.
+Output is read by the teacher to deliver class — title, objective, board points, explanation, discussion, local example, time guide.
+The student-facing task steps are generated separately. Do NOT generate steps here.
+
+${commonContextBlock(category, catRules, examplesBlock)}
+
+═══════════════════════════════════════════
+TEACHER LESSON PLAN STRUCTURE
+═══════════════════════════════════════════
+${LESSON_STRUCT}
 
 ═══════════════════════════════════════════
 QUALITY CHECKLIST (run silently before returning)
 ═══════════════════════════════════════════
 ${QUALITY_CHECK}
 
-═══════════════════════════════════════════
-STEP PLAN TO FOLLOW EXACTLY
-Main objective: ${plan.mainObjective}
-═══════════════════════════════════════════
-Expand EACH of these into a full step object. Do not merge. Do not skip.
-${plan.fullStepOutline.map((s, i) => `${i + 1}. ${s}`).join("\n")}
+Main objective for this lesson: ${plan.mainObjective}
 
-Real app UI from web search (use exact button and screen names from this):
-${uiContext || "Use your knowledge of the real app UI."}`;
+Real app UI from web search (for context only — do not include UI mechanics in teacher text):
+${uiContext || "(no web search context)"}`;
 
-  const userMsg = `Generate the COMPLETE lesson for: "${inputs.topic}"
+  const userMsg = `Generate the TEACHER MATERIAL ONLY for: "${inputs.topic}"
 
 What students struggle with: ${inputs.struggles || "none noted"}
 Available class time: ${inputs.time}
 Class context: ${inputs.context || "none provided"}
-
-You must generate ALL ${plan.fullStepOutline.length} steps listed in the step plan above.
-Do not stop early. Do not merge steps. Every step must be fully filled out.
 
 Return ONLY valid JSON in this exact shape:
 
@@ -490,11 +460,84 @@ Return ONLY valid JSON in this exact shape:
     "10 min: class discussion",
     "10 min: students do task on phones",
     "5 min: recap — what is one thing you learned?"
-  ],
+  ]
+}
+
+The teacherExplanation AND teacherLocalExample MUST each name a specific KZN entity from the local context list.`;
+
+  const response = await client.chat.completions.create({
+    model: DEP_TEACHER,
+    response_format: { type: "json_object" },
+    max_tokens: 4000,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user",   content: userMsg }
+    ]
+  });
+
+  return JSON.parse(response.choices[0].message.content);
+}
+
+// ─── Phase 3b: generate student task material (gpt-5.4) ───────────────────────
+async function generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock) {
+  const client = azClient(DEP_STUDENT);
+
+  const systemPrompt = `You are an entrepreneurship curriculum assistant for KwaXolo Impact.
+You generate the STUDENT-FACING task — the Duolingo-style step-by-step phone walkthrough that students complete on their device.
+The teacher-facing lesson plan is generated separately. Focus all effort on the steps.
+
+${commonContextBlock(category, catRules, examplesBlock)}
+
+═══════════════════════════════════════════
+STUDENT TASK STRUCTURE
+═══════════════════════════════════════════
+${TASK_STRUCTURE}
+
+═══════════════════════════════════════════
+EXERCISE TYPES (Duolingo-style active learning)
+═══════════════════════════════════════════
+${EXERCISE_SPEC}
+
+═══════════════════════════════════════════
+INTERACTION PATTERNS AND FAIL-RECOVERY
+═══════════════════════════════════════════
+${INTERACTION_PAT}
+
+═══════════════════════════════════════════
+PHONE SCREEN TYPES
+═══════════════════════════════════════════
+${SCREEN_TYPES}
+
+═══════════════════════════════════════════
+QUALITY CHECKLIST (run silently before returning)
+═══════════════════════════════════════════
+${QUALITY_CHECK}
+
+═══════════════════════════════════════════
+STEP PLAN TO FOLLOW EXACTLY
+Main objective: ${plan.mainObjective}
+═══════════════════════════════════════════
+Expand EACH of these into a full step object. Do not merge. Do not skip.
+${plan.fullStepOutline.map((s, i) => `${i + 1}. ${s}`).join("\n")}
+
+Real app UI from web search (use exact button and screen names from this):
+${uiContext || "Use your knowledge of the real app UI."}`;
+
+  const userMsg = `Generate the STUDENT TASK ONLY for: "${inputs.topic}"
+
+What students struggle with: ${inputs.struggles || "none noted"}
+Class context: ${inputs.context || "none provided"}
+
+You must generate ALL ${plan.fullStepOutline.length} steps listed in the step plan above.
+Do not stop early. Do not merge steps. Every step must be fully filled out.
+
+Return ONLY valid JSON in this exact shape:
+
+{
   "appName": "Exact app name as it appears in the app store",
   "appColor": "#hex brand colour",
   "appTextColor": "#fff or #1A1A1A",
-  "taskTitle": "Task title matching the lesson title",
+  "taskTitle": "Task title matching the lesson topic",
   "taskIntro": "One active-voice sentence: what the student will HAVE when they finish (not what they will 'do')",
   "taskTime": "10–15 minutes",
   "taskReflection": "Personal reflection question — must connect to the student's real life — cannot be answered yes/no — requires having done the task",
@@ -503,7 +546,7 @@ Return ONLY valid JSON in this exact shape:
       "number": 1,
       "screenType": "exact value from screen types list",
       "screenName": "Exact screen name as it appears in the app",
-      "teach": "2–3 sentences. What is on this screen. What the student is about to do and why it matters for completing the main goal. Include a fail-recovery hint if the step could go wrong (e.g. 'If you see Open instead of Install, Gmail is already on your phone — skip to step 3.').",
+      "teach": "2–3 sentences. What is on this screen. What the student is about to do and why it matters for completing the main goal. Include a fail-recovery hint if the step could go wrong.",
       "exerciseType": "tap_correct | fill_blank | arrange_steps | match_pairs | do_and_confirm",
       "question": "The question the student must answer correctly before advancing.",
       "options": ["Option A", "Option B", "Option C", "Option D"],
@@ -534,7 +577,7 @@ Use do_and_confirm for any step that requires the student to act on their real p
 Use arrange_steps at least once per task if the topic involves a sequence.`;
 
   const response = await client.chat.completions.create({
-    model: "gpt-4o",
+    model: DEP_STUDENT,
     response_format: { type: "json_object" },
     max_tokens: 16000,
     messages: [
@@ -546,6 +589,23 @@ Use arrange_steps at least once per task if the topic involves a sequence.`;
   return JSON.parse(response.choices[0].message.content);
 }
 
+// ─── Phase 3: orchestrate teacher + student in parallel and merge ────────────
+async function generateLesson(inputs, uiContext, plan) {
+  const category    = detectCategory(inputs.topic);
+  const catRules    = CAT[category] || CAT["F"];
+  const examplesBlock = loadExamples();
+
+  console.log(`  → Detected category: ${category}`);
+  console.log(`  → Teacher: ${DEP_TEACHER}  |  Student: ${DEP_STUDENT}`);
+
+  const [teacherPart, studentPart] = await Promise.all([
+    generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock),
+    generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock)
+  ]);
+
+  return { ...teacherPart, ...studentPart };
+}
+
 // ─── Validation 1: enforce minimum 8 steps ───────────────────────────────────
 async function validateStepCount(lesson, topic, plan) {
   const count = (lesson.steps || []).length;
@@ -555,14 +615,14 @@ async function validateStepCount(lesson, topic, plan) {
   }
 
   console.log(`  ⚠ Only ${count} steps — requesting missing steps to reach 8`);
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const client = azClient(DEP_STUDENT);
 
   const existing = lesson.steps.map(s =>
     `Step ${s.number}: [${s.screenType}] ${s.screenName} — ${(s.teach || "").slice(0, 100)}`
   ).join("\n");
 
   const response = await client.chat.completions.create({
-    model: "gpt-4o",
+    model: DEP_STUDENT,
     response_format: { type: "json_object" },
     max_tokens: 4000,
     messages: [{
@@ -612,7 +672,7 @@ function validateLocalGrounding(lesson) {
 
 // ─── Validation 3: exercise fields complete and varied ───────────────────────
 async function validateExercises(lesson) {
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const client = azClient(DEP_VALIDATOR);
 
   const summary = lesson.steps.map(s =>
     `Step ${s.number}: type="${s.exerciseType}", question="${(s.question||"").slice(0,60)}", options=${JSON.stringify(s.options||[])}, correctAnswer="${s.correctAnswer||""}", acceptedAnswers=${JSON.stringify(s.acceptedAnswers||[])}, tiles=${(s.tiles||[]).length}, correctOrder=${(s.correctOrder||[]).length}, pairs=${(s.pairs||[]).length}, hasInstruction=${!!s.instruction}, feedbackCorrect="${(s.feedbackCorrect||"").slice(0,40)}", feedbackWrong="${(s.feedbackWrong||"").slice(0,40)}"`
@@ -636,7 +696,7 @@ Return JSON: { "valid": true } if no real issues.
 Return JSON: { "valid": false, "issues": ["Step 2: ..."] } listing real issues only.`;
 
   const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: DEP_VALIDATOR,
     response_format: { type: "json_object" },
     max_tokens: 800,
     messages: [{ role: "user", content: prompt }]
