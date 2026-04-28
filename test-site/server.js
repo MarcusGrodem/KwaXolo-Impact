@@ -673,16 +673,16 @@ Real app UI from web search:
 ${uiContext || "Use your knowledge of the real app UI."}
 
 STEP COUNT — calibrate to actual task difficulty:
-  Simple task (1–2 screens, 1 goal):     5–7 steps
-  Medium task (3–5 screens, setup flow):  7–9 steps
-  Complex task (6+ screens, multi-goal): 9–10 steps
+  Simple task (1–2 screens, 1 goal):      8–10 steps
+  Medium task (3–5 screens, setup flow): 10–12 steps
+  Complex task (6+ screens, multi-goal): 12–13 steps
 
-ABSOLUTE LIMIT: never return more than 10 steps. If the task has more details, combine closely related fields or confirmations into one clear step, but keep the final step as the real completed goal.
+ABSOLUTE LIMIT: never return more than 13 steps. Aim for 10–13 steps. If the task has more details, combine closely related fields or confirmations into one clear step, but keep the final step as the real completed goal.
 
 Examples of difficulty:
   Simple  → "Send a WhatsApp message to an existing contact"          → ~7 steps
   Medium  → "Set up a WhatsApp Business profile"                      → ~10 steps
-  Complex → "Create a Gmail account from scratch and send first email" → 10 steps max
+  Complex → "Create a Gmail account from scratch and send first email" → 13 steps max
 
 RULES:
 - Start from the ABSOLUTE beginning of what the student must do:
@@ -692,9 +692,9 @@ RULES:
 - Every form field set = its own step (do not merge multiple fields into one)
 - Every confirmation / permission / SMS code screen = its own step
 - The FINAL step must show the student completing the main goal (not just setting up)
-- Maximum 10 steps total. This is non-negotiable.
+- Maximum 13 steps total. This is non-negotiable.
 - Do NOT pad with trivial filler steps just to inflate the count
-- You MAY combine closely related micro-actions into one step to stay under 10 steps
+- You MAY combine closely related micro-actions into one step to stay under 13 steps
 - Name the specific screen and button in each step description
 
 Return JSON:
@@ -711,11 +711,11 @@ Return JSON:
 
   if (response.usage) logTokens("plan", DEP_VALIDATOR, response.usage, ledger);
   const plan = JSON.parse(response.choices[0].message.content);
-  if (plan.fullStepOutline?.length > 10) {
-    console.warn(`  ⚠ Plan returned ${plan.fullStepOutline.length} steps — trimming to 10 max`);
-    plan.fullStepOutline = plan.fullStepOutline.slice(0, 10);
+  if (plan.fullStepOutline?.length > 13) {
+    console.warn(`  ⚠ Plan returned ${plan.fullStepOutline.length} steps — trimming to 13 max`);
+    plan.fullStepOutline = plan.fullStepOutline.slice(0, 13);
   }
-  const minByDifficulty = { simple: 5, medium: 7, complex: 8 };
+  const minByDifficulty = { simple: 8, medium: 10, complex: 12 };
   const min = minByDifficulty[plan.difficulty] || 6;
   if (plan.fullStepOutline.length < min) {
     console.warn(`  ⚠ Plan has ${plan.fullStepOutline.length} steps for "${plan.difficulty}" task (min ${min})`);
@@ -987,7 +987,7 @@ Class context: ${inputs.context || "none provided"}
 
 You must generate ALL ${plan.fullStepOutline.length} steps listed in the step plan above.
 Do not stop early. Do not merge steps. Every step must be fully filled out.
-Never generate more than 10 steps total.
+Never generate more than 13 steps total. Target 10–13 steps whenever the task has enough meaningful screens/actions.
 
 Return ONLY valid JSON in this exact shape:
 
@@ -1004,6 +1004,7 @@ Return ONLY valid JSON in this exact shape:
       "number": 1,
       "screenType": "exact value from screen types list",
       "screenName": "Exact screen name as it appears in the app",
+      "targetLabel": "Exact clickable/tappable target for this step. Must match one visible app icon, button, field, or menu label. Never leave empty for phone action steps.",
       "teach": "2–3 sentences. What is on this screen. What the student is about to do and why it matters for completing the main goal. Include a fail-recovery hint if the step could go wrong.",
       "exerciseType": "tap_correct | fill_blank | arrange_steps | match_pairs | do_and_confirm",
       "question": "The question the student must answer correctly before advancing.",
@@ -1030,6 +1031,8 @@ FIELD RULES BY EXERCISE TYPE:
 - do_and_confirm: fill instruction + visibleResult + options + correctAnswer. Others empty.
 
 Always include feedbackCorrect AND feedbackWrong for EVERY step.
+Always include targetLabel for EVERY step that involves tapping, typing, selecting, or confirming something on the phone. The simulator only accepts this exact target as correct.
+For android_home, targetLabel MUST be the exact app icon to tap, such as "Play Store", "Gmail", "WhatsApp", or "Facebook".
 Vary exerciseTypes across steps — never more than 3 tap_correct in a row.
 Use do_and_confirm for any step that requires the student to act on their real phone.
 Use arrange_steps at least once per task if the topic involves a sequence.`;
@@ -1080,17 +1083,17 @@ async function generateLesson(inputs, uiContext, plan, ledger) {
 // ─── Validation 1: enforce difficulty-appropriate minimum step count ──────────
 async function validateStepCount(lesson, topic, plan, ledger) {
   const count = (lesson.steps || []).length;
-  if (count > 10) {
-    lesson.steps = lesson.steps.slice(0, 10).map((s, i) => ({ ...s, number: i + 1 }));
-    console.warn(`  ⚠ Step count capped at 10 for "${topic}"`);
+  if (count > 13) {
+    lesson.steps = lesson.steps.slice(0, 13).map((s, i) => ({ ...s, number: i + 1 }));
+    console.warn(`  ⚠ Step count capped at 13 for "${topic}"`);
     return lesson;
   }
-  const minByDifficulty = { simple: 5, medium: 7, complex: 8 };
+  const minByDifficulty = { simple: 8, medium: 10, complex: 12 };
   const min = minByDifficulty[plan.difficulty] || 6;
-  const cappedMin = Math.min(min, 10);
+  const cappedMin = Math.min(min, 13);
 
   if (count >= cappedMin) {
-    console.log(`  → Step count OK: ${count} steps (target ${cappedMin}–10 for ${plan.difficulty || "?"} task)`);
+    console.log(`  → Step count OK: ${count} steps (target ${cappedMin}–13 for ${plan.difficulty || "?"} task)`);
     return lesson;
   }
 
@@ -1107,20 +1110,20 @@ async function validateStepCount(lesson, topic, plan, ledger) {
     max_completion_tokens: 6000,
     messages: [{
       role: "user",
-      content: `A lesson about "${topic}" only has ${count} steps. It needs at least ${cappedMin} and at most 10 steps.
+      content: `A lesson about "${topic}" only has ${count} steps. It needs at least ${cappedMin} and at most 13 steps.
 Main objective: ${plan.mainObjective}
 
 Existing steps:
 ${existing}
 
 Generate the MISSING steps to reach at least ${cappedMin} total AND complete the main objective.
-Do not exceed 10 total steps.
+Do not exceed 13 total steps.
 Continue naturally from the last existing step.
 Use the same step schema. Vary the exerciseTypes.
 
 ${SCREEN_TYPES}
 
-Return JSON: { "additionalSteps": [ ...step objects with number, screenType, screenName, teach, exerciseType, question, options, correctAnswer, acceptedAnswers, tiles, correctOrder, pairs, instruction, visibleResult, feedbackCorrect, feedbackWrong, tip ] }`
+Return JSON: { "additionalSteps": [ ...step objects with number, screenType, screenName, targetLabel, teach, exerciseType, question, options, correctAnswer, acceptedAnswers, tiles, correctOrder, pairs, instruction, visibleResult, feedbackCorrect, feedbackWrong, tip ] }`
     }]
   });
 
@@ -1128,7 +1131,7 @@ Return JSON: { "additionalSteps": [ ...step objects with number, screenType, scr
   const extra = JSON.parse(response.choices[0].message.content);
   if (extra.additionalSteps?.length > 0) {
     const offset = lesson.steps.length;
-    const slots = Math.max(0, 10 - offset);
+    const slots = Math.max(0, 13 - offset);
     lesson.steps = [
       ...lesson.steps,
       ...extra.additionalSteps.slice(0, slots).map((s, i) => ({ ...s, number: offset + i + 1 }))
