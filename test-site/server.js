@@ -1,8 +1,37 @@
 require("dotenv").config();
 const express = require("express");
-const OpenAI  = require("openai");
+const { OpenAI, AzureOpenAI } = require("openai");
 const path    = require("path");
 const fs      = require("fs");
+
+// ─── Azure AI Foundry clients ─────────────────────────────────────────────────
+// Two deployments: gpt-5.4 for student material (high quality, expensive),
+// gpt-5.4-mini for teacher material + cheap validators.
+const AZ_ENDPOINT    = process.env.AZURE_OPENAI_ENDPOINT;
+const AZ_KEY         = process.env.AZURE_OPENAI_API_KEY;
+const AZ_API_VERSION = process.env.AZURE_OPENAI_API_VERSION || "2025-04-01-preview";
+const DEP_STUDENT    = process.env.AZURE_DEPLOYMENT_STUDENT   || "gpt-5.4";
+const DEP_TEACHER    = process.env.AZURE_DEPLOYMENT_TEACHER   || "gpt-5.4-mini";
+const DEP_VALIDATOR  = process.env.AZURE_DEPLOYMENT_VALIDATOR || "gpt-5.4-mini";
+
+function azClient(deployment) {
+  if (!AZ_ENDPOINT || !AZ_KEY) {
+    throw new Error("AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_API_KEY must be set in .env");
+  }
+  return new AzureOpenAI({
+    endpoint:   AZ_ENDPOINT,
+    apiKey:     AZ_KEY,
+    apiVersion: AZ_API_VERSION,
+    deployment
+  });
+}
+
+// OpenAI client kept ONLY for web_search_preview (Azure has no equivalent at the
+// shape we use). Falls back to disabled if no key.
+function openaiClient() {
+  if (!process.env.OPENAI_API_KEY) return null;
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 // ─── Log directories ──────────────────────────────────────────────────────────
 // Raw logs: temporary, high volume, gitignored
@@ -236,10 +265,11 @@ VISUAL ACCURACY RULES:
 - Steps must follow the EXACT ORDER a first-time user experiences them`;
 
 // ─── Phase 1: web search targeted at the exact topic ─────────────────────────
+// Stays on OpenAI — Azure Foundry has no drop-in web_search_preview equivalent.
 async function searchUIContext(topic) {
-  if (!process.env.OPENAI_API_KEY) return "";
+  const client = openaiClient();
+  if (!client) return "";
   try {
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const response = await client.responses.create({
       model: "gpt-4o-mini",
       tools: [{ type: "web_search_preview" }],
@@ -265,10 +295,10 @@ Under 500 words total.`
 
 // ─── Phase 2: plan a thorough 8–12 step outline ──────────────────────────────
 async function planSteps(topic, uiContext) {
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const client = azClient(DEP_VALIDATOR);
 
   const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: DEP_VALIDATOR,
     response_format: { type: "json_object" },
     max_tokens: 1500,
     messages: [{
