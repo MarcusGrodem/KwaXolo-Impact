@@ -1,0 +1,506 @@
+{
+  "reqId": "1777456868712",
+  "topic": "how to use mouse on pc",
+  "category": "F",
+  "generatedAt": "2026-04-29T10:02:42.679Z",
+  "stepCount": 11,
+  "localGrounding": true,
+  "inputs": {
+    "topic": "how to use mouse on pc",
+    "struggles": "",
+    "time": "30 minutes",
+    "context": ""
+  },
+  "tokens": {
+    "ledger": [
+      {
+        "phase": "web_search",
+        "model": "gpt-4o-mini",
+        "inputTokens": 461,
+        "outputTokens": 376,
+        "totalTokens": 837,
+        "estimatedCostUSD": 0.000295
+      },
+      {
+        "phase": "plan",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 860,
+        "outputTokens": 365,
+        "totalTokens": 1225,
+        "estimatedCostUSD": 0.000348
+      },
+      {
+        "phase": "teacher",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 10227,
+        "outputTokens": 1741,
+        "totalTokens": 11968,
+        "estimatedCostUSD": 0.002579
+      },
+      {
+        "phase": "student",
+        "model": "gpt-5.4",
+        "inputTokens": 15100,
+        "outputTokens": 3104,
+        "totalTokens": 18204,
+        "estimatedCostUSD": 0.103185
+      },
+      {
+        "phase": "validate_screens",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 1882,
+        "outputTokens": 43,
+        "totalTokens": 1925,
+        "estimatedCostUSD": 0.000308
+      },
+      {
+        "phase": "validate_exercises",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 1134,
+        "outputTokens": 70,
+        "totalTokens": 1204,
+        "estimatedCostUSD": 0.000212
+      }
+    ],
+    "totalTokens": 35363,
+    "totalCostUSD": 0.106927
+  },
+  "lesson": {
+    "teacherTitle": "Use a Mouse on a PC",
+    "teacherObjective": "By the end of this lesson, students can use a mouse to point, click, scroll, and right-click on a computer.",
+    "teacherPrep": [
+      "Bring one mouse to show the class.",
+      "Draw a simple mouse shape on the board.",
+      "Put students into pairs for the practice time."
+    ],
+    "teacherBoardPoints": [
+      "Mouse moves the pointer",
+      "Left-click to open",
+      "Right-click for menu",
+      "Scroll moves page up-down",
+      "Practice with one hand"
+    ],
+    "teacherBoardLayout": {
+      "title": "How to Use a Mouse",
+      "leftColumn": [
+        "Pointer: the arrow on screen",
+        "Scroll: move page up or down"
+      ],
+      "rightColumn": [
+        "Move mouse to move pointer",
+        "Click once to open",
+        "Right-click to see options"
+      ],
+      "bottomLine": "Ask: what did the pointer do?"
+    },
+    "teacherScript": [
+      {
+        "section": "Open",
+        "minutes": 5,
+        "say": "Today we learn how to use a mouse on a computer. A mouse helps you move the pointer, open things, and choose options. Raise your hand if you have seen a mouse before.",
+        "do": "Write the lesson title on the board. Draw a simple mouse shape and point to the left button, right button, and wheel."
+      },
+      {
+        "section": "Explain",
+        "minutes": 10,
+        "say": "A mouse is a small tool that helps you control the computer. When you move the mouse, the pointer moves on the screen. When you click once with the left button, you open or choose something. When you right-click, you see more options. When you turn the wheel, the page moves up or down. At Msenti Entrepreneurship Hub, Victor Jaca often helps young people learn basic computer skills for business tasks. They must know how to point, click, and scroll before they can type, send messages, or fill in forms. If you can use a mouse well, you can work faster and make fewer mistakes.",
+        "do": "Point to each part of the mouse as you speak. Write the four actions on the board. Ask students to copy the words and draw a tiny arrow next to each one."
+      },
+      {
+        "section": "Practice",
+        "minutes": 15,
+        "say": "Now we will practise in small groups. One student will hold the mouse, one will watch the screen, and one will call the actions. Then you swap. Move the mouse slowly. Click once. Right-click once. Scroll up and down. If a group has no computer, they will practise the actions on a paper mouse drawing and say the steps aloud.",
+        "do": "Send students into pairs or groups of three. Walk around and check each group. Ask the student with the mouse to show the pointer moving, then clicking, then scrolling. Remind students to swap roles after each turn."
+      },
+      {
+        "section": "Check",
+        "minutes": 5,
+        "say": "Show me one thing you can do with a mouse. Tell me what left-click does. Tell me what right-click does. Tell me what the wheel does. If you can answer, you understand the lesson.",
+        "do": "Look for students who can point to the mouse parts, explain the actions, or demonstrate them clearly. Listen for correct answers in pairs and group talk."
+      }
+    ],
+    "teacherExplanation": "A mouse is a simple control tool for a computer. You move it on a flat surface, and the pointer moves on the screen. Left-click opens or selects things. Right-click shows a menu with more choices. The wheel helps you move through pages, lists, or websites.\n\nAt Msenti Entrepreneurship Hub, Victor Jaca helps young people learn basic computer skills for work and business. This matters because many jobs and forms need mouse use before you can type or submit anything. A mouse is not hard to learn. You only need to practise moving, clicking, and scrolling with care.",
+    "teacherVocabulary": [
+      {
+        "word": "mouse",
+        "simpleMeaning": "A hand tool you use to control a computer.",
+        "isiZuluSupport": "igundane lekhompyutha"
+      },
+      {
+        "word": "pointer",
+        "simpleMeaning": "The arrow that moves on the screen.",
+        "isiZuluSupport": "isikhombi"
+      },
+      {
+        "word": "click",
+        "simpleMeaning": "Press a mouse button once.",
+        "isiZuluSupport": "chofoza"
+      },
+      {
+        "word": "right-click",
+        "simpleMeaning": "Press the right mouse button once.",
+        "isiZuluSupport": "chofoza kwesokudla"
+      },
+      {
+        "word": "scroll",
+        "simpleMeaning": "Move a page up or down.",
+        "isiZuluSupport": "skrola"
+      },
+      {
+        "word": "menu",
+        "simpleMeaning": "A list of choices on the screen.",
+        "isiZuluSupport": "imenyu"
+      },
+      {
+        "word": "button",
+        "simpleMeaning": "A part you press on the mouse.",
+        "isiZuluSupport": "inkinobho"
+      },
+      {
+        "word": "screen",
+        "simpleMeaning": "The part of the computer you look at.",
+        "isiZuluSupport": "isikrini"
+      }
+    ],
+    "teacherDiscussionQuestions": [
+      "Where have you seen someone use a mouse before, and what were they doing?",
+      "Why is it useful to move the pointer slowly and carefully?",
+      "What can you do if you need to choose one option from many on a screen?"
+    ],
+    "teacherLocalExample": "Msenti Entrepreneurship Hub is a business support place in KwaZulu-Natal led by Victor Jaca. It helps young people learn computer basics like using a mouse so they can do forms, search work, and handle simple office tasks.",
+    "teacherDevicePlan": {
+      "ifEnoughDevices": "Give each pair or small group one computer. One learner holds the mouse while the other watches the screen and speaks the steps. Swap roles after each action.",
+      "ifSharedDevices": "Put 4–6 students around one device. One student is the mouse holder, one is the screen checker, one is the caller, and the others watch and coach. Rotate every two minutes.",
+      "ifNoInternet": "Use a chalkboard drawing of a mouse and a notebook page with a fake screen. Students point with a finger, practise saying 'move, click, right-click, scroll', and draw arrows to show the pointer path."
+    },
+    "teacherCommonMistakes": [
+      {
+        "mistake": "Students move the mouse too fast and lose the pointer.",
+        "teacherResponse": "Say, 'Move slowly and keep your hand steady.' Then ask them to try again."
+      },
+      {
+        "mistake": "Students press both buttons or keep clicking many times.",
+        "teacherResponse": "Say, 'One click is enough.' Show the left button again and let them copy once."
+      },
+      {
+        "mistake": "Students do not understand right-click.",
+        "teacherResponse": "Say, 'Right-click is for more choices.' Ask them to show the menu on the screen or in the drawing."
+      }
+    ],
+    "teacherAssessment": [
+      "A student can move the pointer to a chosen place.",
+      "A student can explain left-click, right-click, and scroll.",
+      "A group can show the mouse actions in the right order."
+    ],
+    "teacherTimeGuide": [
+      "5 min: opening and board",
+      "10 min: explanation",
+      "15 min: student task or no-internet fallback",
+      "5 min: check and wrap-up"
+    ],
+    "teacherWrapUpQuestion": "What is one thing a mouse helps you do on a computer?",
+    "teacherExtension": "Ask fast groups to practise double-clicking and to explain the difference between one click and two clicks.",
+    "appName": "Settings",
+    "appColor": "#34A853",
+    "appTextColor": "#ffffff",
+    "taskTitle": "Use a Mouse on Android",
+    "taskIntro": "You will have a working mouse connected to your Android phone and know how to move, click, and scroll with it.",
+    "taskTime": "10–15 minutes",
+    "taskReflection": "Think about one real task on your phone that would feel easier with a mouse. Describe what you tested in this task and explain how the mouse could help you in that situation.",
+    "steps": [
+      {
+        "number": 1,
+        "screenType": "android_home",
+        "screenName": "Check your mouse and phone",
+        "targetLabel": "Play Store",
+        "teach": "Start by checking what type of mouse you have and what port is on your phone. A USB mouse needs a USB OTG adapter that matches your phone port. A Bluetooth mouse needs batteries and pairing mode. If you are not sure, look at the plug on the mouse first.",
+        "exerciseType": "match_pairs",
+        "question": "Match each mouse type to what it needs:",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [
+          {
+            "term": "USB mouse",
+            "match": "Needs a USB OTG adapter"
+          },
+          {
+            "term": "Bluetooth mouse",
+            "match": "Needs batteries and pairing mode"
+          },
+          {
+            "term": "USB-C phone",
+            "match": "Needs a matching USB-C adapter"
+          },
+          {
+            "term": "No mouse pointer yet",
+            "match": "Check the connection again"
+          }
+        ],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Good — you matched the mouse type with the right connection method.",
+        "feedbackWrong": "Look again at the words USB and Bluetooth and think about how each mouse connects.",
+        "tip": "Do not force a plug into the phone port. Check if your phone uses USB-C or Micro USB."
+      },
+      {
+        "number": 2,
+        "screenType": "android_home",
+        "screenName": "Home screen",
+        "targetLabel": "Settings",
+        "teach": "Now connect your mouse. If you use USB, plug the OTG adapter into the phone and then plug the mouse into the adapter. If you use Bluetooth, swipe down and open Settings to start pairing. This step matters because the phone must detect the mouse before you can use it.",
+        "exerciseType": "do_and_confirm",
+        "question": "If you are using a Bluetooth mouse, which icon do you tap after swiping down?",
+        "options": [
+          "Settings",
+          "Phone",
+          "Messages",
+          "Files"
+        ],
+        "correctAnswer": "Settings",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "If you use a USB mouse, connect the adapter and mouse now. If you use a Bluetooth mouse, swipe down and tap the gear icon to open Settings.",
+        "visibleResult": "You should either see the mouse connected by cable, or the Settings app open on your phone.",
+        "feedbackCorrect": "Correct — the Settings icon is the right place to start Bluetooth pairing.",
+        "feedbackWrong": "Swipe down again and look for the small gear icon for Settings.",
+        "tip": "If your USB mouse does nothing, remove it and reconnect the adapter firmly."
+      },
+      {
+        "number": 3,
+        "screenType": "play_store_search",
+        "screenName": "Settings",
+        "targetLabel": "Search for apps & games",
+        "teach": "Inside Settings, find the menu called Connected devices. This is where Android shows devices like Bluetooth items and other accessories. If your screen looks different, use the search bar in Settings and type 'Connected devices'.",
+        "exerciseType": "tap_correct",
+        "question": "Which menu do you tap in Settings to connect a Bluetooth mouse?",
+        "options": [
+          "Battery",
+          "Connected devices",
+          "Display",
+          "Apps"
+        ],
+        "correctAnswer": "Connected devices",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Yes — Connected devices is the correct menu for pairing the mouse.",
+        "feedbackWrong": "Stay inside Settings and look for the section that mentions devices or connections.",
+        "tip": "Some phones place Connected devices near Bluetooth."
+      },
+      {
+        "number": 4,
+        "screenType": "generic",
+        "screenName": "Connected devices",
+        "targetLabel": "Pair new device",
+        "teach": "On the Connected devices screen, tap Pair new device. This tells the phone to search for nearby Bluetooth items. Make sure your mouse is switched on before you continue.",
+        "exerciseType": "fill_blank",
+        "question": "Type the button name you tap to search for a new Bluetooth mouse.",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [
+          "pair new device"
+        ],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Correct — Pair new device starts the search for your mouse.",
+        "feedbackWrong": "Look on the Connected devices screen for the button that starts pairing.",
+        "tip": "If you do not see your mouse later, check that it is in pairing mode first."
+      },
+      {
+        "number": 5,
+        "screenType": "generic",
+        "screenName": "Pair new device",
+        "targetLabel": "Mouse name",
+        "teach": "Wait a few seconds on the Pair new device screen. Your mouse name should appear in the list if it is in pairing mode. Tap the mouse name to connect it. If nothing appears, turn the mouse off and on again and retry pairing mode.",
+        "exerciseType": "do_and_confirm",
+        "question": "What should you tap when your mouse appears in the list?",
+        "options": [
+          "The mouse name",
+          "Battery",
+          "Wallpaper",
+          "Sound"
+        ],
+        "correctAnswer": "The mouse name",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Wait on the Pair new device screen. When your mouse name appears, tap it once.",
+        "visibleResult": "You should see your mouse name change status, or a pop-up asking to pair.",
+        "feedbackCorrect": "Good — tapping the mouse name is the correct way to start pairing.",
+        "feedbackWrong": "Stay on the device list and tap the line that shows your mouse name.",
+        "tip": "Keep the mouse close to the phone during pairing."
+      },
+      {
+        "number": 6,
+        "screenType": "generic",
+        "screenName": "Pairing confirmation",
+        "targetLabel": "Pair",
+        "teach": "Some phones show a pop-up to confirm the connection. Tap Pair or OK to allow the mouse to connect. This is a normal safety step before Android links the device.",
+        "exerciseType": "tap_correct",
+        "question": "If a pairing pop-up appears, which button should you tap?",
+        "options": [
+          "Cancel",
+          "Share",
+          "Pair",
+          "Back"
+        ],
+        "correctAnswer": "Pair",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Correct — Pair confirms that the phone may connect to the mouse.",
+        "feedbackWrong": "Look at the pop-up and choose the button that allows the connection.",
+        "tip": "Some phones show OK instead of Pair. Both mean allow the connection."
+      },
+      {
+        "number": 7,
+        "screenType": "android_home",
+        "screenName": "Home screen",
+        "targetLabel": "All apps",
+        "teach": "Go back to the home screen and look carefully. A small mouse pointer should appear on the screen when the mouse is connected. This pointer is the sign that the phone is ready to use the mouse.",
+        "exerciseType": "do_and_confirm",
+        "question": "What shows on the screen when the mouse is connected properly?",
+        "options": [
+          "A mouse pointer",
+          "A charging sign only",
+          "A camera icon",
+          "A new wallpaper"
+        ],
+        "correctAnswer": "A mouse pointer",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Return to the home screen and check for a small pointer arrow on the display.",
+        "visibleResult": "You should see a small mouse pointer on the screen if the connection worked.",
+        "feedbackCorrect": "Yes — the mouse pointer shows that Android has connected to the mouse.",
+        "feedbackWrong": "Go back to the home screen and look for a small arrow moving with the mouse.",
+        "tip": "If no pointer appears, reconnect the USB mouse or repeat the Bluetooth pairing steps."
+      },
+      {
+        "number": 8,
+        "screenType": "android_home",
+        "screenName": "Home screen",
+        "targetLabel": "All apps",
+        "teach": "Now practise moving the mouse. Move it slowly on a flat surface and watch the pointer move around the screen. This helps you control where you want to click next.",
+        "exerciseType": "tap_correct",
+        "question": "What happens when you move the mouse after it is connected?",
+        "options": [
+          "The pointer moves",
+          "The phone turns off",
+          "The battery menu opens",
+          "The sound gets louder"
+        ],
+        "correctAnswer": "The pointer moves",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Right — moving the mouse makes the pointer move on the screen.",
+        "feedbackWrong": "Watch the screen while moving the mouse and notice what follows your hand movement.",
+        "tip": "Use a desk, book, or smooth surface if the mouse does not move well."
+      },
+      {
+        "number": 9,
+        "screenType": "android_home",
+        "screenName": "Home screen",
+        "targetLabel": "Settings",
+        "teach": "Use the pointer to move onto an app icon or button. Then left-click once to open it or select it. This is the same basic action you use on a computer.",
+        "exerciseType": "do_and_confirm",
+        "question": "What does one left-click usually do on an app icon?",
+        "options": [
+          "Open or select it",
+          "Delete the phone",
+          "Turn on Bluetooth only",
+          "Change the wallpaper"
+        ],
+        "correctAnswer": "Open or select it",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Move the pointer onto the Settings icon on the home screen and left-click once.",
+        "visibleResult": "You should see the Settings app open, or the icon become selected.",
+        "feedbackCorrect": "Good — one left-click opens or selects the item under the pointer.",
+        "feedbackWrong": "Place the pointer exactly on the icon and press the main left mouse button once.",
+        "tip": "Do not double-click. One click is enough on most Android screens."
+      },
+      {
+        "number": 10,
+        "screenType": "generic",
+        "screenName": "Page or list",
+        "targetLabel": "Scroll area",
+        "teach": "Inside a page or long list, use the scroll wheel to move up and down. If your mouse has no wheel, click and drag the page instead. This helps you read or find things without touching the screen.",
+        "exerciseType": "arrange_steps",
+        "question": "Arrange these actions in the best order to scroll with a mouse:",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [],
+        "tiles": [
+          "Turn the scroll wheel",
+          "Open a page or list",
+          "Watch the page move",
+          "Place the pointer inside the page"
+        ],
+        "correctOrder": [
+          "Open a page or list",
+          "Place the pointer inside the page",
+          "Turn the scroll wheel",
+          "Watch the page move"
+        ],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Excellent — that is the correct order for scrolling in a page or list.",
+        "feedbackWrong": "Start by opening something long, then place the pointer there before you scroll.",
+        "tip": "If the wheel does not work, try dragging the page with the left button."
+      },
+      {
+        "number": 11,
+        "screenType": "generic",
+        "screenName": "Practice screen",
+        "targetLabel": "Menu option",
+        "teach": "For your last practice, right-click once to open a menu if your mouse and phone support it. Then choose one option from that menu to finish. If no menu appears, try again in an app or on an item that supports extra options.",
+        "exerciseType": "do_and_confirm",
+        "question": "After right-clicking and seeing a menu, what should you do next?",
+        "options": [
+          "Choose one option",
+          "Remove the battery",
+          "Switch off the phone",
+          "Press the wheel forever"
+        ],
+        "correctAnswer": "Choose one option",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Right-click once in a place that may show a menu, then choose one option if it appears.",
+        "visibleResult": "You should see a small menu open, and one option should be selected when you click it.",
+        "feedbackCorrect": "Correct — choosing one menu option shows that you can use right-click actions too.",
+        "feedbackWrong": "Look for a small menu after right-clicking, then click one item in that menu.",
+        "tip": "Not every Android screen shows a menu on right-click."
+      }
+    ],
+    "teacherPlanHTML": "<div class=\"tp\">\n  <div class=\"tp-hd\">\n    <div class=\"tp-obj-lbl\">Chalk-and-board lesson plan</div>\n    <h1 class=\"tp-title\">Use a Mouse on a PC</h1>\n    <p class=\"tp-obj\">By the end of this lesson, students can use a mouse to point, click, scroll, and right-click on a computer.</p>\n    <p class=\"tp-linked\">Student task: Use a Mouse on Android</p>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">1</span>Before Class</h2>\n    <ul class=\"tp-list\"><li>Bring one mouse to show the class.</li><li>Draw a simple mouse shape on the board.</li><li>Put students into pairs for the practice time.</li></ul>\n  </div>\n  <div class=\"tp-board\">\n    <div class=\"tp-board-ttl\">Blackboard Plan</div>\n    <div class=\"tp-board-sub\">Use this instead of a projector. Students copy the key words and steps.</div>\n    <div class=\"tp-board-title\">How to Use a Mouse</div>\n    <div class=\"tp-board-grid\">\n      <div>\n        <div class=\"tp-board-col\">Key words</div>\n        <ul class=\"tp-bl\"><li>Pointer: the arrow on screen</li><li>Scroll: move page up or down</li></ul>\n      </div>\n      <div>\n        <div class=\"tp-board-col\">Class steps</div>\n        <ul class=\"tp-bl\"><li>Move mouse to move pointer</li><li>Click once to open</li><li>Right-click to see options</li></ul>\n      </div>\n    </div>\n    <div class=\"tp-board-bottom\">Ask: what did the pointer do?</div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">2</span>Teach It Directly</h2>\n    <div class=\"tp-script-note\">No computer or big screen needed. Read, adapt, and use the board.</div><div class=\"tp-script\">\n    <div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Open</span>\n        <span class=\"tp-step-min\">5 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> Today we learn how to use a mouse on a computer. A mouse helps you move the pointer, open things, and choose options. Raise your hand if you have seen a mouse before.</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Write the lesson title on the board. Draw a simple mouse shape and point to the left button, right button, and wheel.</div>\n    </div><div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Explain</span>\n        <span class=\"tp-step-min\">10 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> A mouse is a small tool that helps you control the computer. When you move the mouse, the pointer moves on the screen. When you click once with the left button, you open or choose something. When you right-click, you see more options. When you turn the wheel, the page moves up or down. At Msenti Entrepreneurship Hub, Victor Jaca often helps young people learn basic computer skills for business tasks. They must know how to point, click, and scroll before they can type, send messages, or fill in forms. If you can use a mouse well, you can work faster and make fewer mistakes.</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Point to each part of the mouse as you speak. Write the four actions on the board. Ask students to copy the words and draw a tiny arrow next to each one.</div>\n    </div><div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Practice</span>\n        <span class=\"tp-step-min\">15 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> Now we will practise in small groups. One student will hold the mouse, one will watch the screen, and one will call the actions. Then you swap. Move the mouse slowly. Click once. Right-click once. Scroll up and down. If a group has no computer, they will practise the actions on a paper mouse drawing and say the steps aloud.</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Send students into pairs or groups of three. Walk around and check each group. Ask the student with the mouse to show the pointer moving, then clicking, then scrolling. Remind students to swap roles after each turn.</div>\n    </div><div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Check</span>\n        <span class=\"tp-step-min\">5 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> Show me one thing you can do with a mouse. Tell me what left-click does. Tell me what right-click does. Tell me what the wheel does. If you can answer, you understand the lesson.</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Look for students who can point to the mouse parts, explain the actions, or demonstrate them clearly. Listen for correct answers in pairs and group talk.</div>\n    </div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">3</span>Key Words</h2>\n    <div class=\"tp-vocab\">\n    <div class=\"tp-vrow\">\n      <div class=\"tp-vword\">mouse</div>\n      <div class=\"tp-vmean\">A hand tool you use to control a computer.</div>\n      <div class=\"tp-vzu\">igundane lekhompyutha</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">pointer</div>\n      <div class=\"tp-vmean\">The arrow that moves on the screen.</div>\n      <div class=\"tp-vzu\">isikhombi</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">click</div>\n      <div class=\"tp-vmean\">Press a mouse button once.</div>\n      <div class=\"tp-vzu\">chofoza</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">right-click</div>\n      <div class=\"tp-vmean\">Press the right mouse button once.</div>\n      <div class=\"tp-vzu\">chofoza kwesokudla</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">scroll</div>\n      <div class=\"tp-vmean\">Move a page up or down.</div>\n      <div class=\"tp-vzu\">skrola</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">menu</div>\n      <div class=\"tp-vmean\">A list of choices on the screen.</div>\n      <div class=\"tp-vzu\">imenyu</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">button</div>\n      <div class=\"tp-vmean\">A part you press on the mouse.</div>\n      <div class=\"tp-vzu\">inkinobho</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">screen</div>\n      <div class=\"tp-vmean\">The part of the computer you look at.</div>\n      <div class=\"tp-vzu\">isikrini</div>\n    </div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">4</span>Local Example</h2>\n    <div class=\"tp-local\">Msenti Entrepreneurship Hub is a business support place in KwaZulu-Natal led by Victor Jaca. It helps young people learn computer basics like using a mouse so they can do forms, search work, and handle simple office tasks.</div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">5</span>Discussion Questions</h2>\n    <ol class=\"tp-qs\"><li><span class=\"tp-qn\">1</span><span>Where have you seen someone use a mouse before, and what were they doing?</span></li><li><span class=\"tp-qn\">2</span><span>Why is it useful to move the pointer slowly and carefully?</span></li><li><span class=\"tp-qn\">3</span><span>What can you do if you need to choose one option from many on a screen?</span></li></ol>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">6</span>Device And No-Internet Plan</h2>\n    <div class=\"tp-device-grid\">\n    <div><span>Enough devices</span>Give each pair or small group one computer. One learner holds the mouse while the other watches the screen and speaks the steps. Swap roles after each action.</div>\n    <div><span>Shared devices</span>Put 4–6 students around one device. One student is the mouse holder, one is the screen checker, one is the caller, and the others watch and coach. Rotate every two minutes.</div>\n    <div><span>No internet</span>Use a chalkboard drawing of a mouse and a notebook page with a fake screen. Students point with a finger, practise saying 'move, click, right-click, scroll', and draw arrows to show the pointer path.</div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">7</span>Common Mistakes</h2>\n    <div class=\"tp-mistakes\">\n    <div class=\"tp-mistake\">\n      <div class=\"tp-m-label\">Student may...</div>\n      <div>Students move the mouse too fast and lose the pointer.</div>\n      <div class=\"tp-m-label\">Teacher response</div>\n      <div>Say, 'Move slowly and keep your hand steady.' Then ask them to try again.</div>\n    </div><div class=\"tp-mistake\">\n      <div class=\"tp-m-label\">Student may...</div>\n      <div>Students press both buttons or keep clicking many times.</div>\n      <div class=\"tp-m-label\">Teacher response</div>\n      <div>Say, 'One click is enough.' Show the left button again and let them copy once.</div>\n    </div><div class=\"tp-mistake\">\n      <div class=\"tp-m-label\">Student may...</div>\n      <div>Students do not understand right-click.</div>\n      <div class=\"tp-m-label\">Teacher response</div>\n      <div>Say, 'Right-click is for more choices.' Ask them to show the menu on the screen or in the drawing.</div>\n    </div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">8</span>Check Understanding</h2>\n    <ul class=\"tp-list\"><li>A student can move the pointer to a chosen place.</li><li>A student can explain left-click, right-click, and scroll.</li><li>A group can show the mouse actions in the right order.</li></ul>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">9</span>Wrap Up</h2>\n    <div class=\"tp-local\">What is one thing a mouse helps you do on a computer?</div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">10</span>Fast Groups</h2>\n    <div class=\"tp-note\">Ask fast groups to practise double-clicking and to explain the difference between one click and two clicks.</div>\n  </div>\n  <div class=\"tp-tg\">\n    <div class=\"tp-tg-ttl\">Time Guide — 30 minutes</div>\n    <div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">opening and board</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">explanation</span></div><div class=\"tp-ti\"><span class=\"tp-td\">15 min</span><span class=\"tp-ta\">student task or no-internet fallback</span></div><div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">check and wrap-up</span></div>\n  </div>\n  <button class=\"tp-print no-print\" onclick=\"window.print()\">Print Lesson Plan</button>\n</div>"
+  },
+  "savedAt": "2026-04-29T10:04:03.067Z",
+  "rating": "bad",
+  "comment": "Visual sync issue: \"Settings\" is not visible on this phone screen. Mark this output as bad."
+}

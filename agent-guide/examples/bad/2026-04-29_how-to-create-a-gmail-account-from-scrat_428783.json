@@ -1,0 +1,562 @@
+{
+  "reqId": "1777460428783",
+  "topic": "How to create a Gmail account from scratch",
+  "category": "D",
+  "generatedAt": "2026-04-29T11:01:52.292Z",
+  "stepCount": 12,
+  "localGrounding": true,
+  "inputs": {
+    "topic": "How to create a Gmail account from scratch",
+    "struggles": "",
+    "time": "30 minutes",
+    "context": ""
+  },
+  "tokens": {
+    "ledger": [
+      {
+        "phase": "plan",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 1103,
+        "outputTokens": 337,
+        "totalTokens": 1440,
+        "estimatedCostUSD": 0.000368
+      },
+      {
+        "phase": "teacher",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 10701,
+        "outputTokens": 1763,
+        "totalTokens": 12464,
+        "estimatedCostUSD": 0.002663
+      },
+      {
+        "phase": "student",
+        "model": "gpt-5.4",
+        "inputTokens": 16709,
+        "outputTokens": 3601,
+        "totalTokens": 20310,
+        "estimatedCostUSD": 0.116674
+      },
+      {
+        "phase": "validate_screens",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 2066,
+        "outputTokens": 90,
+        "totalTokens": 2156,
+        "estimatedCostUSD": 0.000364
+      },
+      {
+        "phase": "validate_exercises",
+        "model": "gpt-5.4-mini",
+        "inputTokens": 1178,
+        "outputTokens": 207,
+        "totalTokens": 1385,
+        "estimatedCostUSD": 0.000301
+      }
+    ],
+    "totalTokens": 37755,
+    "totalCostUSD": 0.12037
+  },
+  "lesson": {
+    "teacherTitle": "Create Your First Gmail",
+    "teacherObjective": "By the end of this lesson, students can create a new Gmail account on an Android phone and reach the inbox.",
+    "teacherPrep": [
+      "Check that at least one phone has the Gmail app or Play Store open.",
+      "Write the board points before class starts.",
+      "Pair students so they can help each other if one phone is shared."
+    ],
+    "teacherBoardPoints": [
+      "Email is a formal message tool",
+      "Use your real name",
+      "Choose a clear username",
+      "Make a strong password",
+      "Inbox is where emails arrive"
+    ],
+    "teacherBoardLayout": {
+      "title": "How to Create Gmail",
+      "leftColumn": [
+        "Email: formal online message",
+        "Inbox: saved email space"
+      ],
+      "rightColumn": [
+        "Open Play Store",
+        "Tap Create account",
+        "Fill in your details"
+      ],
+      "bottomLine": "Use your real name, not a nickname."
+    },
+    "teacherScript": [
+      {
+        "section": "Open",
+        "minutes": 5,
+        "say": "Today we learn how to create a Gmail account. Email is used by schools, businesses, and job applications. It is more formal than WhatsApp. Tell me, what is your name on paper, not your nickname?",
+        "do": "Write the lesson title and the five board points. Ask two students to say their full names aloud. Underline the point: use your real name."
+      },
+      {
+        "section": "Explain",
+        "minutes": 10,
+        "say": "A Gmail account gives you a proper email address. That address can be used for school, work, and messages from offices. Inkify in the community uses email to send quotes and invoices to customers, so the customer has a clear record. Msenti Entrepreneurship Hub also reminds young people that a real email makes you look ready for work. First, you open the Play Store and find Gmail. Then you tap Create account, choose For myself, and type your name. After that, you choose a username, make a strong password, and finish the sign-up screens until you reach the inbox.",
+        "do": "Point to each board item as you speak. Ask students to repeat key words: email, username, password, inbox. Stop after each word and check understanding with quick class answers."
+      },
+      {
+        "section": "Practice",
+        "minutes": 15,
+        "say": "Now you will do the task on your own phone or in pairs. Read each screen carefully. If a name or password does not work, try a different one. Keep your eyes on the phone and your hands moving. Do not rush past the screens.",
+        "do": "Let students work. If they share a phone, one student taps and one reads the screen aloud, then they swap. Walk around and check that students open the right app, tap the correct buttons, and reach the inbox. Help anyone who gets stuck on a username or password screen."
+      },
+      {
+        "section": "Check",
+        "minutes": 5,
+        "say": "Show me that your account is ready. Tell me one reason a young person in this area needs email. Then tell me what screen appears after setup is finished.",
+        "do": "Look for students who can name the inbox and explain the purpose of email. Check notebooks for the lesson title and the board points. Listen for correct answers about Gmail, username, password, and inbox."
+      }
+    ],
+    "teacherExplanation": "Today we are learning how to create a Gmail account. Gmail is a free email service. It helps you send formal messages to schools, businesses, and offices. It is useful when a job application asks for an email address. It is also useful when a customer needs a clear written message.\n\nThink about Inkify, the print store run by Samke Jaca and Ntokozo Gwacela in KwaZulu-Natal. They use email to send quotes and invoices to customers. That helps them keep a clear record. In the same way, you are learning a tool that helps you look prepared and organised. You will open the Play Store, search for Gmail, create an account, choose a real name, make a password, and reach the inbox.",
+    "teacherVocabulary": [
+      {
+        "word": "email",
+        "simpleMeaning": "A written message sent on the internet",
+        "isiZuluSupport": "i-imeyili"
+      },
+      {
+        "word": "account",
+        "simpleMeaning": "A personal login space in an app",
+        "isiZuluSupport": "i-akhawunti"
+      },
+      {
+        "word": "username",
+        "simpleMeaning": "The name you use to log in",
+        "isiZuluSupport": "igama lokungena"
+      },
+      {
+        "word": "password",
+        "simpleMeaning": "Secret words or numbers that protect your account",
+        "isiZuluSupport": "iphasiwedi"
+      },
+      {
+        "word": "inbox",
+        "simpleMeaning": "The place where new emails arrive",
+        "isiZuluSupport": "ibhokisi lemeyili"
+      },
+      {
+        "word": "formal",
+        "simpleMeaning": "Used for school, work, or official messages",
+        "isiZuluSupport": "okusemthethweni"
+      },
+      {
+        "word": "professional",
+        "simpleMeaning": "Neat and suitable for work",
+        "isiZuluSupport": "okungcweti"
+      },
+      {
+        "word": "verification",
+        "simpleMeaning": "A check that proves it is really you",
+        "isiZuluSupport": "ukuqinisekisa"
+      }
+    ],
+    "teacherDiscussionQuestions": [
+      "Where in your life could email help you more than WhatsApp?",
+      "Why do you think Inkify uses email for quotes and invoices?",
+      "What part of the Gmail setup might be hardest for a first-time user?"
+    ],
+    "teacherLocalExample": "Inkify is a print store in KwaZulu-Natal run by Samke Jaca and Ntokozo Gwacela. It uses email to send quotes and invoices to customers.",
+    "teacherDevicePlan": {
+      "ifEnoughDevices": "Let each student use one phone or PC. Ask them to follow the screens quietly and raise a hand when they reach the inbox.",
+      "ifSharedDevices": "Put students in pairs or groups of four. One student reads the screen, one taps, one checks the name or password, and one watches for mistakes. Swap roles after each major step.",
+      "ifNoInternet": "Teach the account steps on the board using a paper mock-up of the screens. Students copy the steps into notebooks and practise writing a real email address, a username, and a strong password. They also draw the Play Store, Gmail icon, and inbox boxes."
+    },
+    "teacherCommonMistakes": [
+      {
+        "mistake": "Students use a nickname or funny email name.",
+        "teacherResponse": "Tell them to use their real name. Say that schools and employers trust clear names more."
+      },
+      {
+        "mistake": "Students forget the password or type it twice differently.",
+        "teacherResponse": "Tell them to slow down and use the same password both times. Ask them to write it somewhere safe."
+      },
+      {
+        "mistake": "Students think the inbox is the end of the app.",
+        "teacherResponse": "Show that the inbox is the home space where new emails arrive. Point to the word inbox on the board."
+      }
+    ],
+    "teacherAssessment": [
+      "A student can say the steps to create Gmail in order.",
+      "A student can explain why a real name matters.",
+      "A student can point to or name the inbox after setup."
+    ],
+    "teacherTimeGuide": [
+      "5 min: opening and board",
+      "10 min: explanation",
+      "15 min: student task or no-internet fallback",
+      "5 min: check and wrap-up"
+    ],
+    "teacherWrapUpQuestion": "Why is a real email address useful for a young person?",
+    "teacherExtension": "Fast learners can write a short practice email to themselves using their new Gmail account.",
+    "appName": "Gmail",
+    "appColor": "#EA4335",
+    "appTextColor": "#fff",
+    "taskTitle": "How to create a Gmail account from scratch",
+    "taskIntro": "You will have a new Gmail <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> open in your inbox.",
+    "taskTime": "10–15 minutes",
+    "taskReflection": "You now have a new Gmail address. Write one real situation in the next few months where you could use this email for school, work, or a <span class=\"hover-word\" data-zu=\"umthengi\">customer</span>, and explain what you would send.",
+    "steps": [
+      {
+        "number": 1,
+        "screenType": "android_home",
+        "screenName": "Home screen",
+        "targetLabel": "Play Store",
+        "sampleData": {
+          "App to search": "Gmail"
+        },
+        "teach": "Start on your phone home screen. Open Play Store so you can search for Gmail and install it if it is missing. If Gmail is already on your phone, you will still use Play Store to check and then move on.",
+        "exerciseType": "do_and_confirm",
+        "question": "After you search for Gmail in Play Store, which button do you tap if the app is not on your phone yet?",
+        "options": [
+          "Install",
+          "Open",
+          "Share",
+          "Delete"
+        ],
+        "correctAnswer": "Install",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Tap Play Store. Use the search bar to search for Gmail. Open the Gmail app page.",
+        "visibleResult": "You should see the Gmail app page. If Gmail is not installed, the button says Install. If it is already installed, the button says Open.",
+        "feedbackCorrect": "Good — Install is the correct button on the Gmail app page.",
+        "feedbackWrong": "Look at the Gmail app page in Play Store and read the main button carefully.",
+        "tip": "If you see Open instead of Install, Gmail is already installed and that is fine."
+      },
+      {
+        "number": 2,
+        "screenType": "play_store_app",
+        "screenName": "Gmail app page",
+        "targetLabel": "Open",
+        "sampleData": {
+          "App name": "Gmail"
+        },
+        "teach": "Now open the Gmail app from the Gmail app page. This takes you into the app so you can begin making your new <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span>.",
+        "exerciseType": "tap_correct",
+        "question": "Which button opens Gmail from the Play Store app page after installation is finished?",
+        "options": [
+          "Install",
+          "Open",
+          "Back",
+          "Search"
+        ],
+        "correctAnswer": "Open",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Yes — Open launches Gmail from the app page.",
+        "feedbackWrong": "Wait until the app finishes downloading, then look at the main button again.",
+        "tip": "Do not tap Back here, or you will leave the app page."
+      },
+      {
+        "number": 3,
+        "screenType": "gmail_welcome",
+        "screenName": "Welcome to Gmail",
+        "targetLabel": "Create account",
+        "sampleData": {
+          "Button shown": "Create account"
+        },
+        "teach": "The first Gmail screen gives you a choice to sign in or create a new <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span>. Because you are starting from scratch, choose Create account.",
+        "exerciseType": "fill_blank",
+        "question": "Type the button you tap on the Welcome to Gmail screen to make a new account.",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [
+          "create account"
+        ],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Correct — Create account starts a new Gmail account.",
+        "feedbackWrong": "Look at the blue button on the Welcome to Gmail screen.",
+        "tip": "Do not choose Sign in unless you already have an account."
+      },
+      {
+        "number": 4,
+        "screenType": "gmail_account_type",
+        "screenName": "Choose account type",
+        "targetLabel": "For myself",
+        "sampleData": {
+          "Option to choose": "For myself"
+        },
+        "teach": "Google now asks what kind of account you want. Choose For myself for a personal email that you can still use for school, jobs, or business messages like Inkify does when sending quotes and <span class=\"hover-word\" data-zu=\"i-invoice\">invoice</span>s.",
+        "exerciseType": "tap_correct",
+        "question": "Which option should you choose to create your own Gmail account?",
+        "options": [
+          "For myself",
+          "For my child",
+          "For work or my business",
+          "Sign in"
+        ],
+        "correctAnswer": "For myself",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Right — For myself is the correct account type here.",
+        "feedbackWrong": "Look at the list of account types and choose the one for your own use.",
+        "tip": "You can still use this email in a <span class=\"hover-word\" data-zu=\"umuntu oyingcweti\">professional</span> way later."
+      },
+      {
+        "number": 5,
+        "screenType": "gmail_signup_name",
+        "screenName": "Name",
+        "targetLabel": "Next",
+        "sampleData": {
+          "First name": "Ayanda",
+          "Last name": "Zulu"
+        },
+        "teach": "Type your real first name and last name on this screen. Your real name helps your email look more <span class=\"hover-word\" data-zu=\"umuntu oyingcweti\">professional</span> when a school, employer, or <span class=\"hover-word\" data-zu=\"umthengi\">customer</span> sees it.",
+        "exerciseType": "do_and_confirm",
+        "question": "After you type your first name and last name, which button takes you to the next screen?",
+        "options": [
+          "Confirm",
+          "Next",
+          "Install",
+          "Send"
+        ],
+        "correctAnswer": "Next",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Type your first name and last name, then tap Next.",
+        "visibleResult": "You should leave the Name screen and move to the username screen.",
+        "feedbackCorrect": "Good — Next moves you from the Name screen to the username step.",
+        "feedbackWrong": "Look at the bottom or lower right of the Name screen for the button to continue.",
+        "tip": "Do not use a nickname if you want your email to look serious."
+      },
+      {
+        "number": 6,
+        "screenType": "gmail_signup_user",
+        "screenName": "Choose your Gmail address",
+        "targetLabel": "Next",
+        "sampleData": {
+          "Username": "ayanda.zulu.school"
+        },
+        "teach": "Now choose your Gmail address. Try to use your real name in a simple way, and avoid names that look childish or unclear. If your first choice is taken, Gmail will show suggestions or ask you to try another one.",
+        "exerciseType": "arrange_steps",
+        "question": "Arrange these actions in the correct order for choosing a Gmail address.",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [],
+        "tiles": [
+          "Tap Next",
+          "Check Gmail suggestions",
+          "Type a username you want",
+          "Change it if it is taken"
+        ],
+        "correctOrder": [
+          "Type a username you want",
+          "Check Gmail suggestions",
+          "Change it if it is taken",
+          "Tap Next"
+        ],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Exactly — that is the correct order for choosing your Gmail address.",
+        "feedbackWrong": "Start with typing a username before you look at suggestions or continue.",
+        "tip": "A clean address like name.surname is better than a nickname with many random numbers."
+      },
+      {
+        "number": 7,
+        "screenType": "gmail_signup_pass",
+        "screenName": "Create a strong password",
+        "targetLabel": "Next",
+        "sampleData": {
+          "Password example": "Zulu2024!",
+          "Confirm": "Zulu2024!"
+        },
+        "teach": "Create a strong password and type the same password again in Confirm. Use at least eight characters and include letters and numbers so your <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> is safer.",
+        "exerciseType": "match_pairs",
+        "question": "Match each password rule to what it means.",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [
+          {
+            "term": "Strong password",
+            "match": "A password that is hard for other people to guess"
+          },
+          {
+            "term": "Confirm",
+            "match": "Type the same password again"
+          },
+          {
+            "term": "8 characters",
+            "match": "The minimum length Gmail often wants"
+          },
+          {
+            "term": "Letters and numbers",
+            "match": "A safer mix than using only one type"
+          }
+        ],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Well done — those password rules help protect your Gmail account.",
+        "feedbackWrong": "Look again at the words Strong password and Confirm and match them to their meanings.",
+        "tip": "Write your password somewhere safe so you do not forget it."
+      },
+      {
+        "number": 8,
+        "screenType": "generic",
+        "screenName": "Phone number and Verify code",
+        "targetLabel": "Next",
+        "sampleData": {
+          "Phone number": "0712345678",
+          "SMS code": "482913"
+        },
+        "teach": "Google may ask for your mobile number to help protect your <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span>. Type your number, tap Next, then enter the SMS code on the Verify code screen. If the code takes time, wait a little and check your messages again.",
+        "exerciseType": "do_and_confirm",
+        "question": "What do you type on the Verify code screen after entering your phone number?",
+        "options": [
+          "Your password",
+          "An SMS code",
+          "Your surname",
+          "Your Gmail subject"
+        ],
+        "correctAnswer": "An SMS code",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Enter your phone number if asked. Tap Next. Then type the SMS code you receive.",
+        "visibleResult": "You should move past the verification screen after the code is accepted.",
+        "feedbackCorrect": "Correct — the Verify code screen asks for the SMS code.",
+        "feedbackWrong": "Open the screen that appears after your phone number and read what kind of code it asks for.",
+        "tip": "If no code arrives, wait a minute and check that your phone number is correct."
+      },
+      {
+        "number": 9,
+        "screenType": "generic",
+        "screenName": "Recovery email",
+        "targetLabel": "Next",
+        "sampleData": {
+          "Recovery email": "skip this if none"
+        },
+        "teach": "You may see a recovery email screen. This is optional. If you have another email, you can enter it. If not, tap Skip or Next to continue. Many first-time users do not have one yet.",
+        "exerciseType": "tap_correct",
+        "question": "If you do not have another email address, what should you do on the recovery email screen?",
+        "options": [
+          "Type your password again",
+          "Tap Skip or Next",
+          "Close Gmail forever",
+          "Tap Install"
+        ],
+        "correctAnswer": "Tap Skip or Next",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Yes — you can continue by tapping Skip or Next if you have no recovery email.",
+        "feedbackWrong": "Look for the button that lets you continue without adding another email.",
+        "tip": "This screen may not appear on every phone."
+      },
+      {
+        "number": 10,
+        "screenType": "generic",
+        "screenName": "Birthday and gender",
+        "targetLabel": "Next",
+        "sampleData": {
+          "Month": "May",
+          "Day": "14",
+          "Year": "2008",
+          "Gender": "Female"
+        },
+        "teach": "Now fill in your birthday and gender. Google uses this to finish setting up the <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span>. Check the year carefully so you do not enter the wrong age by mistake.",
+        "exerciseType": "fill_blank",
+        "question": "After choosing your birthday and gender, what button do you tap to continue?",
+        "options": [],
+        "correctAnswer": "",
+        "acceptedAnswers": [
+          "next"
+        ],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Correct — Next takes you from the birthday screen to the terms screen.",
+        "feedbackWrong": "Look for the continue button after you finish selecting your details.",
+        "tip": "Make sure the year is your real birth year."
+      },
+      {
+        "number": 11,
+        "screenType": "generic",
+        "screenName": "Privacy and Terms",
+        "targetLabel": "I Agree",
+        "sampleData": {
+          "Button shown": "I Agree"
+        },
+        "teach": "This screen shows Google's Privacy and Terms. Scroll if needed, then tap I Agree to accept and continue. You cannot finish the Gmail setup without this step.",
+        "exerciseType": "tap_correct",
+        "question": "Which button finishes this agreement step?",
+        "options": [
+          "I Agree",
+          "Install",
+          "Compose",
+          "For myself"
+        ],
+        "correctAnswer": "I Agree",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "",
+        "visibleResult": "",
+        "feedbackCorrect": "Right — I Agree accepts the terms and lets account setup continue.",
+        "feedbackWrong": "Scroll near the bottom of the terms screen and read the main button.",
+        "tip": "If the button does not show yet, scroll down first."
+      },
+      {
+        "number": 12,
+        "screenType": "gmail_inbox",
+        "screenName": "Inbox",
+        "targetLabel": "Compose",
+        "sampleData": {
+          "Welcome email": "Welcome to your new Gmail account"
+        },
+        "teach": "Your new Gmail <span class=\"hover-word\" data-zu=\"i-akhawunti\">account</span> is now ready. You may see a final Next or Continue screen first. After that, Gmail opens your inbox. This is where your emails arrive.",
+        "exerciseType": "do_and_confirm",
+        "question": "When Gmail finishes setup and opens, which screen should you see?",
+        "options": [
+          "Inbox",
+          "Play Store",
+          "Camera",
+          "Phone number"
+        ],
+        "correctAnswer": "Inbox",
+        "acceptedAnswers": [],
+        "tiles": [],
+        "correctOrder": [],
+        "pairs": [],
+        "instruction": "Tap Next or Continue if Gmail shows a final setup screen. Wait for Gmail to open fully.",
+        "visibleResult": "You should see the Gmail inbox with your messages list and the Compose button.",
+        "feedbackCorrect": "Excellent — the Inbox is the correct final screen after Gmail setup.",
+        "feedbackWrong": "Wait for Gmail to finish loading and look for the messages list on the main screen.",
+        "tip": "If Gmail opens slowly, give it a few seconds before answering."
+      }
+    ],
+    "teacherPlanHTML": "<div class=\"tp\">\n  <div class=\"tp-hd\">\n    <div class=\"tp-obj-lbl\">Chalk-and-board lesson plan</div>\n    <h1 class=\"tp-title\">Create Your First Gmail</h1>\n    <p class=\"tp-obj\">By the end of this lesson, students can create a new Gmail account on an Android phone and reach the inbox.</p>\n    <p class=\"tp-linked\">Student task: How to create a Gmail account from scratch</p>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">1</span>Before Class</h2>\n    <ul class=\"tp-list\"><li>Check that at least one phone has the Gmail app or Play Store open.</li><li>Write the board points before class starts.</li><li>Pair students so they can help each other if one phone is shared.</li></ul>\n  </div>\n  <div class=\"tp-board\">\n    <div class=\"tp-board-ttl\">Blackboard Plan</div>\n    <div class=\"tp-board-sub\">Use this instead of a projector. Students copy the key words and steps.</div>\n    <div class=\"tp-board-title\">How to Create Gmail</div>\n    <div class=\"tp-board-grid\">\n      <div>\n        <div class=\"tp-board-col\">Key words</div>\n        <ul class=\"tp-bl\"><li>Email: formal online message</li><li>Inbox: saved email space</li></ul>\n      </div>\n      <div>\n        <div class=\"tp-board-col\">Class steps</div>\n        <ul class=\"tp-bl\"><li>Open Play Store</li><li>Tap Create account</li><li>Fill in your details</li></ul>\n      </div>\n    </div>\n    <div class=\"tp-board-bottom\">Use your real name, not a nickname.</div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">2</span>Teach It Directly</h2>\n    <div class=\"tp-script-note\">No computer or big screen needed. Read, adapt, and use the board.</div><div class=\"tp-script\">\n    <div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Open</span>\n        <span class=\"tp-step-min\">5 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> Today we learn how to create a Gmail account. Email is used by schools, businesses, and job applications. It is more formal than WhatsApp. Tell me, what is your name on paper, not your nickname?</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Write the lesson title and the five board points. Ask two students to say their full names aloud. Underline the point: use your real name.</div>\n    </div><div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Explain</span>\n        <span class=\"tp-step-min\">10 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> A Gmail account gives you a proper email address. That address can be used for school, work, and messages from offices. Inkify in the community uses email to send quotes and invoices to customers, so the customer has a clear record. Msenti Entrepreneurship Hub also reminds young people that a real email makes you look ready for work. First, you open the Play Store and find Gmail. Then you tap Create account, choose For myself, and type your name. After that, you choose a username, make a strong password, and finish the sign-up screens until you reach the inbox.</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Point to each board item as you speak. Ask students to repeat key words: email, username, password, inbox. Stop after each word and check understanding with quick class answers.</div>\n    </div><div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Practice</span>\n        <span class=\"tp-step-min\">15 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> Now you will do the task on your own phone or in pairs. Read each screen carefully. If a name or password does not work, try a different one. Keep your eyes on the phone and your hands moving. Do not rush past the screens.</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Let students work. If they share a phone, one student taps and one reads the screen aloud, then they swap. Walk around and check that students open the right app, tap the correct buttons, and reach the inbox. Help anyone who gets stuck on a username or password screen.</div>\n    </div><div class=\"tp-step\">\n      <div class=\"tp-step-h\">\n        <span class=\"tp-step-name\">Check</span>\n        <span class=\"tp-step-min\">5 min</span>\n      </div>\n      <div class=\"tp-say\"><strong>Say:</strong> Show me that your account is ready. Tell me one reason a young person in this area needs email. Then tell me what screen appears after setup is finished.</div>\n      <div class=\"tp-do\"><strong>Do:</strong> Look for students who can name the inbox and explain the purpose of email. Check notebooks for the lesson title and the board points. Listen for correct answers about Gmail, username, password, and inbox.</div>\n    </div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">3</span>Key Words</h2>\n    <div class=\"tp-vocab\">\n    <div class=\"tp-vrow\">\n      <div class=\"tp-vword\">email</div>\n      <div class=\"tp-vmean\">A written message sent on the internet</div>\n      <div class=\"tp-vzu\">i-imeyili</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">account</div>\n      <div class=\"tp-vmean\">A personal login space in an app</div>\n      <div class=\"tp-vzu\">i-akhawunti</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">username</div>\n      <div class=\"tp-vmean\">The name you use to log in</div>\n      <div class=\"tp-vzu\">igama lokungena</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">password</div>\n      <div class=\"tp-vmean\">Secret words or numbers that protect your account</div>\n      <div class=\"tp-vzu\">iphasiwedi</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">inbox</div>\n      <div class=\"tp-vmean\">The place where new emails arrive</div>\n      <div class=\"tp-vzu\">ibhokisi lemeyili</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">formal</div>\n      <div class=\"tp-vmean\">Used for school, work, or official messages</div>\n      <div class=\"tp-vzu\">okusemthethweni</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">professional</div>\n      <div class=\"tp-vmean\">Neat and suitable for work</div>\n      <div class=\"tp-vzu\">okungcweti</div>\n    </div><div class=\"tp-vrow\">\n      <div class=\"tp-vword\">verification</div>\n      <div class=\"tp-vmean\">A check that proves it is really you</div>\n      <div class=\"tp-vzu\">ukuqinisekisa</div>\n    </div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">4</span>Local Example</h2>\n    <div class=\"tp-local\">Inkify is a print store in KwaZulu-Natal run by Samke Jaca and Ntokozo Gwacela. It uses email to send quotes and invoices to customers.</div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">5</span>Discussion Questions</h2>\n    <ol class=\"tp-qs\"><li><span class=\"tp-qn\">1</span><span>Where in your life could email help you more than WhatsApp?</span></li><li><span class=\"tp-qn\">2</span><span>Why do you think Inkify uses email for quotes and invoices?</span></li><li><span class=\"tp-qn\">3</span><span>What part of the Gmail setup might be hardest for a first-time user?</span></li></ol>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">6</span>Device And No-Internet Plan</h2>\n    <div class=\"tp-device-grid\">\n    <div><span>Enough devices</span>Let each student use one phone or PC. Ask them to follow the screens quietly and raise a hand when they reach the inbox.</div>\n    <div><span>Shared devices</span>Put students in pairs or groups of four. One student reads the screen, one taps, one checks the name or password, and one watches for mistakes. Swap roles after each major step.</div>\n    <div><span>No internet</span>Teach the account steps on the board using a paper mock-up of the screens. Students copy the steps into notebooks and practise writing a real email address, a username, and a strong password. They also draw the Play Store, Gmail icon, and inbox boxes.</div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">7</span>Common Mistakes</h2>\n    <div class=\"tp-mistakes\">\n    <div class=\"tp-mistake\">\n      <div class=\"tp-m-label\">Student may...</div>\n      <div>Students use a nickname or funny email name.</div>\n      <div class=\"tp-m-label\">Teacher response</div>\n      <div>Tell them to use their real name. Say that schools and employers trust clear names more.</div>\n    </div><div class=\"tp-mistake\">\n      <div class=\"tp-m-label\">Student may...</div>\n      <div>Students forget the password or type it twice differently.</div>\n      <div class=\"tp-m-label\">Teacher response</div>\n      <div>Tell them to slow down and use the same password both times. Ask them to write it somewhere safe.</div>\n    </div><div class=\"tp-mistake\">\n      <div class=\"tp-m-label\">Student may...</div>\n      <div>Students think the inbox is the end of the app.</div>\n      <div class=\"tp-m-label\">Teacher response</div>\n      <div>Show that the inbox is the home space where new emails arrive. Point to the word inbox on the board.</div>\n    </div>\n  </div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">8</span>Check Understanding</h2>\n    <ul class=\"tp-list\"><li>A student can say the steps to create Gmail in order.</li><li>A student can explain why a real name matters.</li><li>A student can point to or name the inbox after setup.</li></ul>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">9</span>Wrap Up</h2>\n    <div class=\"tp-local\">Why is a real email address useful for a young person?</div>\n  </div>\n  <div class=\"tp-sec \">\n    <h2 class=\"tp-h2\"><span class=\"tp-num\">10</span>Fast Groups</h2>\n    <div class=\"tp-note\">Fast learners can write a short practice email to themselves using their new Gmail account.</div>\n  </div>\n  <div class=\"tp-tg\">\n    <div class=\"tp-tg-ttl\">Time Guide — 30 minutes</div>\n    <div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">opening and board</span></div><div class=\"tp-ti\"><span class=\"tp-td\">10 min</span><span class=\"tp-ta\">explanation</span></div><div class=\"tp-ti\"><span class=\"tp-td\">15 min</span><span class=\"tp-ta\">student task or no-internet fallback</span></div><div class=\"tp-ti\"><span class=\"tp-td\">5 min</span><span class=\"tp-ta\">check and wrap-up</span></div>\n  </div>\n  <button class=\"tp-print no-print\" onclick=\"window.print()\">Print Lesson Plan</button>\n</div>"
+  },
+  "savedAt": "2026-04-29T11:02:42.425Z",
+  "rating": "bad",
+  "comment": "The steps dont algin with content. the install button is aslo not there its already installed it says"
+}

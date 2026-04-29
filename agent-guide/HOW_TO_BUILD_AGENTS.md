@@ -249,7 +249,7 @@ planSteps() — plans difficulty and 10-13 steps, hard-capped at 13
         ↓
 generateTeacherMaterial() + generateStudentMaterial() in parallel
         ↓
-validateStepCount(), validateLocalGrounding(), validateExercises(), validateScreenTypes()
+validateStepCount(), validateLocalGrounding(), validateExercises(), validateScreenTypes(), validateVisibleTargets()
         ↓
 buildTeacherHTML() and return combined lesson JSON
         ↓
@@ -698,7 +698,39 @@ Show the teacher: *"The lesson could not be generated. Please try again, or add 
 
 ---
 
-## 10. Student view — per-step screen rendering
+## 10. Teacher plan completeness checks
+
+Before rendering or accepting a teacher lesson plan, validate the teacher-facing sections as carefully as the student phone steps.
+
+### Key Words
+
+Each `teacherVocabulary` row must include:
+
+- `word`: the key word shown in the left column
+- `simpleMeaning`: a short Grade 8 English meaning
+- `isiZuluSupport`: a non-empty support word, borrowed term, or short home-language support phrase
+
+Do not render blank cells in the Key Words table. If the model omits `isiZuluSupport`, fill it from a small fallback dictionary for common app terms, or use a short support phrase like “ask learners for the home-language word.” Rows with no `word` should be rejected or removed.
+
+Target count: 6–8 useful words. Prefer words the teacher will actually say during the board explanation and student task.
+
+### Local Example
+
+The local example must start by explaining what the example is and where it is before saying how it uses the skill.
+
+Good shape:
+
+`Inkify is a print store in KwaZulu-Natal run by Samke Jaca and Ntokozo Gwacela. It uses email to send quotes and invoices to customers.`
+
+Bad shape:
+
+`Inkify, run by Samke Jaca and Ntokozo Gwacela, uses email to send quotes...`
+
+The bad version names the example but does not first explain what it is. Teachers and students need the short setup sentence so the local grounding is understandable.
+
+---
+
+## 11. Student view — per-step screen rendering
 
 The single most important architectural decision in the student view: **the screen rebuilds on every step**, not just the highlighted element.
 
@@ -734,7 +766,7 @@ The old approach (static shell + highlighted element) caused the Gmail inbox to 
 
 ---
 
-## 11. Screen types reference
+## 12. Screen types reference
 
 The LLM must return one of these exact `screenType` values per step. The frontend has a builder function for each.
 
@@ -742,6 +774,8 @@ The LLM must return one of these exact `screenType` values per step. The fronten
 |---|---|
 | `play_store_search` | Play Store home with search bar |
 | `play_store_app` | App detail page: icon, Install button, reviews, screenshots |
+| `gmail_welcome` | Gmail first-launch welcome with Create account and Sign in |
+| `gmail_account_type` | Google account menu with For myself / child / business choices |
 | `gmail_signup_name` | Google account creation — first/last name fields |
 | `gmail_signup_user` | Choose Gmail address with @gmail.com suffix |
 | `gmail_signup_pass` | Password + confirm password fields |
@@ -762,11 +796,52 @@ The LLM must return one of these exact `screenType` values per step. The fronten
 | `sheets_data` | Spreadsheet with column headers and sample data |
 | `generic` | Branded header with app color + key UI elements for unknown apps |
 
-**Visual accuracy rule:** If the task is about creating an account, step 1 must be `play_store_app` or a signup screen — never `gmail_inbox` or `whatsapp_chat_list`.
+### Visual sync validation contract
+
+Every generated student step must pass all four checks before it is considered valid:
+
+1. **Instruction-to-screen check**
+   - Read `screenName`, `teach`, `question`, `instruction`, `visibleResult`, and `targetLabel` together.
+   - The rendered `screenType` must show the same screen the text describes.
+   - Do not validate from step number alone. Step number is a hint, not proof.
+
+2. **Target-to-visual check**
+   - `targetLabel` must be an exact visible app icon, button, field, menu item, or selectable option on that `screenType`.
+   - If `targetLabel` is `Install` or `Open`, the screen must be `play_store_app`.
+   - If `targetLabel` is `Search for apps & games`, the screen must be `play_store_search`.
+   - Never normalize a wrong target into a visible target if the instruction still describes a different screen.
+
+3. **Play Store install flow check**
+   - `android_home`: student taps `Play Store`.
+   - `play_store_search`: student taps/types in `Search for apps & games`, or selects the app result.
+   - `play_store_app`: student taps `Install`; fake progress shows `Downloading...`, `Installing...`, `Installed`, then the button changes to `Open`.
+   - Any step that says "app page", "app listing", "tap Install", "download the app", "wait until the download finishes", or "button changes to Open" must be `play_store_app`, not `play_store_search`.
+
+4. **Rendered-phone QA check**
+   - Start a generated lesson in the browser and inspect the phone screen before tapping anything.
+   - For each step, confirm the teaching box instruction names an element currently visible in the phone UI.
+   - Tap a wrong visible element and confirm it shows corrective feedback instead of unlocking the step.
+   - Tap/type the correct visible element and confirm the teaching box expands to the question, or unlocks the next step only when the answer is complete.
+
+5. **Dummy-data realism check**
+   - Any screen that would normally show a person, customer, recipient, amount, message, listing, account, quote, invoice, or business detail must show safe dummy data.
+   - Use realistic but fake values: `Thandi Ndlovu`, `072 123 4567`, `R50.00`, `Lunch order`, `Ms Dlamini`, `customer@example.com`, `School calculator`, `R120`.
+   - Confirmation screens must show the data being confirmed, not only a button like `1`.
+   - Form screens must show the practice value students should type or see.
+   - Never use real private personal data.
+
+**Critical examples:**
+- `screenName: "Gmail app page"` + text "Tap Install" + `targetLabel: "Install"` → `screenType` must be `play_store_app`.
+- `screenName: "Search for Gmail"` + text "Tap the search bar and type Gmail" + `targetLabel: "Search for apps & games"` → `screenType` must be `play_store_search`.
+- `screenName: "Facebook"` + text "tap the Marketplace icon / shopping bag" + `targetLabel: "Marketplace"` → `screenType` must be `facebook_feed`, and the feed visual must show a visible Marketplace tab/icon.
+- `screenName: "Recipient confirmation screen"` + text "name linked to the number" + `targetLabel: "1"` → phone visual must show dummy recipient name, phone number, amount/reference if relevant, and then the `1` confirmation button.
+- Creating a Gmail account must use the real order: `android_home` → `play_store_search` if installing/searching → `play_store_app` if installing/opening → `gmail_welcome` → `gmail_account_type` → `gmail_signup_name` → `gmail_signup_user` → `gmail_signup_pass`.
+
+**Visual accuracy rule:** If the task is about creating an account, the early steps must show the actual setup flow or Play Store flow — never `gmail_inbox` or `whatsapp_chat_list`.
 
 ---
 
-## 12. Cost Control
+## 13. Cost Control
 
 | API | Model | Usage | Cost |
 |---|---|---|---|
@@ -779,7 +854,7 @@ Use the token ledger printed by `test-site/server.js` as the source of truth for
 
 ---
 
-## 13. Quick-start checklist
+## 14. Quick-start checklist
 
 ### One-time setup (already done in test-site/)
 - [x] `npm install express openai @google/generative-ai dotenv`
@@ -790,8 +865,11 @@ Use the token ledger printed by `test-site/server.js` as the source of truth for
 ### Test the prototype
 - [ ] `npm start` → open http://localhost:3000
 - [ ] Type a custom topic or use a quick-pick
-- [ ] Verify step 1 screenType matches the task (create account → Play Store)
-- [ ] Check arrows point to the correct element at each step
+- [ ] Verify each step's `screenType` matches the instruction text and phone visual
+- [ ] Verify every `targetLabel` is visible on that exact phone screen before tapping
+- [ ] For app install lessons, confirm `play_store_search` is only the search/result step and `play_store_app` is the Install/Open/progress step
+- [ ] Check arrows point to the correct visible element at each step
+- [ ] Tap one wrong visible element and confirm it gives corrective feedback, not progress
 - [ ] Verify teacher plan language: no jargon, Grade 8 English, KZN examples
 
 ### When moving to production (Lovable / full app)

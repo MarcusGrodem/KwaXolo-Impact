@@ -450,6 +450,7 @@ VALID screenType VALUES (use EXACTLY one per step):
   play_store_search    → Play Store search screen with results
   play_store_app       → App detail page: name, icon, Install/Open button, reviews
   gmail_welcome        → Gmail first-launch welcome screen: "Create account" (blue) + "Sign in" buttons
+  gmail_account_type   → Google account creation menu: choose "For myself", "For my child", or "For work or my business"
   gmail_signup_name    → Google account creation: enter first name, last name
   gmail_signup_user    → Choose Gmail address
   gmail_signup_pass    → Create a strong password
@@ -468,6 +469,7 @@ VALID screenType VALUES (use EXACTLY one per step):
   fb_listing_form      → Create listing form: photo, price, title, location
   sheets_blank         → New empty Google Sheets spreadsheet
   sheets_data          → Spreadsheet with column headers and data rows
+  chrome_browser       → Chrome browser: New Tab page with address bar, Google search box, and shortcuts — OR Chrome showing search results page
   generic              → Any app not listed — branded header + key UI elements
 
 VISUAL ACCURACY RULES:
@@ -475,8 +477,188 @@ VISUAL ACCURACY RULES:
 - Step 2 for install lessons → play_store_search (student lands in Play Store after opening it)
 - Step 3 for install lessons → play_store_app (student finds and opens the app listing)
 - Gmail first-launch welcome (choose Create account or Sign in) → gmail_welcome, NOT generic
-- Creating account → early steps MUST use: gmail_welcome → gmail_signup_name → gmail_signup_user → gmail_signup_pass
+- Gmail account type menu (choose "For myself") → gmail_account_type, NOT gmail_welcome or generic
+- Creating account → early steps MUST use: gmail_welcome → gmail_account_type → gmail_signup_name → gmail_signup_user → gmail_signup_pass
+- Chrome / browser steps (tapping address bar, typing search, reading results, checking https) → MUST be chrome_browser, NOT play_store_search or generic
 - Steps must follow the EXACT ORDER a first-time user experiences them`;
+
+const SCREEN_TARGETS = {
+  android_home: ["Play Store", "Gmail", "WhatsApp", "WhatsApp Business", "Facebook", "Instagram", "TikTok", "Canva", "Google Maps", "Google Sheets", "YouTube", "Settings", "Files", "Calculator", "Phone", "Messages", "Chrome", "All apps"],
+  play_store_search: ["Search for apps & games", "Voice search", "Back"],
+  play_store_app: ["Install", "Open", "Back"],
+  chrome_browser: ["Address bar", "Search bar", "Back", "Forward", "Tabs", "Menu"],
+  gmail_welcome: ["Create account", "Sign in"],
+  gmail_account_type: ["For myself", "For my child", "For work or my business"],
+  gmail_signup_name: ["First name", "Last name", "Next"],
+  gmail_signup_user: ["Username", "Gmail address", "Next"],
+  gmail_signup_pass: ["Password", "Confirm", "Next"],
+  gmail_inbox: ["Compose"],
+  gmail_compose: ["To", "Subject", "Body", "Send"],
+  whatsapp_welcome: ["Agree and Continue"],
+  whatsapp_phone: ["Phone number", "Next"],
+  whatsapp_verify: ["SMS code", "Verify"],
+  whatsapp_setup_name: ["Profile photo", "Your name", "Next"],
+  whatsapp_chat_list: ["New chat"],
+  whatsapp_chat: ["Type a message", "Send"],
+  whatsapp_business: ["Profile photo", "Business name", "Category", "Description", "Business hours", "Save"],
+  facebook_feed: ["What's on your mind", "Photo", "Marketplace", "Home", "Menu", "Search"],
+  facebook_create_post: ["Post", "Write something", "Photo/Video", "Tag People", "Feeling"],
+  facebook_marketplace: ["Sell"],
+  fb_listing_form: ["Add photo", "Price", "Title", "Category", "Location", "Description", "Next"],
+  sheets_blank: ["Cell A1", "Cell B1", "Cell C1", "Cell D1", "Cell A2", "Cell B2", "Cell C2", "Cell D2", "Cell A3", "Cell B3", "Cell C3", "Cell D3", "Cell A4", "Cell B4", "Cell C4", "Cell D4", "Cell A5", "Cell B5", "Cell C5", "Cell D5", "Cell A6", "Cell B6", "Cell C6", "Cell D6"],
+  sheets_data: ["Date", "Description", "Amount", "Row 5", "Total"],
+};
+
+const DEFAULT_TARGET_BY_SCREEN = {
+  android_home: "Play Store",
+  play_store_search: "Search for apps & games",
+  play_store_app: "Install",
+  gmail_welcome: "Create account",
+  gmail_account_type: "For myself",
+  gmail_signup_name: "Next",
+  gmail_signup_user: "Next",
+  gmail_signup_pass: "Next",
+  gmail_inbox: "Compose",
+  gmail_compose: "Send",
+  whatsapp_welcome: "Agree and Continue",
+  whatsapp_phone: "Next",
+  whatsapp_verify: "SMS code",
+  whatsapp_setup_name: "Next",
+  whatsapp_chat_list: "New chat",
+  whatsapp_chat: "Send",
+  whatsapp_business: "Save",
+  facebook_feed: "Marketplace",
+  facebook_create_post: "Post",
+  facebook_marketplace: "Sell",
+  fb_listing_form: "Next",
+  sheets_blank: "Cell A1",
+  sheets_data: "Amount",
+  chrome_browser: "Address bar",
+};
+
+function labelMatches(elLabel, targetLabel) {
+  if (!targetLabel) return false;
+  const clean = s => String(s || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+  const el = clean(elLabel), tg = clean(targetLabel);
+  if (!el || !tg) return false;
+  if (el === tg || el.includes(tg) || tg.includes(el)) return true;
+  const stop = new Set(["the","and","for","your","this","that","then","from","with","into","how","what","you","tap","press","click","now","next"]);
+  const sig = s => s.split(" ").filter(w => w.length > 2 && !stop.has(w));
+  const elW = sig(el), tgW = sig(tg);
+  return elW.length > 0 && tgW.length > 0 && elW.some(w => tgW.includes(w));
+}
+
+function visibleTargetsForStep(step, lesson) {
+  const base = SCREEN_TARGETS[step.screenType] || [];
+  const appName = lesson.appName || "";
+  if (step.screenType === "android_home" && appName) return [...new Set([...base, appName])];
+  if (step.screenType === "play_store_search" && appName) return [...new Set([...base, appName])];
+  if (step.screenType === "generic" && step.targetLabel) return [step.targetLabel, "Input"];
+  return base;
+}
+
+function normalizeTargetLabel(step, lesson) {
+  const targets = visibleTargetsForStep(step, lesson);
+  if (!targets.length) return true;
+  const current = step.targetLabel || "";
+  const exact = targets.find(t => labelMatches(t, current));
+  if (exact) {
+    if (step.targetLabel !== exact) step.targetLabel = exact;
+    return true;
+  }
+  step.targetLabel = DEFAULT_TARGET_BY_SCREEN[step.screenType] || targets[0];
+  return false;
+}
+
+function screenTargetContractBlock() {
+  return Object.entries(SCREEN_TARGETS)
+    .map(([screen, targets]) => `${screen}: ${targets.join(", ")}`)
+    .join("\n");
+}
+
+function stepSyncText(step) {
+  return [
+    step.screenName,
+    step.targetLabel,
+    step.teach,
+    step.question,
+    step.instruction,
+    step.visibleResult
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function inferScreenTypeFromStep(step, lesson) {
+  const t = stepSyncText(step);
+  const app = (lesson.appName || "").toLowerCase();
+
+  if (Number(step.number) === 1 &&
+      (t.includes("home screen") || t.includes("play store") || t.includes("open") || t.includes("find"))) {
+    return "android_home";
+  }
+
+  if (
+    t.includes("app page") ||
+    t.includes("app listing") ||
+    t.includes("app detail") ||
+    t.includes("tap install") ||
+    t.includes("install button") ||
+    t.includes("download the app") ||
+    t.includes("download finishes") ||
+    t.includes("button changes to open") ||
+    (step.targetLabel || "").toLowerCase() === "install" ||
+    (step.targetLabel || "").toLowerCase() === "open"
+  ) {
+    return "play_store_app";
+  }
+
+  if (
+    t.includes("search for apps") ||
+    t.includes("search bar") ||
+    t.includes("type the app name") ||
+    t.includes("type gmail") ||
+    t.includes("search for " + app) ||
+    (step.targetLabel || "").toLowerCase() === "search for apps & games"
+  ) {
+    return "play_store_search";
+  }
+
+  if (app.includes("gmail") &&
+      (t.includes("account type") || t.includes("for myself"))) {
+    return "gmail_account_type";
+  }
+  if (app.includes("gmail") &&
+      (t.includes("welcome to gmail") || (t.includes("create account") && t.includes("sign in")))) {
+    return "gmail_welcome";
+  }
+
+  if (app.includes("facebook") &&
+      (t.includes("marketplace icon") || t.includes("shopping bag") || t.includes("main facebook screen"))) {
+    return "facebook_feed";
+  }
+  if (app.includes("facebook") &&
+      (t.includes("marketplace screen") || t.includes("marketplace browse") || t.includes("marketplace grid") || t.includes("tap sell"))) {
+    return "facebook_marketplace";
+  }
+
+  return "";
+}
+
+function applyDeterministicScreenCorrections(lesson, label = "screen sync") {
+  const corrected = [];
+  (lesson.steps || []).forEach(step => {
+    if (!step) return;
+    const before = step.screenType || "generic";
+    const inferred = inferScreenTypeFromStep(step, lesson);
+    if (inferred && before !== inferred) {
+      step.screenType = inferred;
+      corrected.push(`Step ${step.number}: ${before} → ${inferred}`);
+    }
+  });
+  if (corrected.length) {
+    console.warn(`  ⚠ ${label} corrected: ${corrected.join(" | ")}`);
+  }
+  return lesson;
+}
 
 // ─── App design MD system ─────────────────────────────────────────────────────
 // Keyword → canonical app name mapping. Add more apps here as content grows.
@@ -877,7 +1059,7 @@ Return ONLY valid JSON in this exact shape:
     {
       "word": "One important word",
       "simpleMeaning": "Simple meaning in plain English",
-      "isiZuluSupport": "isiZulu support word or empty string"
+      "isiZuluSupport": "Non-empty isiZulu support word, borrowed term, or short home-language support phrase"
     }
   ],
   "teacherDiscussionQuestions": [
@@ -885,7 +1067,7 @@ Return ONLY valid JSON in this exact shape:
     "Open question 2 — connects to the local example?",
     "Open question 3 — prepares students for the student task?"
   ],
-  "teacherLocalExample": "2–3 sentences. Name a specific person, place, or venture from KwaZulu-Natal. Directly relevant to this topic. Concrete and specific — not generic.",
+  "teacherLocalExample": "2 sentences max. Sentence 1: explain very briefly WHAT the named KZN person/place/venture is and WHERE it is. Sentence 2: explain how it uses this lesson skill. Concrete and specific — not generic.",
   "teacherDevicePlan": {
     "ifEnoughDevices": "How to run the task if enough phones/PCs are available.",
     "ifSharedDevices": "How groups should rotate roles when 4–6 students share one device.",
@@ -915,6 +1097,8 @@ Return ONLY valid JSON in this exact shape:
 The teacher plan MUST be usable without a computer, projector, or big screen.
 The teacherScript must tell the teacher what to SAY and what to DO.
 The teacherDevicePlan.ifNoInternet must be a real no-device/no-internet classroom fallback, not "try again later".
+teacherVocabulary MUST include 6–8 items. Every item must have a non-empty word, simpleMeaning, and isiZuluSupport. Never leave the green support column blank.
+teacherLocalExample MUST first explain what the example is and where it is, then explain how it uses the topic. Example shape: "Inkify is a print store in KwaZulu-Natal run by Samke Jaca and Ntokozo Gwacela. It uses email to send quotes and invoices to customers."
 The teacherExplanation AND teacherLocalExample MUST each name a specific KZN entity from the local context list.`;
 
   const response = await client.chat.completions.create({
@@ -960,6 +1144,9 @@ ${INTERACTION_PAT}
 PHONE SCREEN TYPES
 ═══════════════════════════════════════════
 ${SCREEN_TYPES}
+
+VISIBLE TARGET CONTRACT — targetLabel must be one of the visible controls for that screenType:
+${screenTargetContractBlock()}
 ${appDesignMD ? `
 ═══════════════════════════════════════════
 APP UI DESIGN REFERENCE — use for accurate screen names, colours, and button labels
@@ -1005,6 +1192,9 @@ Return ONLY valid JSON in this exact shape:
       "screenType": "exact value from screen types list",
       "screenName": "Exact screen name as it appears in the app",
       "targetLabel": "Exact clickable/tappable target for this step. Must match one visible app icon, button, field, or menu label. Never leave empty for phone action steps.",
+      "sampleData": {
+        "Label shown on the phone": "Concrete dummy value shown on the phone"
+      },
       "teach": "2–3 sentences. What is on this screen. What the student is about to do and why it matters for completing the main goal. Include a fail-recovery hint if the step could go wrong.",
       "exerciseType": "tap_correct | fill_blank | arrange_steps | match_pairs | do_and_confirm",
       "question": "The question the student must answer correctly before advancing.",
@@ -1032,7 +1222,14 @@ FIELD RULES BY EXERCISE TYPE:
 
 Always include feedbackCorrect AND feedbackWrong for EVERY step.
 Always include targetLabel for EVERY step that involves tapping, typing, selecting, or confirming something on the phone. The simulator only accepts this exact target as correct.
+Always include sampleData when the screen would normally show real user/business/customer/payment/listing/account/message details. Use safe dummy data, never real personal data. Examples: recipient name, phone number, amount, reference, account name, customer name, product title, price, email address, message text, business name.
+For money/payment lessons, every confirmation or review screen MUST show realistic dummy data such as Recipient: Thandi Ndlovu, Mobile number: 072 123 4567, Amount: R50.00, Reference: Lunch order.
+For forms, show the exact practice value the student should type or see. Do not leave screens abstract when dummy data is required.
+Before returning, silently check every step: the targetLabel must be an actual visible app icon, button, field, menu item, or selectable option rendered by that screenType.
+Use the VISIBLE TARGET CONTRACT above. If a needed target is not listed for a screenType, choose the correct screenType instead of inventing a target.
 For android_home, targetLabel MUST be the exact app icon to tap, such as "Play Store", "Gmail", "WhatsApp", or "Facebook".
+For Play Store install steps, targetLabel MUST be "Install" and visibleResult should say that the download progress finishes and the button changes to "Open".
+If the next step launches the app after installation, use targetLabel "Open" and screenType "play_store_app" so the phone and teaching box stay in sync.
 Vary exerciseTypes across steps — never more than 3 tap_correct in a row.
 Use do_and_confirm for any step that requires the student to act on their real phone.
 Use arrange_steps at least once per task if the topic involves a sequence.`;
@@ -1052,7 +1249,7 @@ Use arrange_steps at least once per task if the topic involves a sequence.`;
 }
 
 // ─── Phase 3: orchestrate teacher + student in parallel and merge ────────────
-async function generateLesson(inputs, uiContext, plan, ledger) {
+async function generateLesson(inputs, uiContext, plan, ledger, onTeacherReady) {
   const category      = detectCategory(inputs.topic);
   const catRules      = CAT[category] || CAT["F"];
   const examplesBlock = loadExamples();
@@ -1063,10 +1260,13 @@ async function generateLesson(inputs, uiContext, plan, ledger) {
   console.log(`  → App name detected: ${appName || "(none)"}`);
   console.log(`  → Teacher: ${DEP_TEACHER}  |  Student: ${DEP_STUDENT}`);
 
-  const [teacherPart, studentPart] = await Promise.all([
-    generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, ledger),
-    generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, appDesignMD, ledger)
-  ]);
+  const teacherPromise = generateTeacherMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, ledger)
+    .then(teacherPart => {
+      if (typeof onTeacherReady === "function") onTeacherReady(teacherPart);
+      return teacherPart;
+    });
+  const studentPromise = generateStudentMaterial(inputs, uiContext, plan, category, catRules, examplesBlock, appDesignMD, ledger);
+  const [teacherPart, studentPart] = await Promise.all([teacherPromise, studentPromise]);
 
   const lesson = { ...teacherPart, ...studentPart };
 
@@ -1122,6 +1322,9 @@ Continue naturally from the last existing step.
 Use the same step schema. Vary the exerciseTypes.
 
 ${SCREEN_TYPES}
+
+VISIBLE TARGET CONTRACT:
+${screenTargetContractBlock()}
 
 Return JSON: { "additionalSteps": [ ...step objects with number, screenType, screenName, targetLabel, teach, exerciseType, question, options, correctAnswer, acceptedAnswers, tiles, correctOrder, pairs, instruction, visibleResult, feedbackCorrect, feedbackWrong, tip ] }`
     }]
@@ -1201,6 +1404,7 @@ Return JSON: { "valid": false, "issues": ["Step 2: ..."] } listing real issues o
 // ─── Validation 4: screen types match steps ──────────────────────────────────
 async function validateScreenTypes(lesson, topic, ledger) {
   const client = azClient(DEP_VALIDATOR);
+  applyDeterministicScreenCorrections(lesson, "pre-validator visual sync");
 
   // Hard-coded rule: step 1 must always be android_home for any lesson
   // that starts with opening an app (i.e., almost every lesson).
@@ -1224,15 +1428,37 @@ async function validateScreenTypes(lesson, topic, ledger) {
       s.screenType = "gmail_welcome";
       console.log(`  → Step ${s.number} auto-corrected to gmail_welcome`);
     }
+    if (app.includes("gmail") &&
+        (t.includes("account type") || t.includes("for myself") || (s.screenName || "").toLowerCase().includes("account type") || (s.targetLabel || "").toLowerCase().includes("for myself"))) {
+      s.screenType = "gmail_account_type";
+      console.log(`  → Step ${s.number} auto-corrected to gmail_account_type`);
+    }
     // Play Store app page: teach mentions "install" button but screenType is generic
-    if (s.screenType === "generic" && (t.includes("install button") || t.includes("tap install"))) {
+    if ((s.screenType === "generic" || s.screenType === "play_store_search") &&
+        (t.includes("install button") || t.includes("tap install") || t.includes("download the app") || t.includes("button changes to open"))) {
       s.screenType = "play_store_app";
       console.log(`  → Step ${s.number} auto-corrected to play_store_app`);
+    }
+    // Chrome browser: any step about the Chrome browser or web searching that was wrongly given play_store_search or generic
+    const sn = (s.screenName || "").toLowerCase();
+    const tl = (s.targetLabel || "").toLowerCase();
+    const isChromeMismatch =
+      (s.screenType === "play_store_search" || s.screenType === "generic") &&
+      (t.includes("chrome") || t.includes("browser") || t.includes("address bar") ||
+       t.includes("search bar") || t.includes("https") || t.includes("search result") ||
+       sn.includes("chrome") || sn.includes("browser") || sn.includes("address bar") ||
+       sn.includes("search result") || sn.includes("new tab") ||
+       tl.includes("address bar") || tl.includes("search bar")) &&
+      !t.includes("play store") && !t.includes("download") && !t.includes("install");
+    if (isChromeMismatch) {
+      s.screenType = "chrome_browser";
+      if (!tl || tl === "search for apps & games") s.targetLabel = "Address bar";
+      console.log(`  → Step ${s.number} auto-corrected to chrome_browser`);
     }
   });
 
   const allSteps = lesson.steps.map(s =>
-    `Step ${s.number}: screenType="${s.screenType}", teach: "${(s.teach||"").slice(0,90)}"`
+    `Step ${s.number}: screenType="${s.screenType}", targetLabel="${s.targetLabel || ""}", screenName="${s.screenName || ""}", teach: "${(s.teach||"").slice(0,90)}"`
   ).join("\n");
 
   const prompt = `Lesson about "${topic}", app: ${lesson.appName}.
@@ -1241,13 +1467,22 @@ ${allSteps}
 
 Check that each screenType matches what would actually be visible at that step. Apply these rules:
 - Step 1 for any lesson → MUST be android_home (student opens app from home screen)
-- Step 2 for install lessons → play_store_search
-- Step 3 for install lessons → play_store_app (app listing with Install button)
+- Use screen content, not only step number. If the instruction says "app page", "app listing", "tap Install", "download the app", "wait until button changes to Open", or targetLabel is "Install"/"Open" → screenType MUST be play_store_app.
+- play_store_search is ONLY for the search field/search results step. It must not be used for a step that asks the student to tap Install.
+- Step 2 for install lessons is play_store_search ONLY if that step asks the student to search/type/select the app result.
+- The install/download/progress/Open step MUST be play_store_app (app listing with Install/Open button), regardless of step number.
 - Gmail first-launch welcome (shows "Create account" + "Sign in" buttons) → gmail_welcome NOT generic
-- Creating account → gmail_welcome → gmail_signup_name → gmail_signup_user → gmail_signup_pass (in that order) NOT generic
+- Gmail account type menu (shows "For myself", "For my child", "For work or my business") → gmail_account_type NOT gmail_welcome or generic
+- Creating account → gmail_welcome → gmail_account_type → gmail_signup_name → gmail_signup_user → gmail_signup_pass (in that order) NOT generic
+- Any step about Chrome browser, address bar, search bar, typing a search, reading search results, checking https → MUST be chrome_browser, NOT play_store_search or generic
 - The screen shown must match EXACTLY what the teach text describes
+- The targetLabel must be visibly tappable/typeable on that screen. If targetLabel is "Next", the selected screenType must visibly render a Next button.
+- Do not approve a step that tells students to tap a button that is missing, hidden behind the teaching sheet, or only implied in the lesson text.
 
 ${SCREEN_TYPES}
+
+VISIBLE TARGET CONTRACT:
+${screenTargetContractBlock()}
 
 Return JSON: { "correct": true } if all screenTypes are correct.
 Return JSON: { "correct": false, "corrections": [{ "step": 1, "screenType": "android_home" }, ...] }
@@ -1271,6 +1506,105 @@ List ONLY the step numbers that need fixing and their corrected screenType. Do N
   } else {
     console.log("  → Screen type validation passed");
   }
+  applyDeterministicScreenCorrections(lesson, "post-validator visual sync");
+  return lesson;
+}
+
+function validateVisibleTargets(lesson) {
+  applyDeterministicScreenCorrections(lesson, "pre-target visual sync");
+  const corrected = [];
+  (lesson.steps || []).forEach(s => {
+    if (!s) return;
+    const before = s.targetLabel || "";
+    const valid = normalizeTargetLabel(s, lesson);
+    if (!valid || before !== (s.targetLabel || "")) {
+      corrected.push(`Step ${s.number}: [${s.screenType}] "${before || "(empty)"}" → "${s.targetLabel || ""}"`);
+    }
+  });
+  if (corrected.length) {
+    console.warn("  ⚠ Target sync corrected:", corrected.join(" | "));
+  } else {
+    console.log("  → Visible target validation passed");
+  }
+  return lesson;
+}
+
+function needsSampleData(step, lesson) {
+  const text = stepSyncText(step);
+  const app = (lesson.appName || "").toLowerCase();
+  return (
+    step.screenType === "generic" ||
+    /confirm|review|summary|recipient|amount|payment|money|send|transfer|cash|momo|mobile money|reference|invoice|quote|customer|listing|price|product|email|message|account|profile|business/.test(text) ||
+    /money|momo|bank|wallet|marketplace|business/.test(app)
+  );
+}
+
+function sampleDataForStep(step, lesson) {
+  const text = stepSyncText(step);
+  const app = (lesson.appName || "").toLowerCase();
+  const data = {};
+
+  if (/money|momo|mobile money|payment|transfer|send|recipient|amount|cash|wallet/.test(text + " " + app)) {
+    Object.assign(data, {
+      "Recipient": "Thandi Ndlovu",
+      "Mobile number": "072 123 4567",
+      "Amount": "R50.00",
+      "Reference": "Lunch order"
+    });
+    if (/confirm|review|summary/.test(text)) {
+      data["Fee"] = "R0.00";
+      data["Total"] = "R50.00";
+    }
+  }
+
+  if (/invoice|quote|customer|email/.test(text)) {
+    Object.assign(data, {
+      "Customer": "Ms Dlamini",
+      "Email": "customer@example.com",
+      "Subject": "Quote for printing",
+      "Message": "Hello, here is the quote we discussed."
+    });
+  }
+
+  if (/listing|marketplace|product|price|sell/.test(text)) {
+    Object.assign(data, {
+      "Product": "School calculator",
+      "Price": "R120",
+      "Location": "KwaXolo",
+      "Description": "Used but working well"
+    });
+  }
+
+  if (/account|profile|business|username|password/.test(text)) {
+    Object.assign(data, {
+      "Name": "Thandi Ndlovu",
+      "Business": "Thandi's Snacks",
+      "Username": "thandi.ndlovu",
+      "Password example": "River-2026!"
+    });
+  }
+
+  if (!Object.keys(data).length && needsSampleData(step, lesson)) {
+    Object.assign(data, {
+      "Practice name": "Thandi Ndlovu",
+      "Practice phone": "072 123 4567",
+      "Practice note": "Use this dummy data for the class activity"
+    });
+  }
+  return data;
+}
+
+function ensureSampleData(lesson) {
+  let added = 0;
+  (lesson.steps || []).forEach(step => {
+    if (!step || !needsSampleData(step, lesson)) return;
+    const current = step.sampleData && typeof step.sampleData === "object" ? step.sampleData : {};
+    const hasUsefulData = Object.values(current).some(v => String(v || "").trim());
+    if (hasUsefulData) return;
+    step.sampleData = sampleDataForStep(step, lesson);
+    if (Object.keys(step.sampleData).length) added++;
+  });
+  if (added) console.log(`  → Added dummy sample data to ${added} step(s)`);
   return lesson;
 }
 
@@ -1279,6 +1613,98 @@ function esc(s) {
   return String(s || "")
     .replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+const VOCAB_SUPPORT_FALLBACKS = {
+  email: "i-imeyili",
+  username: "igama lomsebenzisi",
+  password: "iphasiwedi",
+  account: "i-akhawunti",
+  professional: "okusemthethweni",
+  install: "faka uhlelo lokusebenza",
+  download: "landa",
+  app: "uhlelo lokusebenza",
+  message: "umyalezo",
+  send: "thumela",
+  customer: "ikhasimende",
+  invoice: "i-invoyisi",
+  quote: "ikhotheshini",
+  business: "ibhizinisi",
+  verification: "ukuqinisekisa",
+  code: "ikhodi"
+};
+
+const LOCAL_EXAMPLE_INTROS = [
+  {
+    re: /\binkify\b/i,
+    intro: "Inkify is a print store in KwaZulu-Natal run by Samke Jaca and Ntokozo Gwacela."
+  },
+  {
+    re: /\b1lt bakery\b/i,
+    intro: "1LT Bakery is a local bakery in KwaZulu-Natal."
+  },
+  {
+    re: /\bhlobisile pearl studios\b/i,
+    intro: "Hlobisile Pearl Studios is a local creative venture in KwaZulu-Natal."
+  },
+  {
+    re: /\bcapitec\b/i,
+    intro: "Capitec is a bank used by many people in South Africa, including KwaZulu-Natal."
+  },
+  {
+    re: /\bmtn (mobile money|momo)\b/i,
+    intro: "MTN Mobile Money is a mobile money service used in South Africa."
+  }
+];
+
+function normalizeTeacherVocabulary(vocab, lesson) {
+  const rows = Array.isArray(vocab) ? vocab : [];
+  const normalized = rows
+    .map(item => {
+      const word = String(item?.word || "").trim();
+      if (!word) return null;
+      const key = word.toLowerCase();
+      return {
+        word,
+        simpleMeaning: String(item?.simpleMeaning || "").trim() || "an important word for this lesson",
+        isiZuluSupport: String(item?.isiZuluSupport || "").trim() || VOCAB_SUPPORT_FALLBACKS[key] || "ask learners for the home-language word"
+      };
+    })
+    .filter(Boolean);
+
+  const topicWord = String(lesson?.appName || lesson?.teacherTitle || "app").trim();
+  const fallbackRows = [
+    { word: "app", simpleMeaning: "a tool you use on a phone", isiZuluSupport: VOCAB_SUPPORT_FALLBACKS.app },
+    { word: topicWord, simpleMeaning: "the main tool for this lesson", isiZuluSupport: "igama lohlelo" },
+    { word: "account", simpleMeaning: "a personal login space", isiZuluSupport: VOCAB_SUPPORT_FALLBACKS.account },
+    { word: "password", simpleMeaning: "a secret word used to enter an account", isiZuluSupport: VOCAB_SUPPORT_FALLBACKS.password },
+    { word: "download", simpleMeaning: "to get an app or file onto a phone", isiZuluSupport: VOCAB_SUPPORT_FALLBACKS.download },
+    { word: "professional", simpleMeaning: "formal and suitable for work or school", isiZuluSupport: VOCAB_SUPPORT_FALLBACKS.professional }
+  ];
+
+  const seen = new Set(normalized.map(v => v.word.toLowerCase()));
+  for (const row of fallbackRows) {
+    if (normalized.length >= 6) break;
+    if (!row.word || seen.has(row.word.toLowerCase())) continue;
+    normalized.push(row);
+    seen.add(row.word.toLowerCase());
+  }
+  return normalized.slice(0, 8);
+}
+
+function normalizeLocalExample(text) {
+  const clean = String(text || "").trim();
+  if (!clean) return "";
+  const firstSentence = clean.split(/[.!?]/)[0] || "";
+  if (/\b(is|are)\b/i.test(firstSentence) && /\b(in|near|at|from|kwaZulu|kzn|south africa)\b/i.test(firstSentence)) {
+    return clean;
+  }
+  const match = LOCAL_EXAMPLE_INTROS.find(item => item.re.test(clean));
+  if (!match) return clean;
+  const withoutLooseIntro = clean
+    .replace(/^Inkify,\s*run by Samke Jaca and Ntokozo Gwa?cela,\s*/i, "")
+    .replace(/^Inkify,\s*/i, "");
+  return `${match.intro} ${withoutLooseIntro}`;
 }
 
 function buildTeacherHTML(lesson, time) {
@@ -1321,11 +1747,13 @@ function buildTeacherHTML(lesson, time) {
       : `<div class="tp-ti"><span class="tp-ta">${esc(t)}</span></div>`;
   }).join("");
   const prepHTML = renderList(teacherPrep);
-  const vocabHTML = Array.isArray(teacherVocabulary) && teacherVocabulary.length ? `<div class="tp-vocab">
-    ${teacherVocabulary.map(v => `<div class="tp-vrow">
+  const cleanVocabulary = normalizeTeacherVocabulary(teacherVocabulary, lesson);
+  const cleanLocalExample = normalizeLocalExample(teacherLocalExample);
+  const vocabHTML = cleanVocabulary.length ? `<div class="tp-vocab">
+    ${cleanVocabulary.map(v => `<div class="tp-vrow">
       <div class="tp-vword">${esc(v.word)}</div>
       <div class="tp-vmean">${esc(v.simpleMeaning)}</div>
-      ${v.isiZuluSupport ? `<div class="tp-vzu">${esc(v.isiZuluSupport)}</div>` : ""}
+      <div class="tp-vzu">${esc(v.isiZuluSupport)}</div>
     </div>`).join("")}
   </div>` : "";
   const scriptHTML = Array.isArray(teacherScript) && teacherScript.length ? `<div class="tp-script">
@@ -1379,7 +1807,7 @@ function buildTeacherHTML(lesson, time) {
   </div>
   ${renderSection(2, "Teach It Directly", `<div class="tp-script-note">No computer or big screen needed. Read, adapt, and use the board.</div>${scriptHTML}`)}
   ${renderSection(3, "Key Words", vocabHTML)}
-  ${renderSection(4, "Local Example", `<div class="tp-local">${esc(teacherLocalExample)}</div>`)}
+  ${renderSection(4, "Local Example", `<div class="tp-local">${esc(cleanLocalExample)}</div>`)}
   ${renderSection(5, "Discussion Questions", `<ol class="tp-qs">${questions}</ol>`)}
   ${renderSection(6, "Device And No-Internet Plan", deviceHTML)}
   ${renderSection(7, "Common Mistakes", mistakesHTML)}
@@ -1403,9 +1831,9 @@ app.get("/progress/:id", (req, res) => {
   req.on("close", () => delete progressClients[req.params.id]);
 });
 
-function progress(id, pct, phase) {
+function progress(id, pct, phase, extra = {}) {
   const c = progressClients[id];
-  if (c) c.write(`data: ${JSON.stringify({ pct, phase })}\n\n`);
+  if (c) c.write(`data: ${JSON.stringify({ pct, phase, ...extra })}\n\n`);
 }
 
 // ─── Generate route ───────────────────────────────────────────────────────────
@@ -1424,7 +1852,20 @@ app.post("/generate", async (req, res) => {
 
     const category = detectCategory(topic);
     progress(reqId, 32, `Generating (${plan.difficulty || "medium"}, ${plan.fullStepOutline.length} steps)...`);
-    let lesson = await generateLesson({ topic, struggles, time, context }, uiContext, plan, ledger);
+    let teacherStreamed = false;
+    let lesson = await generateLesson(
+      { topic, struggles, time, context },
+      uiContext,
+      plan,
+      ledger,
+      teacherPart => {
+        if (teacherStreamed) return;
+        teacherStreamed = true;
+        progress(reqId, 48, "Teacher lesson plan ready. Building student phone view...", {
+          teacherPlanHTML: buildTeacherHTML(teacherPart, time)
+        });
+      }
+    );
 
     progress(reqId, 65, "Checking step count...");
     lesson = await validateStepCount(lesson, topic, plan, ledger);
@@ -1432,11 +1873,13 @@ app.post("/generate", async (req, res) => {
     progress(reqId, 74, "Checking local grounding...");
     lesson = validateLocalGrounding(lesson);
 
-    progress(reqId, 82, "Checking exercise fields...");
-    lesson = await validateExercises(lesson, ledger);
-
-    progress(reqId, 91, "Checking screen types...");
-    lesson = await validateScreenTypes(lesson, topic, ledger);
+    progress(reqId, 82, "Checking exercises and screen types...");
+    await Promise.all([
+      validateExercises(lesson, ledger),
+      validateScreenTypes(lesson, topic, ledger)
+    ]);
+    lesson = validateVisibleTargets(lesson);
+    lesson = ensureSampleData(lesson);
 
     lesson.teacherPlanHTML = buildTeacherHTML(lesson, time);
 
